@@ -1,0 +1,19 @@
+---
+manifest_version: "1"
+name: map_descriptors
+integrity:
+  network_seed: ~
+  properties: ~
+  origin_time: 1686583478181634
+  zomes:
+    - name: descriptors_integrity
+      hash: ~
+      bundled: "../../../target/wasm32-unknown-unknown/release/descriptors_integrity.wasm"
+      dependencies: ~
+coordinator:
+  zomes:
+    - name: descriptors
+      hash: ~
+      bundled: "../../../target/wasm32-unknown-unknown/release/descriptors.wasm"
+      dependencies:
+        - name: descriptors_integrity
