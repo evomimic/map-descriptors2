@@ -1,8 +1,9 @@
 use hdi::prelude::*;
+use crate::TypeHeader;
 #[hdk_entry_helper]
 #[derive(Clone, PartialEq)]
 pub struct HolonDescriptor {
-    pub name: String,
+    pub header: TypeHeader,
 }
 pub fn validate_create_holon_descriptor(
     _action: EntryCreationAction,
@@ -74,7 +75,6 @@ pub fn validate_create_link_all_holon_types(
     target_address: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    // Check the entry type for the given action hash
     let action_hash = ActionHash::from(target_address);
     let record = must_get_valid_record(action_hash)?;
     let _holon_descriptor: crate::HolonDescriptor = record
@@ -86,7 +86,6 @@ pub fn validate_create_link_all_holon_types(
                 WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
             ),
         )?;
-    // TODO: add the appropriate validation rules
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_delete_link_all_holon_types(

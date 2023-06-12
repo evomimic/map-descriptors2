@@ -36,6 +36,7 @@ export type DescriptorsSignal = {
 };
 
 export type EntryTypes =
+ | ({ type: 'PropertyDescriptor'; } & PropertyDescriptor)
  | ({ type: 'HolonDescriptor'; } & HolonDescriptor)
  | ({  type: 'TypeHeader'; } & TypeHeader);
 
@@ -69,6 +70,14 @@ export interface TypeHeader {
 
 export interface HolonDescriptor { 
   name: string;
+}
+
+
+
+
+
+export interface PropertyDescriptor { 
+  property_descriptor_placeholder: string;
 }
 
 

@@ -1,3 +1,5 @@
+pub mod property_descriptor;
+pub use property_descriptor::*;
 pub mod holon_descriptor;
 pub use holon_descriptor::*;
 pub mod type_header;
@@ -8,14 +10,16 @@ use hdi::prelude::*;
 #[hdk_entry_defs]
 #[unit_enum(UnitEntryTypes)]
 pub enum EntryTypes {
-    TypeHeader(TypeHeader),
     HolonDescriptor(HolonDescriptor),
+    PropertyDescriptor(PropertyDescriptor),
 }
 #[derive(Serialize, Deserialize)]
 #[hdk_link_types]
 pub enum LinkTypes {
     HolonDescriptorUpdates,
     AllHolonTypes,
+    PropertyDescriptorUpdates,
+    AllPropertyDescriptors,
 }
 #[hdk_extern]
 pub fn genesis_self_check(
@@ -36,32 +40,32 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
             match store_entry {
                 OpEntry::CreateEntry { app_entry, action } => {
                     match app_entry {
-                        EntryTypes::TypeHeader(type_header) => {
-                            validate_create_type_header(
-                                EntryCreationAction::Create(action),
-                                type_header,
-                            )
-                        }
                         EntryTypes::HolonDescriptor(holon_descriptor) => {
                             validate_create_holon_descriptor(
                                 EntryCreationAction::Create(action),
                                 holon_descriptor,
+                            )
+                        }
+                        EntryTypes::PropertyDescriptor(property_descriptor) => {
+                            validate_create_property_descriptor(
+                                EntryCreationAction::Create(action),
+                                property_descriptor,
                             )
                         }
                     }
                 }
                 OpEntry::UpdateEntry { app_entry, action, .. } => {
                     match app_entry {
-                        EntryTypes::TypeHeader(type_header) => {
-                            validate_create_type_header(
-                                EntryCreationAction::Update(action),
-                                type_header,
-                            )
-                        }
                         EntryTypes::HolonDescriptor(holon_descriptor) => {
                             validate_create_holon_descriptor(
                                 EntryCreationAction::Update(action),
                                 holon_descriptor,
+                            )
+                        }
+                        EntryTypes::PropertyDescriptor(property_descriptor) => {
+                            validate_create_property_descriptor(
+                                EntryCreationAction::Update(action),
+                                property_descriptor,
                             )
                         }
                     }
@@ -79,6 +83,17 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 } => {
                     match (app_entry, original_app_entry) {
                         (
+                            EntryTypes::PropertyDescriptor(property_descriptor),
+                            EntryTypes::PropertyDescriptor(original_property_descriptor),
+                        ) => {
+                            validate_update_property_descriptor(
+                                action,
+                                property_descriptor,
+                                original_action,
+                                original_property_descriptor,
+                            )
+                        }
+                        (
                             EntryTypes::HolonDescriptor(holon_descriptor),
                             EntryTypes::HolonDescriptor(original_holon_descriptor),
                         ) => {
@@ -87,17 +102,6 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 holon_descriptor,
                                 original_action,
                                 original_holon_descriptor,
-                            )
-                        }
-                        (
-                            EntryTypes::TypeHeader(type_header),
-                            EntryTypes::TypeHeader(original_type_header),
-                        ) => {
-                            validate_update_type_header(
-                                action,
-                                type_header,
-                                original_action,
-                                original_type_header,
                             )
                         }
                         _ => {
@@ -117,18 +121,18 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
             match delete_entry {
                 OpDelete::Entry { original_action, original_app_entry, action } => {
                     match original_app_entry {
-                        EntryTypes::TypeHeader(type_header) => {
-                            validate_delete_type_header(
-                                action,
-                                original_action,
-                                type_header,
-                            )
-                        }
                         EntryTypes::HolonDescriptor(holon_descriptor) => {
                             validate_delete_holon_descriptor(
                                 action,
                                 original_action,
                                 holon_descriptor,
+                            )
+                        }
+                        EntryTypes::PropertyDescriptor(property_descriptor) => {
+                            validate_delete_property_descriptor(
+                                action,
+                                original_action,
+                                property_descriptor,
                             )
                         }
                     }
@@ -154,6 +158,22 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 }
                 LinkTypes::AllHolonTypes => {
                     validate_create_link_all_holon_types(
+                        action,
+                        base_address,
+                        target_address,
+                        tag,
+                    )
+                }
+                LinkTypes::PropertyDescriptorUpdates => {
+                    validate_create_link_property_descriptor_updates(
+                        action,
+                        base_address,
+                        target_address,
+                        tag,
+                    )
+                }
+                LinkTypes::AllPropertyDescriptors => {
+                    validate_create_link_all_property_descriptors(
                         action,
                         base_address,
                         target_address,
@@ -189,22 +209,40 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
+                LinkTypes::PropertyDescriptorUpdates => {
+                    validate_delete_link_property_descriptor_updates(
+                        action,
+                        original_action,
+                        base_address,
+                        target_address,
+                        tag,
+                    )
+                }
+                LinkTypes::AllPropertyDescriptors => {
+                    validate_delete_link_all_property_descriptors(
+                        action,
+                        original_action,
+                        base_address,
+                        target_address,
+                        tag,
+                    )
+                }
             }
         }
         FlatOp::StoreRecord(store_record) => {
             match store_record {
                 OpRecord::CreateEntry { app_entry, action } => {
                     match app_entry {
-                        EntryTypes::TypeHeader(type_header) => {
-                            validate_create_type_header(
-                                EntryCreationAction::Create(action),
-                                type_header,
-                            )
-                        }
                         EntryTypes::HolonDescriptor(holon_descriptor) => {
                             validate_create_holon_descriptor(
                                 EntryCreationAction::Create(action),
                                 holon_descriptor,
+                            )
+                        }
+                        EntryTypes::PropertyDescriptor(property_descriptor) => {
+                            validate_create_property_descriptor(
+                                EntryCreationAction::Create(action),
+                                property_descriptor,
                             )
                         }
                     }
@@ -230,37 +268,6 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         }
                     };
                     match app_entry {
-                        EntryTypes::TypeHeader(type_header) => {
-                            let result = validate_create_type_header(
-                                EntryCreationAction::Update(action.clone()),
-                                type_header.clone(),
-                            )?;
-                            if let ValidateCallbackResult::Valid = result {
-                                let original_type_header: Option<TypeHeader> = original_record
-                                    .entry()
-                                    .to_app_option()
-                                    .map_err(|e| wasm_error!(e))?;
-                                let original_type_header = match original_type_header {
-                                    Some(type_header) => type_header,
-                                    None => {
-                                        return Ok(
-                                            ValidateCallbackResult::Invalid(
-                                                "The updated entry type must be the same as the original entry type"
-                                                    .to_string(),
-                                            ),
-                                        );
-                                    }
-                                };
-                                validate_update_type_header(
-                                    action,
-                                    type_header,
-                                    original_action,
-                                    original_type_header,
-                                )
-                            } else {
-                                Ok(result)
-                            }
-                        }
                         EntryTypes::HolonDescriptor(holon_descriptor) => {
                             let result = validate_create_holon_descriptor(
                                 EntryCreationAction::Update(action.clone()),
@@ -287,6 +294,39 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                     holon_descriptor,
                                     original_action,
                                     original_holon_descriptor,
+                                )
+                            } else {
+                                Ok(result)
+                            }
+                        }
+                        EntryTypes::PropertyDescriptor(property_descriptor) => {
+                            let result = validate_create_property_descriptor(
+                                EntryCreationAction::Update(action.clone()),
+                                property_descriptor.clone(),
+                            )?;
+                            if let ValidateCallbackResult::Valid = result {
+                                let original_property_descriptor: Option<
+                                    PropertyDescriptor,
+                                > = original_record
+                                    .entry()
+                                    .to_app_option()
+                                    .map_err(|e| wasm_error!(e))?;
+                                let original_property_descriptor = match original_property_descriptor {
+                                    Some(property_descriptor) => property_descriptor,
+                                    None => {
+                                        return Ok(
+                                            ValidateCallbackResult::Invalid(
+                                                "The updated entry type must be the same as the original entry type"
+                                                    .to_string(),
+                                            ),
+                                        );
+                                    }
+                                };
+                                validate_update_property_descriptor(
+                                    action,
+                                    property_descriptor,
+                                    original_action,
+                                    original_property_descriptor,
                                 )
                             } else {
                                 Ok(result)
@@ -346,18 +386,18 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         }
                     };
                     match original_app_entry {
-                        EntryTypes::TypeHeader(original_type_header) => {
-                            validate_delete_type_header(
-                                action,
-                                original_action,
-                                original_type_header,
-                            )
-                        }
                         EntryTypes::HolonDescriptor(original_holon_descriptor) => {
                             validate_delete_holon_descriptor(
                                 action,
                                 original_action,
                                 original_holon_descriptor,
+                            )
+                        }
+                        EntryTypes::PropertyDescriptor(original_property_descriptor) => {
+                            validate_delete_property_descriptor(
+                                action,
+                                original_action,
+                                original_property_descriptor,
                             )
                         }
                     }
@@ -380,6 +420,22 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         }
                         LinkTypes::AllHolonTypes => {
                             validate_create_link_all_holon_types(
+                                action,
+                                base_address,
+                                target_address,
+                                tag,
+                            )
+                        }
+                        LinkTypes::PropertyDescriptorUpdates => {
+                            validate_create_link_property_descriptor_updates(
+                                action,
+                                base_address,
+                                target_address,
+                                tag,
+                            )
+                        }
+                        LinkTypes::AllPropertyDescriptors => {
+                            validate_create_link_all_property_descriptors(
                                 action,
                                 base_address,
                                 target_address,
@@ -422,6 +478,24 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         }
                         LinkTypes::AllHolonTypes => {
                             validate_delete_link_all_holon_types(
+                                action,
+                                create_link.clone(),
+                                base_address,
+                                create_link.target_address,
+                                create_link.tag,
+                            )
+                        }
+                        LinkTypes::PropertyDescriptorUpdates => {
+                            validate_delete_link_property_descriptor_updates(
+                                action,
+                                create_link.clone(),
+                                base_address,
+                                create_link.target_address,
+                                create_link.tag,
+                            )
+                        }
+                        LinkTypes::AllPropertyDescriptors => {
+                            validate_delete_link_all_property_descriptors(
                                 action,
                                 create_link.clone(),
                                 base_address,

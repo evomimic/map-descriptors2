@@ -11,3 +11,4 @@ name = "descriptors_integrity"
 hdi = { workspace = true }
 
 serde = { workspace = true }
+derive-new = { workspace = true }

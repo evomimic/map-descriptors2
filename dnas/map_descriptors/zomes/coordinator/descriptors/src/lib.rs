@@ -1,3 +1,5 @@
+pub mod all_property_descriptors;
+pub mod property_descriptor;
 pub mod all_holon_types;
 pub mod holon_descriptor;
 pub mod type_header;

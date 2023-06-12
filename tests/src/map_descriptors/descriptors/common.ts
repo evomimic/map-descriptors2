@@ -42,3 +42,22 @@ export async function createHolonDescriptor(cell: CallableCell, holonDescriptor 
     });
 }
 
+
+
+export async function samplePropertyDescriptor(cell: CallableCell, partialPropertyDescriptor = {}) {
+    return {
+        ...{
+	  property_descriptor_placeholder: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        },
+        ...partialPropertyDescriptor
+    };
+}
+
+export async function createPropertyDescriptor(cell: CallableCell, propertyDescriptor = undefined): Promise<Record> {
+    return cell.callZome({
+      zome_name: "descriptors",
+      fn_name: "create_property_descriptor",
+      payload: propertyDescriptor || await samplePropertyDescriptor(cell),
+    });
+}
+
