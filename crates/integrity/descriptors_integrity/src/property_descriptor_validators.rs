@@ -1,32 +1,29 @@
 use hdi::prelude::*;
-use crate::TypeHeader;
-#[hdk_entry_helper]
-#[derive(Clone, PartialEq)]
-pub struct HolonDescriptor {
-    pub header: TypeHeader,
-}
-pub fn validate_create_holon_descriptor(
+use shared_types_descriptor::property_descriptor::{PropertyDescriptor};
+
+
+pub fn validate_create_property_descriptor(
     _action: EntryCreationAction,
-    _holon_descriptor: HolonDescriptor,
+    _property_descriptor: PropertyDescriptor,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_update_holon_descriptor(
+pub fn validate_update_property_descriptor(
     _action: Update,
-    _holon_descriptor: HolonDescriptor,
+    _property_descriptor: PropertyDescriptor,
     _original_action: EntryCreationAction,
-    _original_holon_descriptor: HolonDescriptor,
+    _original_property_descriptor: PropertyDescriptor,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_delete_holon_descriptor(
+pub fn validate_delete_property_descriptor(
     _action: Delete,
     _original_action: EntryCreationAction,
-    _original_holon_descriptor: HolonDescriptor,
+    _original_property_descriptor: PropertyDescriptor,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_create_link_holon_descriptor_updates(
+pub fn validate_create_link_property_descriptor_updates(
     _action: CreateLink,
     base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
@@ -34,7 +31,7 @@ pub fn validate_create_link_holon_descriptor_updates(
 ) -> ExternResult<ValidateCallbackResult> {
     let action_hash = ActionHash::from(base_address);
     let record = must_get_valid_record(action_hash)?;
-    let _holon_descriptor: crate::HolonDescriptor = record
+    let _property_descriptor: PropertyDescriptor = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -45,7 +42,7 @@ pub fn validate_create_link_holon_descriptor_updates(
         )?;
     let action_hash = ActionHash::from(target_address);
     let record = must_get_valid_record(action_hash)?;
-    let _holon_descriptor: crate::HolonDescriptor = record
+    let _property_descriptor: PropertyDescriptor = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -56,7 +53,7 @@ pub fn validate_create_link_holon_descriptor_updates(
         )?;
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_delete_link_holon_descriptor_updates(
+pub fn validate_delete_link_property_descriptor_updates(
     _action: DeleteLink,
     _original_action: CreateLink,
     _base: AnyLinkableHash,
@@ -65,11 +62,11 @@ pub fn validate_delete_link_holon_descriptor_updates(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
-            String::from("HolonDescriptorUpdates links cannot be deleted"),
+            String::from("PropertyDescriptorUpdates links cannot be deleted"),
         ),
     )
 }
-pub fn validate_create_link_all_holon_types(
+pub fn validate_create_link_all_property_types(
     _action: CreateLink,
     _base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
@@ -77,7 +74,7 @@ pub fn validate_create_link_all_holon_types(
 ) -> ExternResult<ValidateCallbackResult> {
     let action_hash = ActionHash::from(target_address);
     let record = must_get_valid_record(action_hash)?;
-    let _holon_descriptor: crate::HolonDescriptor = record
+    let _property_descriptor: PropertyDescriptor = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -88,7 +85,7 @@ pub fn validate_create_link_all_holon_types(
         )?;
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_delete_link_all_holon_types(
+pub fn validate_delete_link_all_property_types(
     _action: DeleteLink,
     _original_action: CreateLink,
     _base: AnyLinkableHash,

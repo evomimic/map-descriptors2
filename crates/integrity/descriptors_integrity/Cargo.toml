@@ -12,3 +12,4 @@ hdi = { workspace = true }
 
 serde = { workspace = true }
 derive-new = { workspace = true }
+shared_types_descriptor = {workspace = true}

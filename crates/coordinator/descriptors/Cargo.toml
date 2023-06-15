@@ -12,4 +12,5 @@ hdk = { workspace = true }
 
 serde = { workspace = true }
 
-descriptors_integrity = { workspace = true } 
+descriptors_integrity = { workspace = true }
+shared_types_descriptor = {workspace = true}

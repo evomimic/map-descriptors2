@@ -1,10 +1,28 @@
-pub mod property_descriptor;
-pub use property_descriptor::*;
-pub mod holon_descriptor;
-pub use holon_descriptor::*;
-pub mod type_header;
-pub use type_header::*;
+pub mod holon_descriptor_validators;
+pub mod property_descriptor_validators;
+
+use shared_types_descriptor::holon_descriptor::{HolonDescriptor};
+use shared_types_descriptor::property_descriptor::{PropertyDescriptor};
+use crate::holon_descriptor_validators::{
+    validate_create_link_holon_descriptor_updates,
+    validate_update_holon_descriptor,
+    validate_delete_holon_descriptor,
+    validate_create_link_all_holon_types,
+    validate_delete_link_all_holon_types,
+    validate_delete_link_holon_descriptor_updates,
+    validate_create_holon_descriptor,
+};
+
 use hdi::prelude::*;
+use crate::property_descriptor_validators::{
+    validate_create_link_property_descriptor_updates,
+    validate_create_link_all_property_types,
+    validate_delete_link_all_property_types,
+    validate_create_property_descriptor,
+    validate_delete_link_property_descriptor_updates,
+    validate_delete_property_descriptor,
+    validate_update_property_descriptor};
+
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "type")]
 #[hdk_entry_defs]
@@ -173,7 +191,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     )
                 }
                 LinkTypes::AllPropertyDescriptors => {
-                    validate_create_link_all_property_descriptors(
+                    validate_create_link_all_property_types(
                         action,
                         base_address,
                         target_address,
@@ -219,7 +237,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     )
                 }
                 LinkTypes::AllPropertyDescriptors => {
-                    validate_delete_link_all_property_descriptors(
+                    validate_delete_link_all_property_types(
                         action,
                         original_action,
                         base_address,
@@ -435,7 +453,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             )
                         }
                         LinkTypes::AllPropertyDescriptors => {
-                            validate_create_link_all_property_descriptors(
+                            validate_create_link_all_property_types(
                                 action,
                                 base_address,
                                 target_address,
@@ -495,7 +513,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             )
                         }
                         LinkTypes::AllPropertyDescriptors => {
-                            validate_delete_link_all_property_descriptors(
+                            validate_delete_link_all_property_types(
                                 action,
                                 create_link.clone(),
                                 base_address,

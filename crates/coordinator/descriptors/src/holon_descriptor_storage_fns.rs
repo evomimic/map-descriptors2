@@ -1,5 +1,7 @@
 use hdk::prelude::*;
 use descriptors_integrity::*;
+use shared_types_descriptor::holon_descriptor::HolonDescriptor;
+
 #[hdk_extern]
 pub fn create_holon_descriptor(
     holon_descriptor: HolonDescriptor,

@@ -1,8 +1,11 @@
-pub mod all_property_descriptors;
-pub mod property_descriptor;
-pub mod all_holon_types;
-pub mod holon_descriptor;
-pub mod type_header;
+pub mod property_descriptor_queries;
+pub mod property_descriptor_storage_fns;
+pub mod holon_descriptor_storage_fns;
+pub mod mutators;
+mod holon_descriptor_queries;
+mod stub_data_creator;
+mod property_map_builder;
+
 use hdk::prelude::*;
 use descriptors_integrity::*;
 #[hdk_extern]

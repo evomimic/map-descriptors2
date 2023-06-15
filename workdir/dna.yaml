@@ -12,8 +12,8 @@ integrity:
       dependencies: ~
 coordinator:
   zomes:
-    - name: descriptors
+    - name: descriptors_integrity
       hash: ~
-      bundled: "../../../target/wasm32-unknown-unknown/release/descriptors.wasm"
+      bundled: "../../../target/wasm32-unknown-unknown/release/descriptors_integrity.wasm"
       dependencies:
         - name: descriptors_integrity
