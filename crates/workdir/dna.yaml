@@ -8,12 +8,12 @@ integrity:
   zomes:
     - name: descriptors_integrity
       hash: ~
-      bundled: "../target/wasm32-unknown-unknown/release/descriptors_integrity.wasm"
+      bundled: "../../target/wasm32-unknown-unknown/release/descriptors_integrity.wasm"
       dependencies: ~
 coordinator:
   zomes:
     - name: descriptors
       hash: ~
-      bundled: "../target/wasm32-unknown-unknown/release/descriptors.wasm"
+      bundled: "../../target/wasm32-unknown-unknown/release/descriptors.wasm"
       dependencies:
         - name: descriptors_integrity
