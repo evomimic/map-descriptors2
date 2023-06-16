@@ -1,6 +1,7 @@
 use hdi::prelude::*;
 
-use crate::EntryTypes::HolonDescriptor;
+//use crate::EntryTypes::HolonDescriptor;
+use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 
 pub fn validate_create_holon_descriptor(
     _action: EntryCreationAction,
