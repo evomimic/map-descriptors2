@@ -2,13 +2,12 @@
 
 use crate::stub_data_creator::*;
 
-use hdk::prelude::*;
 use descriptors_integrity::LinkTypes;
+use hdk::prelude::*;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 
 #[hdk_extern]
 pub fn get_all_holontypes(_: ()) -> ExternResult<Vec<HolonDescriptor>> {
-    // ?TODO: Handle Custom Error conversion to WasmError
     let result = create_dummy_data(())?;
     Ok(result)
 }
@@ -27,13 +26,9 @@ pub fn get_all_holon_types(_: ()) -> ExternResult<Vec<Record>> {
     let links = get_links(path.path_entry_hash()?, LinkTypes::AllHolonTypes, None)?;
     let get_input: Vec<GetInput> = links
         .into_iter()
-        .map(|link| GetInput::new(
-            ActionHash::from(link.target).into(),
-            GetOptions::default(),
-        ))
+        .map(|link| GetInput::new(ActionHash::from(link.target).into(), GetOptions::default()))
         .collect();
     let records = HDK.with(|hdk| hdk.borrow().get(get_input))?;
     let records: Vec<Record> = records.into_iter().filter_map(|r| r).collect();
     Ok(records)
 }
-
