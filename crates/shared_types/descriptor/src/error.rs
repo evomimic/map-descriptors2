@@ -3,7 +3,7 @@ use thiserror::Error;
 
 #[derive(Error, Debug, Eq, PartialEq)]
 pub enum DescriptorsError {
-    #[error("{0:?} field is missing")]
+    #[error("{0} field is missing")]
     EmptyField(String),
     // #[error("Element missing its Entry")]
     // ValidationError,

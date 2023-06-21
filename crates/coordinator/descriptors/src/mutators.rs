@@ -144,6 +144,19 @@ mod tests {
         )
         .unwrap();
 
+        println!("{:#?}", header_success);
+
+        assert_eq!(header_success.type_name, "example_name".to_string());
+
+        assert_eq!(header_success.base_type, BaseType::String);
+
+        assert!(header_success.is_dependent);
+
+        assert_eq!(
+            header_success.description,
+            "example_description".to_string()
+        );
+
         let header_error = new_type_header(
             "".to_string(),
             BaseType::String,
@@ -154,14 +167,12 @@ mod tests {
 
         assert_eq!(
             header_error,
-            DescriptorsError::EmptyField("type_name".to_string()) // TODO: figure out how to interpret full string result
+            DescriptorsError::EmptyField("type_name".to_string())
         );
 
-        println!("{:#?}", header_success);
-
         assert_eq!(
-            header_success.description,
-            "example_description".to_string()
+            header_error.to_string(),
+            "type_name field is missing".to_string()
         );
     }
 }
