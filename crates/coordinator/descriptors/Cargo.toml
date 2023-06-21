@@ -11,6 +11,7 @@ name = "descriptors"
 hdk = { workspace = true }
 
 serde = { workspace = true }
+thiserror = { workspace = true }
 
 descriptors_integrity = { workspace = true }
 shared_types_descriptor = {workspace = true}
