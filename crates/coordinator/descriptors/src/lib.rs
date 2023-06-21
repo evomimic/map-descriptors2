@@ -1,4 +1,3 @@
-pub mod error;
 mod holon_descriptor_queries;
 pub mod holon_descriptor_storage_fns;
 pub mod mutators;

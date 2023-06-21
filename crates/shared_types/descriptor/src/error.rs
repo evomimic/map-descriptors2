@@ -1,9 +1,9 @@
 use hdk::prelude::*;
 use thiserror::Error;
 
-#[derive(Error, Debug)]
-pub enum DescriptorsIntegrityError {
-    #[error("{0:?}, field is missing")]
+#[derive(Error, Debug, Eq, PartialEq)]
+pub enum DescriptorsError {
+    #[error("{0:?} field is missing")]
     EmptyField(String),
     // #[error("Element missing its Entry")]
     // ValidationError,
@@ -15,14 +15,14 @@ pub enum DescriptorsIntegrityError {
     // Wasm(WasmError),
 }
 
-impl From<DescriptorsIntegrityError> for ValidateCallbackResult {
-    fn from(e: DescriptorsIntegrityError) -> Self {
+impl From<DescriptorsError> for ValidateCallbackResult {
+    fn from(e: DescriptorsError) -> Self {
         ValidateCallbackResult::Invalid(e.to_string())
     }
 }
 
-impl From<DescriptorsIntegrityError> for ExternResult<ValidateCallbackResult> {
-    fn from(e: DescriptorsIntegrityError) -> Self {
+impl From<DescriptorsError> for ExternResult<ValidateCallbackResult> {
+    fn from(e: DescriptorsError) -> Self {
         Ok(e.into())
     }
 }

@@ -1,5 +1,4 @@
-use crate::error::DescriptorsError;
-
+use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::{
     BooleanDescriptor, CompositeDescriptor, IntegerDescriptor, IntegerFormat, PropertyDescriptor,
@@ -23,14 +22,14 @@ pub fn new_type_header(
         SemanticVersion::default(),
         is_dependent,
     );
-    example_header_check(header)?; // could be validation
+    example_header_check(header.clone())?; // could be validation
 
     Ok(header)
 }
 
 fn example_header_check(header: TypeHeader) -> Result<TypeHeader, DescriptorsError> {
     if header.type_name.is_empty() {
-        return Err(DescriptorsError::EmptyField("header".to_string()));
+        return Err(DescriptorsError::EmptyField("type_name".to_string()));
     }
     Ok(header)
 }
@@ -129,4 +128,40 @@ pub fn new_boolean_descriptor(
         details,
     )?;
     Ok(desc)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new_type_header() {
+        let header_success = new_type_header(
+            "example_name".to_string(),
+            BaseType::String,
+            "example_description".to_string(),
+            true,
+        )
+        .unwrap();
+
+        let header_error = new_type_header(
+            "".to_string(),
+            BaseType::String,
+            "example_description".to_string(),
+            true,
+        )
+        .expect_err("Empty field, should throw error");
+
+        assert_eq!(
+            header_error,
+            DescriptorsError::EmptyField("type_name".to_string()) // TODO: figure out how to interpret full string result
+        );
+
+        println!("{:#?}", header_success);
+
+        assert_eq!(
+            header_success.description,
+            "example_description".to_string()
+        );
+    }
 }

@@ -13,3 +13,4 @@ hdi = { workspace = true }
 hdk = { workspace = true }
 derive-new = { workspace = true }
 serde = { workspace = true }
+thiserror = { workspace = true }

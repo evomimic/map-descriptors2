@@ -1,8 +1,8 @@
 // This crate contains definitions for all of the shared descriptor types.
+pub mod error;
 pub mod holon_descriptor;
 pub mod property_descriptor;
 pub mod type_header;
-
 
 pub fn add(left: usize, right: usize) -> usize {
     left + right

@@ -2,11 +2,12 @@
 
 use crate::mutators::{new_holon_descriptor, new_integer_descriptor};
 use crate::property_map_builder::insert_property_descriptor;
-use hdk::prelude::*;
+// use hdk::prelude::*;
+use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::IntegerFormat;
 
-pub fn create_dummy_data(_: ()) -> ExternResult<Vec<HolonDescriptor>> {
+pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError> {
     // TODO: Add calls to create properties on each HolonDescriptor, say, 1 Integer, 1 Boolean, and 1 String
 
     let mut descriptor1: HolonDescriptor = new_holon_descriptor(
