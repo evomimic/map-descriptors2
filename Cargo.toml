@@ -14,6 +14,7 @@ members = ["crates/coordinator/descriptors",
 hdi = "=0.2.3-beta-rc.0"
 hdk = "=0.1.3-beta-rc.1"
 holochain_integrity_types = "=0.1.3-beta-rc.0"
+holochain = "=0.1.3"
 serde = "1"
 derive-new = "0.5"
 thiserror = "1"

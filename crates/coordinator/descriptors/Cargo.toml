@@ -9,7 +9,7 @@ name = "descriptors"
 
 [dependencies]
 hdk = { workspace = true }
-
+holochain = {workspace = true}
 serde = { workspace = true }
 thiserror = { workspace = true }
 
