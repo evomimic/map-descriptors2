@@ -8,7 +8,7 @@ use holochain::sweettest::{SweetAgents, SweetCell, SweetConductor, SweetDnaFile}
 
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 
-const DNA_FILEPATH: &str = "../../workdir/map_descriptors.dna";
+const DNA_FILEPATH: &str = "../../../workdir/map_descriptors.dna";
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_get_all_holontypes() {
@@ -25,13 +25,13 @@ pub async fn test_get_all_holontypes() {
 /// MOCK CONDUCTOR
 
 async fn setup_conductor() -> (SweetConductor, AgentPubKey, SweetCell) {
-    let dna = SweetDnaFile::from_bundle(std::path::Path::new(DNA_FILEPATH))
+    let dna = SweetDnaFile::from_bundle(std::path::Path::new(&DNA_FILEPATH))
         .await
         .unwrap();
     /*
     // let dna_path = std::env::current_dir()
     // .unwrap()
-    // .join("../../../workdir/map-proto1.dna");
+    // .join("../../../workdir/map_descriptors.dna");
 
     // let dna = SweetDnaFile::from_bundle(&dna_path).await.unwrap();
     */

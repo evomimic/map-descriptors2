@@ -15,14 +15,14 @@ pub enum DescriptorsError {
     // Wasm(WasmError),
 }
 
-impl From<DescriptorsError> for ValidateCallbackResult {
-    fn from(e: DescriptorsError) -> Self {
-        ValidateCallbackResult::Invalid(e.to_string())
-    }
-}
+// impl From<DescriptorsError> for ValidateCallbackResult {
+//     fn from(e: DescriptorsError) -> Self {
+//         ValidateCallbackResult::Invalid(e.to_string())
+//     }
+// }
 
-impl From<DescriptorsError> for ExternResult<ValidateCallbackResult> {
-    fn from(e: DescriptorsError) -> Self {
-        Ok(e.into())
-    }
-}
+// impl From<DescriptorsError> for ExternResult<ValidateCallbackResult> {
+//     fn from(e: DescriptorsError) -> Self {
+//         Ok(e.into())
+//     }
+// }

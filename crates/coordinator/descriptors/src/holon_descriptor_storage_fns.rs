@@ -1,20 +1,16 @@
-use hdk::prelude::*;
 use descriptors_integrity::*;
+use hdk::prelude::*;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 
 #[hdk_extern]
-pub fn create_holon_descriptor(
-    holon_descriptor: HolonDescriptor,
-) -> ExternResult<Record> {
-    let holon_descriptor_hash = create_entry(
-        &EntryTypes::HolonDescriptor(holon_descriptor.clone()),
-    )?;
-    let record = get(holon_descriptor_hash.clone(), GetOptions::default())?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Could not find the newly created HolonDescriptor"))
-            ),
-        )?;
+pub fn create_holon_descriptor(holon_descriptor: HolonDescriptor) -> ExternResult<Record> {
+    let holon_descriptor_hash =
+        create_entry(&EntryTypes::HolonDescriptor(holon_descriptor.clone()))?;
+    let record = get(holon_descriptor_hash.clone(), GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest(String::from(
+            "Could not find the newly created HolonDescriptor"
+        ))
+    ))?;
     let path = Path::from("all_holon_types");
     create_link(
         path.path_entry_hash()?,
@@ -49,9 +45,7 @@ pub struct UpdateHolonDescriptorInput {
     pub updated_holon_descriptor: HolonDescriptor,
 }
 #[hdk_extern]
-pub fn update_holon_descriptor(
-    input: UpdateHolonDescriptorInput,
-) -> ExternResult<Record> {
+pub fn update_holon_descriptor(input: UpdateHolonDescriptorInput) -> ExternResult<Record> {
     let updated_holon_descriptor_hash = update_entry(
         input.previous_holon_descriptor_hash.clone(),
         &input.updated_holon_descriptor,
@@ -62,12 +56,11 @@ pub fn update_holon_descriptor(
         LinkTypes::HolonDescriptorUpdates,
         (),
     )?;
-    let record = get(updated_holon_descriptor_hash.clone(), GetOptions::default())?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Could not find the newly updated HolonDescriptor"))
-            ),
-        )?;
+    let record = get(updated_holon_descriptor_hash.clone(), GetOptions::default())?.ok_or(
+        wasm_error!(WasmErrorInner::Guest(String::from(
+            "Could not find the newly updated HolonDescriptor"
+        ))),
+    )?;
     Ok(record)
 }
 #[hdk_extern]

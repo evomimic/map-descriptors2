@@ -9,6 +9,7 @@ use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 #[hdk_extern]
 pub fn get_all_holontypes(_: ()) -> ExternResult<Vec<HolonDescriptor>> {
     let dummy_data_result = create_dummy_data(());
+    println!("{:?}", dummy_data_result);
     match dummy_data_result {
         Ok(data) => return Ok(data),
         Err(error) => return Err(wasm_error!(WasmErrorInner::Guest(error.to_string()))),
