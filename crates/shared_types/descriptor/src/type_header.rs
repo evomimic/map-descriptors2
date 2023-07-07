@@ -1,7 +1,8 @@
-use hdi::prelude::*;
 use derive_new::new;
+use hdi::prelude::*;
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+#[hdk_entry_helper]
+#[derive(Clone, PartialEq, Eq)]
 #[serde(tag = "type")]
 pub enum BaseType {
     Holon,
@@ -39,4 +40,3 @@ pub struct TypeHeader {
     pub version: SemanticVersion,
     pub is_dependent: bool,
 }
-

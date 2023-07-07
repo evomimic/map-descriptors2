@@ -8,7 +8,7 @@ use holochain::sweettest::{SweetAgents, SweetCell, SweetConductor, SweetDnaFile}
 
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 
-const DNA_FILEPATH: &str = "../../../workdir/map_descriptors.dna";
+const DNA_FILEPATH: &str = "../../workdir/map_descriptors.dna";
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_get_all_holontypes() {

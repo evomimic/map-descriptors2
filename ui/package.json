@@ -27,7 +27,7 @@
     "lit": "^2.6.1"
   },
   "devDependencies": {
-    "@open-wc/eslint-config": "^11.0.0",
+    "@open-wc/eslint-config": "^8.0.0",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@typescript-eslint/parser": "^5.43.0",
     "bestzip": "^2.2.0",

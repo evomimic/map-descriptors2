@@ -1,13 +1,13 @@
-use hdi::prelude::*;
-use crate::property_descriptor::{PropertyDescriptorMap};
-use crate::type_header::{TypeHeader};
+use crate::property_descriptor::PropertyDescriptorMap;
+use crate::type_header::TypeHeader;
 use derive_new::new;
+use hdi::prelude::*;
 
 #[hdk_entry_helper]
-#[derive(new,Clone, PartialEq,Eq)]
+#[derive(new, Clone, PartialEq, Eq)]
 pub struct HolonDescriptor {
     pub header: TypeHeader,
-    pub properties: PropertyDescriptorMap,
+    // pub properties: PropertyDescriptorMap,
 }
 
 #[hdk_entry_helper]
@@ -21,4 +21,3 @@ pub struct HolonCollectionDescriptor {
     pub unique_items: bool, // true means duplicate items are not allowed
     pub is_ordered: bool, // if items have an intrinsic order (e.g., is_ordered=false mathematical set)
 }
-

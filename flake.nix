@@ -29,7 +29,7 @@
               inputsFrom = [ inputs'.holochain-flake.devShells.holonix ];
               packages = [
                 pkgs.nodejs-18_x
-                # more packages go here
+                pkgs.cargo-nextest pkgs.sqlite
               ];
             };
           };

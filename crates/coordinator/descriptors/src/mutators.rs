@@ -41,7 +41,7 @@ pub fn new_holon_descriptor(
 ) -> Result<HolonDescriptor, DescriptorsError> {
     let header = new_type_header(type_name, BaseType::Holon, description, is_dependent)?;
 
-    let descriptor = HolonDescriptor::new(header, PropertyDescriptorMap::new(Default::default()));
+    let descriptor = HolonDescriptor::new(header);
 
     Ok(descriptor)
 }
