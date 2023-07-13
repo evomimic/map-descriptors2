@@ -21,10 +21,10 @@ thiserror = "1"
 
 
 [workspace.dependencies.descriptors]
-path = "crates/coordinator/descriptors"
+path = "./crates/coordinator/descriptors"
 
 [workspace.dependencies.descriptors_integrity]
-path = "crates/integrity/descriptors_integrity"
+path = "./crates/integrity/descriptors_integrity"
 
 [workspace.dependencies.shared_types_descriptor]
-path = "crates/shared_types/descriptor"
+path = "./crates/shared_types/descriptor"
