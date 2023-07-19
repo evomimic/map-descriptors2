@@ -4,4 +4,4 @@ name: map-descriptors2
 ui:
   bundled: "../ui/dist.zip"
 happ_manifest:
-  bundled: "./map-descriptors2.happ"
+  bundled: "./workdir/map-descriptors2.happ"

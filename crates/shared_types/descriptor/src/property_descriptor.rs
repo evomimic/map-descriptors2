@@ -1,9 +1,8 @@
-use hdi::prelude::*;
 use derive_new::new;
-
+use hdi::prelude::*;
 
 #[hdk_entry_helper]
-#[derive(new,Clone, PartialEq,Eq)]
+#[derive(new, Clone, PartialEq, Eq)]
 pub struct PropertyDescriptor {
     pub header: TypeHeader,
     details: PropertyDescriptorDetails,
@@ -13,13 +12,12 @@ use std::collections::BTreeMap;
 
 use crate::type_header::TypeHeader;
 
-
 /// PropertyMap contains a set of (property_name, PropertyDescriptor) pairs
 /// that can be used in various contexts. For example, by HolonDescriptor and CompositeDescriptor
 ///
 
 #[hdk_entry_helper]
-#[derive(new, Clone, PartialEq,Eq)]
+#[derive(new, Default, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct PropertyDescriptorMap {
     pub properties: BTreeMap<String, PropertyDescriptor>,
@@ -31,7 +29,7 @@ pub struct PropertyDescriptorMap {
 /// independently of their parent instance
 
 #[hdk_entry_helper]
-#[derive(new, Clone, PartialEq,Eq)]
+#[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub enum PropertyDescriptorDetails {
     Boolean(BooleanDescriptor),
@@ -43,14 +41,14 @@ pub enum PropertyDescriptorDetails {
 }
 
 #[hdk_entry_helper]
-#[derive(new, Clone, PartialEq,Eq)]
+#[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct BooleanDescriptor {
     pub is_fuzzy: bool, // if true, this property has FuzzyBoolean value, otherwise just true or false
 }
 
 #[hdk_entry_helper]
-#[derive(new, Clone, PartialEq,Eq)]
+#[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct CompositeDescriptor {
     pub properties: PropertyDescriptorMap,
@@ -64,8 +62,8 @@ pub struct IntegerDescriptor {
     pub min_value: i128,
     pub max_value: i128,
 }
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+#[hdk_entry_helper]
+#[derive(Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub enum IntegerFormat {
     I8(),
@@ -100,24 +98,5 @@ pub struct ValueCollectionDescriptor {
     pub min_items: u32,
     pub max_items: u32,
     pub unique_items: bool, // true means duplicate items are not allowed
-    pub is_ordered: bool, // if items have an intrinsic order
+    pub is_ordered: bool,   // if items have an intrinsic order
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
