@@ -5,7 +5,7 @@ use hdi::prelude::*;
 #[derive(new, Clone, PartialEq, Eq)]
 pub struct PropertyDescriptor {
     pub header: TypeHeader,
-    details: PropertyDescriptorDetails,
+    // pub details: PropertyDescriptorDetails,
 }
 
 use std::collections::BTreeMap;
@@ -17,7 +17,7 @@ use crate::type_header::TypeHeader;
 ///
 
 #[hdk_entry_helper]
-#[derive(new, Default, Clone, PartialEq, Eq)]
+#[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct PropertyDescriptorMap {
     pub properties: BTreeMap<String, PropertyDescriptor>,
@@ -59,8 +59,8 @@ pub struct CompositeDescriptor {
 #[serde(rename_all = "camelCase")]
 pub struct IntegerDescriptor {
     pub format: IntegerFormat,
-    pub min_value: i128,
-    pub max_value: i128,
+    pub min_value: i64,
+    pub max_value: i64,
 }
 #[hdk_entry_helper]
 #[derive(Clone, PartialEq, Eq)]
@@ -70,12 +70,12 @@ pub enum IntegerFormat {
     I16(),
     I32(),
     I64(),
-    I128(),
+    // I128(),
     U8(),
     U16(),
     U32(),
     U64(),
-    U128(),
+    // U128(),
 }
 
 #[hdk_entry_helper]

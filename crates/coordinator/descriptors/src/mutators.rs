@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::{
@@ -41,7 +43,7 @@ pub fn new_holon_descriptor(
 ) -> Result<HolonDescriptor, DescriptorsError> {
     let header = new_type_header(type_name, BaseType::Holon, description, is_dependent)?;
 
-    let descriptor = HolonDescriptor::new(header);
+    let descriptor = HolonDescriptor::new(header, PropertyDescriptorMap::new(BTreeMap::new()));
 
     Ok(descriptor)
 }
@@ -55,7 +57,7 @@ fn new_property_descriptor(
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     // Guard that base_type in header matches details
     let header = new_type_header(type_name, base_type, description, is_dependent)?;
-    Ok(PropertyDescriptor::new(header, details))
+    Ok(PropertyDescriptor::new(header))
 }
 
 pub fn new_composite_descriptor(
@@ -99,8 +101,8 @@ pub fn new_integer_descriptor(
     description: String,
     is_dependent: bool,
     format: IntegerFormat,
-    min_value: i128,
-    max_value: i128,
+    min_value: i64,
+    max_value: i64,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     let details =
         PropertyDescriptorDetails::Integer(IntegerDescriptor::new(format, min_value, max_value));

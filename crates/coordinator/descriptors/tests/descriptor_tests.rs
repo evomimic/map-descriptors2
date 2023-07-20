@@ -2,7 +2,8 @@
 
 // use futures::future;
 // use std::collections::BTreeMap;
-
+use descriptors::helpers::get_descriptor_from_record;
+use descriptors::stub_data_creator::*;
 use hdk::prelude::*;
 use holochain::sweettest::{SweetAgents, SweetCell, SweetConductor, SweetDnaFile};
 
@@ -10,17 +11,17 @@ use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 
 const DNA_FILEPATH: &str = "../../../workdir/map_descriptors.dna";
 
-#[tokio::test(flavor = "multi_thread")]
-pub async fn test_get_all_holontypes() {
-    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
-        setup_conductor().await;
+// #[tokio::test(flavor = "multi_thread")]
+// pub async fn test_get_all_holontypes() {
+//     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+//         setup_conductor().await;
 
-    let testing_descriptors: Vec<HolonDescriptor> = conductor
-        .call(&cell.zome("descriptors"), "get_all_holontypes", ())
-        .await;
+//     let testing_descriptors: Vec<HolonDescriptor> = conductor
+//         .call(&cell.zome("descriptors"), "get_all_holontypes", ())
+//         .await;
 
-    println!("{:?}", testing_descriptors);
-}
+//     println!("{:#?}", testing_descriptors);
+// }
 
 /// MOCK CONDUCTOR
 
@@ -49,60 +50,93 @@ async fn setup_conductor() -> (SweetConductor, AgentPubKey, SweetCell) {
     (conductor, agent, cell)
 }
 
-//// SAVE
+#[tokio::test(flavor = "multi_thread")]
+pub async fn test_create_holon_descriptor() {
+    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+        setup_conductor().await;
 
-// #[tokio::test(flavor = "multi_thread")]
-// pub async fn test_get_all_holons() {
+    let descriptors: Vec<HolonDescriptor> = create_dummy_data(()).unwrap();
 
-//   let (conductor, _agent, cell1): (SweetConductor, AgentPubKey, SweetCell) =
-//     setup_conductor().await;
+    let record: Record = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "create_holon_descriptor",
+            descriptors[0].clone(),
+        )
+        .await;
 
-//   let descriptors: Vec<HolonDescriptor> = conductor
-//     .call(&cell.zome("hc_zome_coordination_holons"), "get_all_holon_types")
-//     .await;
+    let entry = get_descriptor_from_record(record).unwrap();
+    // println!("{:#?}", entry);
+    assert_eq!(descriptors[0], entry);
+}
 
-//   println!(descriptors);
+#[tokio::test(flavor = "multi_thread")]
+pub async fn test_get_holon_descriptor() {
+    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+        setup_conductor().await;
 
-//   let action_hash1: ActionHash = conductor
-//     .call(&cell.zome("hc_zome_coordination_holons"), "create__hc_entry", descriptors[0])
-//     .await;
+    let descriptors: Vec<HolonDescriptor> = create_dummy_data(()).unwrap();
 
-//   let holon1: HolonDescriptor = conductor
-//     .call(
-//       &cell.zome("map_proto1"),
-//       "get_entry_by_actionhash",
-//       action_hash1,
-//     )
-//     .await;
+    // println!("{:#?}", descriptors);
 
-//   let action_hash2: ActionHash = conductor
-//     .call(&cell.zome("hc_zome_coordination_holons"), "create_hc_entry", descriptors[1])
-//     .await;
+    let created_record: Record = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "create_holon_descriptor",
+            descriptors[0].clone(),
+        )
+        .await;
 
-//   let holon2: HolonDescriptor = conductor
-//   .call(
-//     &cell.zome("map_proto1"),
-//     "get_entry_by_actionhash",
-//     action_hash2,
-//   )
-//   .await;
+    let action_hash: ActionHash = created_record.action_address().clone();
 
-//   let action_hash3: ActionHash = conductor
-//   .call(&cell.zome("hc_zome_coordination_holons"), "create_hc_entry", descriptors[2])
-//   .await;
+    let fetched_record: Option<Record> = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "get_holon_descriptor",
+            action_hash,
+        )
+        .await;
+    // println!("{:#?}", fetched_record);
 
-//   let holon3: HolonDescriptor = conductor
-//     .call(
-//       &cell.zome("map_proto1"),
-//       "get_entry_by_actionhash",
-//       action_hash3,
-//     )
-//     .await;
+    let entry = get_descriptor_from_record(fetched_record.unwrap()).unwrap();
+    println!("{:#?}", entry);
 
-//   let holons: Vec<HolonDescriptor> = vec![holon1, holon2, holon3];
+    assert_eq!(descriptors[0], entry);
+}
 
-//   println!(holons);
+#[tokio::test(flavor = "multi_thread")]
+pub async fn test_get_all_holon_types() {
+    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+        setup_conductor().await;
 
-//   assert_eq!(holons, descriptors);
+    let mock_descriptors: Vec<HolonDescriptor> = create_dummy_data(()).unwrap();
 
-// }
+    let mut action_hashes = Vec::new();
+
+    for descriptor in mock_descriptors.clone() {
+        let record: Record = conductor
+            .call(
+                &cell.zome("descriptors"),
+                "create_holon_descriptor",
+                descriptor,
+            )
+            .await;
+
+        let action_hash = record.action_address().clone();
+        action_hashes.push(action_hash);
+    }
+
+    let mut fetched_entries = Vec::new();
+
+    for hash in action_hashes {
+        let fetched_record: Option<Record> = conductor
+            .call(&cell.zome("descriptors"), "get_holon_descriptor", hash)
+            .await;
+
+        let entry = get_descriptor_from_record(fetched_record.unwrap()).unwrap();
+
+        fetched_entries.push(entry);
+    }
+
+    assert_eq!(mock_descriptors, fetched_entries);
+}
