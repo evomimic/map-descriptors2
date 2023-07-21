@@ -1,3 +1,6 @@
+#![allow(unused_imports)]
+#![allow(unused_variables)]
+
 use std::collections::BTreeMap;
 
 use shared_types_descriptor::error::DescriptorsError;
@@ -48,12 +51,12 @@ pub fn new_holon_descriptor(
     Ok(descriptor)
 }
 
-fn new_property_descriptor(
+pub fn new_property_descriptor(
     type_name: String,
     description: String,
     base_type: BaseType,
     is_dependent: bool,
-    details: PropertyDescriptorDetails,
+    // details: PropertyDescriptorDetails,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     // Guard that base_type in header matches details
     let header = new_type_header(type_name, base_type, description, is_dependent)?;
@@ -65,15 +68,15 @@ pub fn new_composite_descriptor(
     description: String,
     is_dependent: bool,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-    let details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(
-        PropertyDescriptorMap::new(Default::default()),
-    ));
+    // let details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(
+    //     PropertyDescriptorMap::new(Default::default()),
+    // ));
     let desc = new_property_descriptor(
         type_name,
         description,
         BaseType::Composite,
         is_dependent,
-        details,
+        // details,
     )?;
     Ok(desc)
 }
@@ -85,13 +88,13 @@ pub fn new_string_descriptor(
     min_length: u32,
     max_length: u32,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-    let details = PropertyDescriptorDetails::String(StringDescriptor::new(min_length, max_length));
+    // let details = PropertyDescriptorDetails::String(StringDescriptor::new(min_length, max_length));
     let desc = new_property_descriptor(
         type_name,
         description,
         BaseType::String,
         is_dependent,
-        details,
+        // details,
     )?;
     Ok(desc)
 }
@@ -104,14 +107,14 @@ pub fn new_integer_descriptor(
     min_value: i64,
     max_value: i64,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-    let details =
-        PropertyDescriptorDetails::Integer(IntegerDescriptor::new(format, min_value, max_value));
+    // let details =
+    //     PropertyDescriptorDetails::Integer(IntegerDescriptor::new(format, min_value, max_value));
     let desc = new_property_descriptor(
         type_name,
         description,
         BaseType::Integer,
         is_dependent,
-        details,
+        // details,
     )?;
     Ok(desc)
 }
@@ -121,13 +124,13 @@ pub fn new_boolean_descriptor(
     is_dependent: bool,
     is_fuzzy: bool,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-    let details = PropertyDescriptorDetails::Boolean(BooleanDescriptor::new(is_fuzzy));
+    // let details = PropertyDescriptorDetails::Boolean(BooleanDescriptor::new(is_fuzzy));
     let desc = new_property_descriptor(
         type_name,
         description,
         BaseType::Boolean,
         is_dependent,
-        details,
+        // details,
     )?;
     Ok(desc)
 }
