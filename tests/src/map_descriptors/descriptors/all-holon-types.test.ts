@@ -30,19 +30,30 @@ test('create a HolonDescriptor and get all holon types', async () => {
       payload: null
     });
     assert.equal(collectionOutput.length, 0);
+    console.log("Result:")
+    console.log(collectionOutput)
 
     // Alice creates a HolonDescriptor
+    console.log("Alice creates a new holon descriptor")
     const createdRecord: Record = await createHolonDescriptor(alice.cells[0]);
     assert.ok(createdRecord);
     
     await pause(1200);
     
     // Bob gets all holon types again
+    console.log("Result:")
+    console.log(collectionOutput)
+
+
+    // Bob gets all holon types again
+    console.log("Bobby gets all holon types again")
     collectionOutput = await bob.cells[0].callZome({
       zome_name: "descriptors",
       fn_name: "get_all_holon_types",
       payload: null
     });
+    console.log("Result:")
+    console.log(collectionOutput)
     assert.equal(collectionOutput.length, 1);
     assert.deepEqual(createdRecord, collectionOutput[0]);    
   });
