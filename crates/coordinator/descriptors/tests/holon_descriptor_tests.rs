@@ -27,49 +27,92 @@ use shared_types_descriptor::type_header::BaseType;
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_holon_descriptor_capabilities() {
+    // Setup
+
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
         conductor::setup_conductor().await;
 
-    // The heavy lifting for this test is in the test data set creation
-    // Richer descriptors can be built in the create_dummy_data fn to test a
-    // broader range of data structures
-
-    println!("******************* STARTING HOLON DESCRIPTOR TESTS *******************************");
-
-    /* TODO: Fix this so it correctly handles an empty result from get_all_holon_types
-    let descriptors: Record = conductor
-        .call(
-            &cell.zome("descriptors"),
-            "get_all_holon_types",
-            (),
-        )
-        .await;
-    // TODO Add assertion for the (expected) empty result
-    */
-
-
+    // The heavy lifting for this test is in the test data set creation. Rich descriptors can be
+    // built in the create_dummy_data fn to test a broad range of data structures
 
     let descriptors: Vec<HolonDescriptor> = create_dummy_data(()).unwrap();
+    let h_count = descriptors.len();
 
+    println!("******* STARTING TESTS WITH {h_count} HOLON DESCRIPTORS ***************************");
+
+    /*
+    // TODO: Fix this so it correctly handles an empty result from get_all_holon_types
+    println!("Performing get_all_holon_types to ensure initial DB state is empty");
+    let result = conductor
+            .call_fallible(
+                &cell.zome("descriptors"),
+                "get_all_holon_types",
+                (),
+            )
+            .await;
+        let created_record: Record = match result {
+            Ok(record)=>record,
+            Err(error)=>panic!("Problem executing Conductor call: {:?}", error),
+        };
+
+
+    // TODO Add assertion for the (expected) empty result
+*/
+
+    // Iterate through the vector of generated holon descriptors, creating each descriptor,
+    // then get the created descriptor and comparing it to the generated descriptor.
     for descriptor in descriptors {
         let name = descriptor.header.type_name.clone();
         let p_count = descriptor.properties.properties.len();
+        println!("{:#?}", descriptor);
         println!("Creating {name} with {p_count} properties");
-        let record: Record = conductor
-            .call(
+
+        let result = conductor
+            .call_fallible(
                 &cell.zome("descriptors"),
                 "create_holon_descriptor",
                 descriptor.clone(),
             )
             .await;
+        let created_record: Record = match result {
+            Ok(record)=>record,
+            Err(error)=>panic!("Problem executing Conductor call: {:?}", error),
+        };
 
-        let result = get_holon_descriptor_from_record(record).unwrap();
-        assert_eq!(descriptor, result);
-        println!("... Success!");
+        let created_descriptor = get_holon_descriptor_from_record(created_record.clone()).unwrap();
+        assert_eq!(descriptor, created_descriptor);
+
+        println!("Created descriptor matches generated holon descriptor, fetching created descriptor");
+
+        let action_hash: ActionHash = created_record.action_address().clone();
+
+        let fetched_record: Option<Record> = conductor
+            .call(
+                &cell.zome("descriptors"),
+                "get_holon_descriptor",
+                action_hash,
+            )
+            .await;
+
+        let fetched_entry = get_holon_descriptor_from_record(fetched_record.unwrap()).unwrap();
+        assert_eq!(descriptor, fetched_entry);
+        println!("...Success! Fetched descriptor matches generated descriptor.");
     }
+/* TODO: figure out why zome call output can't be deserialized
+    println!("All Holon Descriptors Created... to a get_all_holon_types and compare result with test data...");
+    let result = conductor
+        .call_fallible(
+            &cell.zome("descriptors"),
+            "get_all_holon_types",
+            (),
+        )
+        .await;
+    let created_record: Record = match result {
+        Ok(record)=>record,
+        Err(error)=>panic!("Problem executing Conductor call: {:?}", error),
+    };
 
-
-
+*/
 }
 
 
