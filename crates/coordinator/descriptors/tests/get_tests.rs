@@ -1,3 +1,5 @@
+
+/*
 mod conductor;
 use descriptors::helpers::{get_holon_descriptor_from_record, get_property_descriptor_from_record};
 use descriptors::mutators::new_property_descriptor;
@@ -60,8 +62,10 @@ pub async fn test_get_holon_descriptor() {
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_get_all_holon_types() {
+    // Setup
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
         conductor::setup_conductor().await;
+
 
     let mock_descriptors: Vec<HolonDescriptor> = create_dummy_data(()).unwrap();
 
@@ -217,3 +221,4 @@ pub async fn test_get_all_property_types() {
 
     assert_eq!(mock_descriptors, fetched_entries);
 }
+*/

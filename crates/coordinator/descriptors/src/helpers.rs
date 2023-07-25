@@ -1,4 +1,5 @@
 use hdk::prelude::*;
+use std::vec;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 
@@ -24,6 +25,21 @@ pub fn get_holon_descriptor_from_record(record: Record) -> ExternResult<HolonDes
         _ => Err(wasm_error!("Record {:?} does not have an entry", record)),
     }
 }
+/* TODO: Need to get this function working to handle result of get_all_holon_types action
+pub fn get_holon_descriptor_vector_from_record(record: Record) -> ExternResult<Vec<HolonDescriptor>> {
+    match record.entry() {
+        record::RecordEntry::Present(entry) => {
+            Vec<HolonDescriptor>::try_from(entry.clone()).or(Err(wasm_error!(
+                "Couldn't convert Record entry {:?} into data type {}",
+                entry,
+                std::any::type_name::<HolonDescriptor>()
+            )))
+        }
+        _ => Err(wasm_error!("Record {:?} does not have an entry", record)),
+    }
+}
+*/
+
 
 pub fn get_property_descriptor_from_record(record: Record) -> ExternResult<PropertyDescriptor> {
     match record.entry() {

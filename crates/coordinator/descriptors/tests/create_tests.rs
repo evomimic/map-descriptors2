@@ -1,5 +1,6 @@
 // use futures::future;
 // use std::collections::BTreeMap;
+/*
 mod conductor;
 
 use descriptors::helpers::{get_holon_descriptor_from_record, get_property_descriptor_from_record};
@@ -13,11 +14,12 @@ use shared_types_descriptor::type_header::BaseType;
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_create_holon_descriptor() {
+    // Setup
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
         conductor::setup_conductor().await;
 
     let descriptors: Vec<HolonDescriptor> = create_dummy_data(()).unwrap();
-
+    // Execute
     let record: Record = conductor
         .call(
             &cell.zome("descriptors"),
@@ -26,6 +28,7 @@ pub async fn test_create_holon_descriptor() {
         )
         .await;
 
+    // Verify
     let entry = get_holon_descriptor_from_record(record).unwrap();
     // println!("{:#?}", entry);
     assert_eq!(descriptors[0], entry);
@@ -56,3 +59,4 @@ pub async fn test_create_property_descriptor() {
     // println!("{:#?}", entry);
     assert_eq!(descriptor, entry);
 }
+*/

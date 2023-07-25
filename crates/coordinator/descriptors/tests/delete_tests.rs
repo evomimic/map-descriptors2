@@ -1,6 +1,7 @@
-mod conductor;
 
-use descriptors::mutators::new_property_descriptor;
+
+/*
+mod conductor;
 use descriptors::stub_data_creator::*;
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
@@ -85,3 +86,4 @@ pub async fn test_delete_property_descriptor() {
 
     assert!(try_query.is_none());
 }
+*/

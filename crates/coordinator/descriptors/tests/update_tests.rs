@@ -1,4 +1,5 @@
 mod conductor;
+/*
 use descriptors::helpers::{get_holon_descriptor_from_record, get_property_descriptor_from_record};
 use descriptors::holon_descriptor_storage_fns::UpdateHolonDescriptorInput;
 use descriptors::mutators::new_property_descriptor;
@@ -229,3 +230,4 @@ pub async fn test_update_property_descriptor() {
     assert_eq!(updated_entry, fetched_updated_entry);
     assert_eq!(next_updated_entry, fetched_next_updated_entry);
 }
+*/

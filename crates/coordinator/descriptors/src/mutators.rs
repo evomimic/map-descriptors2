@@ -12,9 +12,11 @@ use shared_types_descriptor::property_descriptor::{
 use shared_types_descriptor::type_header::{BaseType, SemanticVersion, TypeHeader};
 
 /// new_xxx_descriptor () functions stage new (empty) instances of Descriptors, but do NOT
-/// commit them to persistent storage
-
-pub fn new_type_header(
+/// commit them to persistent storage.
+///
+// new_type_header is private helper function used by the other public create functions in this
+// module. It is not intended to be called externally.
+fn new_type_header(
     type_name: String,
     base_type: BaseType,
     description: String,
@@ -38,7 +40,8 @@ fn example_header_check(header: TypeHeader) -> Result<TypeHeader, DescriptorsErr
     }
     Ok(header)
 }
-
+/// Creates an empty holon descriptor.
+///
 pub fn new_holon_descriptor(
     type_name: String,
     description: String,
@@ -51,32 +54,35 @@ pub fn new_holon_descriptor(
     Ok(descriptor)
 }
 
-pub fn new_property_descriptor(
+// new_property_descriptor is private helper function used by the other type-specific public
+// create functions in this module. It is not intended to be called externally.
+fn new_property_descriptor(
     type_name: String,
     description: String,
     base_type: BaseType,
     is_dependent: bool,
-    // details: PropertyDescriptorDetails,
+    details: PropertyDescriptorDetails,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     // Guard that base_type in header matches details
-    let header = new_type_header(type_name, base_type, description, is_dependent)?;
+    let header = new_type_header(type_name.to_string(), base_type, description.to_string(), is_dependent)?;
     Ok(PropertyDescriptor::new(header))
 }
-
+///
+/// Creates a new (empty) Composite Property Descriptor
 pub fn new_composite_descriptor(
     type_name: String,
     description: String,
     is_dependent: bool,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-    // let details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(
-    //     PropertyDescriptorMap::new(Default::default()),
-    // ));
+    let details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(
+         PropertyDescriptorMap::new(Default::default()),
+    ));
     let desc = new_property_descriptor(
         type_name,
         description,
         BaseType::Composite,
         is_dependent,
-        // details,
+        details,
     )?;
     Ok(desc)
 }
@@ -88,13 +94,13 @@ pub fn new_string_descriptor(
     min_length: u32,
     max_length: u32,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-    // let details = PropertyDescriptorDetails::String(StringDescriptor::new(min_length, max_length));
+    let details = PropertyDescriptorDetails::String(StringDescriptor::new(min_length, max_length));
     let desc = new_property_descriptor(
         type_name,
         description,
         BaseType::String,
         is_dependent,
-        // details,
+        details,
     )?;
     Ok(desc)
 }
@@ -107,14 +113,14 @@ pub fn new_integer_descriptor(
     min_value: i64,
     max_value: i64,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-    // let details =
-    //     PropertyDescriptorDetails::Integer(IntegerDescriptor::new(format, min_value, max_value));
+    let details =
+         PropertyDescriptorDetails::Integer(IntegerDescriptor::new(format, min_value, max_value));
     let desc = new_property_descriptor(
         type_name,
         description,
         BaseType::Integer,
         is_dependent,
-        // details,
+        details,
     )?;
     Ok(desc)
 }
@@ -124,13 +130,13 @@ pub fn new_boolean_descriptor(
     is_dependent: bool,
     is_fuzzy: bool,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-    // let details = PropertyDescriptorDetails::Boolean(BooleanDescriptor::new(is_fuzzy));
+    let details = PropertyDescriptorDetails::Boolean(BooleanDescriptor::new(is_fuzzy));
     let desc = new_property_descriptor(
         type_name,
         description,
         BaseType::Boolean,
         is_dependent,
-        // details,
+        details,
     )?;
     Ok(desc)
 }
