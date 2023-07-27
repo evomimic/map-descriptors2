@@ -54,7 +54,7 @@ pub fn new_holon_descriptor(
     Ok(descriptor)
 }
 
-// new_property_descriptor is private helper function used by the other type-specific public
+// new_property_descriptor is a private helper function used by the other type-specific public
 // create functions in this module. It is not intended to be called externally.
 fn new_property_descriptor(
     type_name: String,
@@ -66,6 +66,7 @@ fn new_property_descriptor(
     // Guard that base_type in header matches details
     let header = new_type_header(type_name.to_string(), base_type, description.to_string(), is_dependent)?;
     Ok(PropertyDescriptor::new(header))
+    //Ok(PropertyDescriptor::new(header,details))
 }
 ///
 /// Creates a new (empty) Composite Property Descriptor

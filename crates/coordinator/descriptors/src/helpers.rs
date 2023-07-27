@@ -1,5 +1,4 @@
 use hdk::prelude::*;
-use std::vec;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 
@@ -12,8 +11,21 @@ use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 //         )))
 //         .cloned()
 // }
-
+/* ORIG
 pub fn get_holon_descriptor_from_record(record: Record) -> ExternResult<HolonDescriptor> {
+    match record.entry() {
+        record::RecordEntry::Present(entry) => {
+            HolonDescriptor::try_from(entry.clone()).or(Err(wasm_error!(
+                "Couldn't convert Record entry {:?} into data type {}",
+                entry,
+                std::any::type_name::<HolonDescriptor>()
+            )))
+        }
+        _ => Err(wasm_error!("Record {:?} does not have an entry", record)),
+    }
+}
+*/
+pub fn get_holon_descriptor_from_record(record: Record) -> Result<HolonDescriptor,WasmError> {
     match record.entry() {
         record::RecordEntry::Present(entry) => {
             HolonDescriptor::try_from(entry.clone()).or(Err(wasm_error!(
