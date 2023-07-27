@@ -5,7 +5,7 @@ use hdi::prelude::*;
 #[derive(new, Clone, PartialEq, Eq)]
 pub struct PropertyDescriptor {
     pub header: TypeHeader,
-    // pub details: PropertyDescriptorDetails,
+    pub details: PropertyDescriptorDetails,
 }
 
 use std::collections::BTreeMap;

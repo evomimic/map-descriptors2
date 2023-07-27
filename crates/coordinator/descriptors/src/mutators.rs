@@ -65,8 +65,8 @@ fn new_property_descriptor(
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     // Guard that base_type in header matches details
     let header = new_type_header(type_name.to_string(), base_type, description.to_string(), is_dependent)?;
-    Ok(PropertyDescriptor::new(header))
-    //Ok(PropertyDescriptor::new(header,details))
+    //Ok(PropertyDescriptor::new(header))
+    Ok(PropertyDescriptor::new(header,details))
 }
 ///
 /// Creates a new (empty) Composite Property Descriptor
