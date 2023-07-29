@@ -1,4 +1,4 @@
-mod conductor;
+mod shared_test;
 /*
 use descriptors::helpers::{get_holon_descriptor_from_record, get_property_descriptor_from_record};
 use descriptors::holon_descriptor_storage_fns::UpdateHolonDescriptorInput;
@@ -13,13 +13,13 @@ use shared_types_descriptor::type_header::BaseType;
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_update_holon_descriptor() {
-    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
-        conductor::setup_conductor().await;
+    let (shared_test, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+        shared_test::setup_conductor().await;
 
     let descriptors: Vec<HolonDescriptor> = create_dummy_data(()).unwrap();
     // println!("{:#?}", descriptors);
 
-    let created_record: Record = conductor
+    let created_record: Record = shared_test
         .call(
             &cell.zome("descriptors"),
             "create_holon_descriptor",
@@ -39,7 +39,7 @@ pub async fn test_update_holon_descriptor() {
         updated_holon_descriptor: first_update_descriptor.clone(),
     };
 
-    let first_updated_record: Record = conductor
+    let first_updated_record: Record = shared_test
         .call(
             &cell.zome("descriptors"),
             "update_holon_descriptor",
@@ -59,7 +59,7 @@ pub async fn test_update_holon_descriptor() {
         updated_holon_descriptor: second_update_descriptor.clone(),
     };
 
-    let second_updated_record: Record = conductor
+    let second_updated_record: Record = shared_test
         .call(
             &cell.zome("descriptors"),
             "update_holon_descriptor",
@@ -77,7 +77,7 @@ pub async fn test_update_holon_descriptor() {
 
     // TESTING GETS
 
-    let fetched_first_updated_record: Option<Record> = conductor
+    let fetched_first_updated_record: Option<Record> = shared_test
         .call(
             &cell.zome("descriptors"),
             "get_holon_descriptor",
@@ -88,7 +88,7 @@ pub async fn test_update_holon_descriptor() {
     let fetched_updated_entry =
         get_holon_descriptor_from_record(fetched_first_updated_record.clone().unwrap()).unwrap();
 
-    let fetched_second_updated_record: Option<Record> = conductor
+    let fetched_second_updated_record: Option<Record> = shared_test
         .call(
             &cell.zome("descriptors"),
             "get_holon_descriptor",
@@ -112,8 +112,8 @@ pub async fn test_update_holon_descriptor() {
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_update_property_descriptor() {
-    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
-        conductor::setup_conductor().await;
+    let (shared_test, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+        shared_test::setup_conductor().await;
 
     let descriptor1: PropertyDescriptor = new_property_descriptor(
         "ex_prop_desc".to_string(),
@@ -139,7 +139,7 @@ pub async fn test_update_property_descriptor() {
     )
     .unwrap();
 
-    let created_record: Record = conductor
+    let created_record: Record = shared_test
         .call(
             &cell.zome("descriptors"),
             "create_property_descriptor",
@@ -159,7 +159,7 @@ pub async fn test_update_property_descriptor() {
         updated_property_descriptor: first_update_descriptor.clone(),
     };
 
-    let first_updated_record: Record = conductor
+    let first_updated_record: Record = shared_test
         .call(
             &cell.zome("descriptors"),
             "update_property_descriptor",
@@ -179,7 +179,7 @@ pub async fn test_update_property_descriptor() {
         updated_property_descriptor: second_update_descriptor.clone(),
     };
 
-    let second_updated_record: Record = conductor
+    let second_updated_record: Record = shared_test
         .call(
             &cell.zome("descriptors"),
             "update_property_descriptor",
@@ -197,7 +197,7 @@ pub async fn test_update_property_descriptor() {
 
     // TESTING GETS
 
-    let fetched_first_updated_record: Option<Record> = conductor
+    let fetched_first_updated_record: Option<Record> = shared_test
         .call(
             &cell.zome("descriptors"),
             "get_property_descriptor",
@@ -208,7 +208,7 @@ pub async fn test_update_property_descriptor() {
     let fetched_updated_entry =
         get_property_descriptor_from_record(fetched_first_updated_record.clone().unwrap()).unwrap();
 
-    let fetched_second_updated_record: Option<Record> = conductor
+    let fetched_second_updated_record: Option<Record> = shared_test
         .call(
             &cell.zome("descriptors"),
             "get_property_descriptor",

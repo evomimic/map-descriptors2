@@ -1,5 +1,5 @@
 #![warn(warnings)]
-mod conductor;
+mod shared_test;
 /*
 // use futures::future;
 // use std::collections::BTreeMap;
@@ -13,10 +13,10 @@ const DNA_FILEPATH: &str = "../../../workdir/map_descriptors.dna";
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_get_all_holontypes() {
-    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
-        conductor::setup_conductor().await;
+    let (shared_test, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+        shared_test::setup_conductor().await;
 
-    let testing_descriptors: Vec<HolonDescriptor> = conductor
+    let testing_descriptors: Vec<HolonDescriptor> = shared_test
         .call(&cell.zome("descriptors"), "get_all_holontypes", ())
         .await;
 

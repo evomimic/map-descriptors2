@@ -74,10 +74,11 @@ pub fn new_composite_descriptor(
     type_name: String,
     description: String,
     is_dependent: bool,
+    properties: PropertyDescriptorMap,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-    let details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(
-         PropertyDescriptorMap::new(Default::default()),
-    ));
+
+    let details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(properties));
+
     let desc = new_property_descriptor(
         type_name,
         description,

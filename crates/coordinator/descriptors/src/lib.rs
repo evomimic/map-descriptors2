@@ -4,7 +4,7 @@ pub mod holon_descriptor_storage_fns;
 pub mod mutators;
 pub mod property_descriptor_queries;
 pub mod property_descriptor_storage_fns;
-mod property_map_builder;
+pub mod property_map_builder;
 pub mod stub_data_creator;
 
 use descriptors_integrity::*;

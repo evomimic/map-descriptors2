@@ -1,6 +1,6 @@
 
 /*
-mod conductor;
+mod shared_test;
 use descriptors::helpers::{get_holon_descriptor_from_record, get_property_descriptor_from_record};
 use descriptors::mutators::new_property_descriptor;
 use descriptors::stub_data_creator::*;
@@ -12,10 +12,10 @@ use shared_types_descriptor::type_header::BaseType;
 
 // #[tokio::test(flavor = "multi_thread")]
 // pub async fn test_get_all_holontypes() {
-//     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+//     let (shared_test, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
 //         setup_conductor().await;
 
-//     let testing_descriptors: Vec<HolonDescriptor> = conductor
+//     let testing_descriptors: Vec<HolonDescriptor> = shared_test
 //         .call(&cell.zome("descriptors"), "get_all_holontypes", ())
 //         .await;
 
@@ -24,14 +24,14 @@ use shared_types_descriptor::type_header::BaseType;
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_get_holon_descriptor() {
-    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
-        conductor::setup_conductor().await;
+    let (shared_test, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+        shared_test::setup_conductor().await;
 
     let descriptors: Vec<HolonDescriptor> = create_dummy_data(()).unwrap();
 
     // println!("{:#?}", descriptors);
 
-    let created_record: Record = conductor
+    let created_record: Record = shared_test
         .call(
             &cell.zome("descriptors"),
             "create_holon_descriptor",
@@ -45,7 +45,7 @@ pub async fn test_get_holon_descriptor() {
 
     let action_hash: ActionHash = created_record.action_address().clone();
 
-    let fetched_record: Option<Record> = conductor
+    let fetched_record: Option<Record> = shared_test
         .call(
             &cell.zome("descriptors"),
             "get_holon_descriptor",
@@ -63,8 +63,8 @@ pub async fn test_get_holon_descriptor() {
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_get_all_holon_types() {
     // Setup
-    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
-        conductor::setup_conductor().await;
+    let (shared_test, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+        shared_test::setup_conductor().await;
 
 
     let mock_descriptors: Vec<HolonDescriptor> = create_dummy_data(()).unwrap();
@@ -72,7 +72,7 @@ pub async fn test_get_all_holon_types() {
     let mut action_hashes = Vec::new();
 
     for descriptor in mock_descriptors.clone() {
-        let record: Record = conductor
+        let record: Record = shared_test
             .call(
                 &cell.zome("descriptors"),
                 "create_holon_descriptor",
@@ -86,7 +86,7 @@ pub async fn test_get_all_holon_types() {
 
     let mut fetched_entries = Vec::new();
 
-    let fetched_holon_types: Vec<Record> = conductor
+    let fetched_holon_types: Vec<Record> = shared_test
         .call(&cell.zome("descriptors"), "get_all_holon_types", ())
         .await; // may need to sort
 
@@ -103,8 +103,8 @@ pub async fn test_get_all_holon_types() {
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_get_property_descriptor() {
-    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
-        conductor::setup_conductor().await;
+    let (shared_test, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+        shared_test::setup_conductor().await;
 
     let descriptor: PropertyDescriptor = new_property_descriptor(
         "ex_prop_desc".to_string(),
@@ -114,7 +114,7 @@ pub async fn test_get_property_descriptor() {
     )
     .unwrap();
 
-    let record: Record = conductor
+    let record: Record = shared_test
         .call(
             &cell.zome("descriptors"),
             "create_property_descriptor",
@@ -128,7 +128,7 @@ pub async fn test_get_property_descriptor() {
 
     let action_hash: ActionHash = record.action_address().clone();
 
-    let fetched_record: Option<Record> = conductor
+    let fetched_record: Option<Record> = shared_test
         .call(
             &cell.zome("descriptors"),
             "get_holon_descriptor",
@@ -145,8 +145,8 @@ pub async fn test_get_property_descriptor() {
 
 #[tokio::test(flavor = "multi_thread")]
 pub async fn test_get_all_property_types() {
-    let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
-        conductor::setup_conductor().await;
+    let (shared_test, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
+        shared_test::setup_conductor().await;
 
     let mut mock_descriptors: Vec<PropertyDescriptor> = Vec::new();
 
@@ -189,7 +189,7 @@ pub async fn test_get_all_property_types() {
     let mut action_hashes = Vec::new();
 
     for descriptor in mock_descriptors.clone() {
-        let record: Record = conductor
+        let record: Record = shared_test
             .call(
                 &cell.zome("descriptors"),
                 "create_property_descriptor",
@@ -203,7 +203,7 @@ pub async fn test_get_all_property_types() {
 
     let mut fetched_entries = Vec::new();
 
-    let fetched_property_descriptors: Vec<Record> = conductor
+    let fetched_property_descriptors: Vec<Record> = shared_test
         .call(
             &cell.zome("descriptors"),
             "get_all_property_descriptors",

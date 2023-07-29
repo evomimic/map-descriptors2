@@ -2,12 +2,13 @@
 
 // use futures::future;
 // use std::collections::BTreeMap;
-mod conductor;
+mod shared_test;
 
 //use std::arch::x86_64::__cpuid_count;
 use descriptors::helpers::{get_holon_descriptor_from_record};
+use shared_test::data_fixtures::{create_dummy_data,derive_type_name,insert_property_descriptor};
 
-use descriptors::stub_data_creator::*;
+//use descriptors::stub_data_creator::*;
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
@@ -31,7 +32,7 @@ pub async fn test_holon_descriptor_capabilities() {
     // Setup
 
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
-        conductor::setup_conductor().await;
+        shared_test::setup_conductor().await;
 
     // The heavy lifting for this test is in the test data set creation. Rich descriptors can be
     // built in the create_dummy_data fn to test a broad range of data structures
@@ -58,6 +59,8 @@ pub async fn test_holon_descriptor_capabilities() {
     for descriptor in descriptors.clone() {
         let name = descriptor.header.type_name.clone();
         let p_count = descriptor.properties.properties.len();
+        println!();
+        println!("Starting create/get test for the following HolonDescriptor");
         println!("{:#?}", descriptor);
         println!("Creating {name} with {p_count} properties");
 

@@ -18,7 +18,7 @@ use crate::property_map_builder::insert_property_descriptor;
 // use hdk::prelude::*;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::{IntegerFormat};
+use shared_types_descriptor::property_descriptor::{IntegerFormat, PropertyDescriptorDetails};
 use shared_types_descriptor::type_header::BaseType;
 
 
@@ -82,7 +82,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut descriptor.properties,
         "a_boolean_property".to_string(),
-        bool_descriptor,
+        &bool_descriptor,
     );
     test_data_set.push(descriptor);
 
@@ -103,7 +103,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut descriptor.properties,
         "a_boolean_property".to_string(),
-        bool_descriptor,
+        &bool_descriptor,
     );
 
     // String
@@ -118,7 +118,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut descriptor.properties,
         "a_string_property".to_string(),
-        string_descriptor,
+        &string_descriptor,
     );
     // Integer I8
     let int_descriptor = new_integer_descriptor(
@@ -133,7 +133,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut descriptor.properties,
         "an_I8_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
     // Integer I16
     let int_descriptor = new_integer_descriptor(
@@ -148,7 +148,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut descriptor.properties,
         "an_I16_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
     // Integer I32
@@ -164,7 +164,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut descriptor.properties,
         "an_I32_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
     // Integer I64
@@ -181,7 +181,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
         &mut descriptor.properties,
         "an_I64\
         _property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
     
     // Integer U8
@@ -197,7 +197,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut descriptor.properties,
         "a_U8_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
     // Integer U16
     let int_descriptor = new_integer_descriptor(
@@ -212,7 +212,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut descriptor.properties,
         "a_U16_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
     // Integer U32
@@ -228,7 +228,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut descriptor.properties,
         "a_U32_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
     // Integer U64
@@ -244,19 +244,19 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut descriptor.properties,
         "a_U64_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
     test_data_set.push(descriptor);
     
-    
+   /*
     // ----------------  HOLON WITH COMPOSITE PROPERTY -------------------------------
     let mut descriptor: HolonDescriptor = new_holon_descriptor(
         derive_type_name("",BaseType::Holon,"_with_composite_properties"),
         "A holon type that has a single property of a composite property type.".to_string(),
         false,
     )?;
-/*
+
     // Composite Property Descriptor
     let comp_descriptor = new_composite_descriptor(
         derive_type_name("Simple_",BaseType::Composite,"_with_scalar_properties"),
@@ -279,7 +279,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut props,
         "a_boolean_property".to_string(),
-        bool_descriptor,
+        &bool_descriptor,
     );
 
     // String
@@ -294,7 +294,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut props,
         "a_string_property".to_string(),
-        string_descriptor,
+        &string_descriptor,
     );
     // Integer I8
     let int_descriptor = new_integer_descriptor(
@@ -309,7 +309,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut props,
         "an_I8_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
     // Integer I16
     let int_descriptor = new_integer_descriptor(
@@ -324,7 +324,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut props,
         "an_I16_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
     // Integer I32
@@ -340,7 +340,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut props,
         "an_I32_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
     // Integer I64
@@ -357,7 +357,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
         &mut props,
         "an_I64\
         _property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
     // Integer U8
@@ -373,7 +373,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut props,
         "a_U8_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
     // Integer U16
     let int_descriptor = new_integer_descriptor(
@@ -388,7 +388,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut props,
         "a_U16_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
     // Integer U32
@@ -404,7 +404,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut props,
         "a_U32_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
     // Integer U64
@@ -420,7 +420,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
     insert_property_descriptor(
         &mut props,
         "a_U64_property".to_string(),
-        int_descriptor,
+        &int_descriptor,
     );
 
 
