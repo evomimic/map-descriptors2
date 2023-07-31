@@ -6,9 +6,10 @@ opt-level = "z"
 
 [workspace]
 resolver = "2"
-members = ["crates/coordinator/descriptors",
+members = [
+    "crates/coordinator/descriptors",
     "crates/integrity/descriptors_integrity",
-    "crates/shared_types/descriptor"
+    "crates/shared_types/descriptor",
 ]
 
 [workspace.dependencies]

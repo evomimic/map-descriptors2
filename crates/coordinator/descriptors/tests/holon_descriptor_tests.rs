@@ -5,7 +5,7 @@
 mod conductor;
 
 //use std::arch::x86_64::__cpuid_count;
-use descriptors::helpers::{get_holon_descriptor_from_record};
+use descriptors::helpers::get_holon_descriptor_from_record;
 
 use descriptors::stub_data_creator::*;
 use hdk::prelude::*;
@@ -41,25 +41,20 @@ pub async fn test_holon_descriptor_capabilities() {
 
     println!("******* STARTING TESTS WITH {h_count} HOLON DESCRIPTORS ***************************");
 
-
     println!("Performing get_all_holon_types to ensure initial DB state is empty");
-    let result : Vec<Record> = conductor
-            .call(
-                &cell.zome("descriptors"),
-                "get_all_holon_types",
-                (),
-            )
-            .await;
-        assert_eq!(0,result.len());
-    println!("Success! Initial DB state has no HolonDescriptors");
+    let result: Vec<Record> = conductor
+        .call(&cell.zome("descriptors"), "get_all_holon_types", ())
+        .await;
+    assert_eq!(0, result.len());
+    println!("Success! Initial DB state has no HolonDescriptors \n");
 
     // Iterate through the vector of generated holon descriptors, creating each descriptor,
     // then get the created descriptor and comparing it to the generated descriptor.
     for descriptor in descriptors.clone() {
         let name = descriptor.header.type_name.clone();
         let p_count = descriptor.properties.properties.len();
+        println!("Creating {name} with {p_count} properties...");
         println!("{:#?}", descriptor);
-        println!("Creating {name} with {p_count} properties");
 
         let created_record: Record = conductor
             .call(
@@ -75,11 +70,12 @@ pub async fn test_holon_descriptor_capabilities() {
         };
         */
 
-
         let created_descriptor = get_holon_descriptor_from_record(created_record.clone()).unwrap();
         assert_eq!(descriptor, created_descriptor);
 
-        println!("Created descriptor matches generated holon descriptor, fetching created descriptor");
+        println!(
+            "Created descriptor matches generated holon descriptor, fetching created descriptor.."
+        );
 
         let action_hash: ActionHash = created_record.action_address().clone();
 
@@ -90,35 +86,28 @@ pub async fn test_holon_descriptor_capabilities() {
                 action_hash,
             )
             .await;
+        // println!("fetched_record: \n {:#?}", fetched_record);
 
         let fetched_descriptor = get_holon_descriptor_from_record(fetched_record.unwrap()).unwrap();
+        println!(
+            "get_holon_descriptor_from_record: \n {:#?}",
+            fetched_descriptor
+        );
         assert_eq!(descriptor, fetched_descriptor);
         println!("...Success! Fetched descriptor matches generated descriptor.");
     }
 
-
     println!("All Holon Descriptors Created... to a get_all_holon_types and compare result with test data...");
     let result: Vec<Record> = conductor
-        .call(
-            &cell.zome("descriptors"),
-            "get_all_holon_types",
-            (),
-        )
+        .call(&cell.zome("descriptors"), "get_all_holon_types", ())
         .await;
     let d_count = result.len();
     println!("Call to get_all_holon_types returned {d_count} Holon Descriptors");
     assert_eq!(d_count, h_count);
     for i in 0..d_count {
-        let fetched_descriptor = get_holon_descriptor_from_record(result.get(i).unwrap().clone()).unwrap();
-        assert_eq!(descriptors[i].clone(),fetched_descriptor);
+        let fetched_descriptor =
+            get_holon_descriptor_from_record(result.get(i).unwrap().clone()).unwrap();
+        assert_eq!(descriptors[i].clone(), fetched_descriptor);
         println!("Fetched descriptor {i} matches generated descriptor {i}");
     }
-
-
-
-
-
-
 }
-
-

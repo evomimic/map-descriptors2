@@ -1,0 +1,15 @@
+/tests/node_modules
+/node_modules/
+/dist/
+/target/
+/.cargo/
+*.happ
+*.webhapp
+*.zip
+*.dna
+.hc*
+.hc
+.running
+Cargo.lock
+flake.lock
+/.idea/

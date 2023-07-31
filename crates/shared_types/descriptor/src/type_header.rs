@@ -32,7 +32,6 @@ impl fmt::Display for BaseType {
 
 #[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
 pub struct SemanticVersion {
     major: u8,
     minor: u8,
@@ -49,6 +48,7 @@ impl Default for SemanticVersion {
 }
 #[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
 pub struct TypeHeader {
     pub type_name: String,
     pub base_type: BaseType,
