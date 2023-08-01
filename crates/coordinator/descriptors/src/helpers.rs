@@ -14,7 +14,7 @@ use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 
 pub fn get_holon_descriptor_from_record(record: Record) -> ExternResult<HolonDescriptor> {
     match record.entry() {
-        RecordEntry::Present(entry) => {
+        record::RecordEntry::Present(entry) => {
             HolonDescriptor::try_from(entry.clone()).or(Err(wasm_error!(
                 "Couldn't convert Record entry {:?} into data type {}",
                 entry,
@@ -38,8 +38,6 @@ pub fn get_holon_descriptor_from_record(record: Record) -> Result<HolonDescripto
     }
 }
 */
-
-
 
 pub fn get_property_descriptor_from_record(record: Record) -> ExternResult<PropertyDescriptor> {
     match record.entry() {
