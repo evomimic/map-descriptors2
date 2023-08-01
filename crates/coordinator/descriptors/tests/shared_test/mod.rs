@@ -2,6 +2,7 @@
 
 pub mod data_fixtures;
 pub mod property_descriptor_data_creators;
+pub mod fixture_defs;
 
 use hdk::prelude::*;
 use holochain::sweettest::{SweetAgents, SweetCell, SweetConductor, SweetDnaFile};
@@ -10,7 +11,7 @@ const DNA_FILEPATH: &str = "../../../workdir/map_descriptors.dna";
 
 /// MOCK CONDUCTOR
 
-pub(crate) async fn setup_conductor() -> (SweetConductor, AgentPubKey, SweetCell) {
+pub async fn setup_conductor() -> (SweetConductor, AgentPubKey, SweetCell) {
     let dna = SweetDnaFile::from_bundle(std::path::Path::new(&DNA_FILEPATH))
         .await
         .unwrap();

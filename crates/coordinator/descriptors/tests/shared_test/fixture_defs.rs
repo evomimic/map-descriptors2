@@ -14,6 +14,7 @@
 
 
 use std::collections::BTreeMap;
+use rstest::*;
 use descriptors::mutators::{new_boolean_descriptor, new_composite_descriptor, new_holon_descriptor};
 
 pub use descriptors::property_map_builder::{insert_property_descriptor};
@@ -53,9 +54,9 @@ pub fn derive_type_name(prefix: &str, base_type: BaseType, suffix: &str)-> Strin
 
 /// This function creates a rich test dataset by creating a vector of HolonDescriptors of various
 /// kinds -- from simple to complex
-/// 
 
-pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError> {
+#[fixture]
+pub fn rs_dummy_data() -> Result<Vec<HolonDescriptor> , DescriptorsError> {
 
     let mut test_data_set: Vec<HolonDescriptor> = Vec::new();
 
@@ -66,6 +67,7 @@ pub fn create_dummy_data(_: ()) -> Result<Vec<HolonDescriptor>, DescriptorsError
         "A simple holon type that has no properties.".to_string(),
         false,
     )?;
+
     test_data_set.push(descriptor);
 
     // ----------------  HOLON WITH SINGLE BOOLEAN PROPERTY -------------------------------
