@@ -1,4 +1,4 @@
-use crate::shared_test::data_fixtures::{derive_type_name};
+use crate::shared_test::fixture_defs::{derive_type_name};
 use descriptors::mutators::{new_boolean_descriptor, new_integer_descriptor, new_string_descriptor};
 use descriptors::property_map_builder::{insert_property_descriptor};
 // use hdk::prelude::*;

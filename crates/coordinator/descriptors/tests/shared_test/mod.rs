@@ -1,6 +1,6 @@
 #![warn(warnings)]
 
-pub mod data_fixtures;
+
 pub mod property_descriptor_data_creators;
 pub mod fixture_defs;
 
