@@ -117,7 +117,7 @@ async fn rstest_holon_descriptor_capabilities(
     }
 
     // TESTING DELETES
-
+    println!("********** TESTING DELETE_HOLON_DESCRIPTOR ************");
     for hash in created_action_hashes {
         let _action_hash_of_delete: ActionHash = conductor
             .call(
@@ -138,4 +138,5 @@ async fn rstest_holon_descriptor_capabilities(
         .call(&cell.zome("descriptors"), "get_all_holon_types", ())
         .await;
     assert!(fetch_all_check_deleted.is_empty());
+    println!("Success!!! All Holon Descriptors Deleted");
 }
