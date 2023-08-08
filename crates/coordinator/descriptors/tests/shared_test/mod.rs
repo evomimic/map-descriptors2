@@ -1,8 +1,7 @@
-#![warn(warnings)]
+#![allow(warnings)]
 
-
-pub mod property_descriptor_data_creators;
 pub mod fixture_defs;
+pub mod property_descriptor_data_creators;
 
 use hdk::prelude::*;
 use holochain::sweettest::{SweetAgents, SweetCell, SweetConductor, SweetDnaFile};
