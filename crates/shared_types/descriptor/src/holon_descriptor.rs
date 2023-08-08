@@ -7,7 +7,7 @@ use hdi::prelude::*;
 #[derive(new, Clone, PartialEq, Eq)]
 pub struct HolonDescriptor {
     pub header: TypeHeader,
-    // pub properties: PropertyDescriptorMap,
+    pub properties: PropertyDescriptorMap,
 }
 
 #[hdk_entry_helper]

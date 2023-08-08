@@ -1,3 +1,8 @@
+#![allow(unused_imports)]
+#![allow(unused_variables)]
+
+use std::collections::BTreeMap;
+
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::{
@@ -7,9 +12,11 @@ use shared_types_descriptor::property_descriptor::{
 use shared_types_descriptor::type_header::{BaseType, SemanticVersion, TypeHeader};
 
 /// new_xxx_descriptor () functions stage new (empty) instances of Descriptors, but do NOT
-/// commit them to persistent storage
-
-pub fn new_type_header(
+/// commit them to persistent storage.
+///
+// new_type_header is private helper function used by the other public create functions in this
+// module. It is not intended to be called externally.
+fn new_type_header(
     type_name: String,
     base_type: BaseType,
     description: String,
@@ -33,7 +40,8 @@ fn example_header_check(header: TypeHeader) -> Result<TypeHeader, DescriptorsErr
     }
     Ok(header)
 }
-
+/// Creates an empty holon descriptor.
+///
 pub fn new_holon_descriptor(
     type_name: String,
     description: String,
@@ -41,11 +49,13 @@ pub fn new_holon_descriptor(
 ) -> Result<HolonDescriptor, DescriptorsError> {
     let header = new_type_header(type_name, BaseType::Holon, description, is_dependent)?;
 
-    let descriptor = HolonDescriptor::new(header);
+    let descriptor = HolonDescriptor::new(header, PropertyDescriptorMap::new(BTreeMap::new()));
 
     Ok(descriptor)
 }
 
+// new_property_descriptor is a private helper function used by the other type-specific public
+// create functions in this module. It is not intended to be called externally.
 fn new_property_descriptor(
     type_name: String,
     description: String,
@@ -54,18 +64,21 @@ fn new_property_descriptor(
     details: PropertyDescriptorDetails,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     // Guard that base_type in header matches details
-    let header = new_type_header(type_name, base_type, description, is_dependent)?;
-    Ok(PropertyDescriptor::new(header, details))
+    let header = new_type_header(type_name.to_string(), base_type, description.to_string(), is_dependent)?;
+    //Ok(PropertyDescriptor::new(header))
+    Ok(PropertyDescriptor::new(header,details))
 }
-
+///
+/// Creates a new (empty) Composite Property Descriptor
 pub fn new_composite_descriptor(
     type_name: String,
     description: String,
     is_dependent: bool,
+    properties: PropertyDescriptorMap,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-    let details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(
-        PropertyDescriptorMap::new(Default::default()),
-    ));
+
+    let details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(properties));
+
     let desc = new_property_descriptor(
         type_name,
         description,
@@ -99,11 +112,11 @@ pub fn new_integer_descriptor(
     description: String,
     is_dependent: bool,
     format: IntegerFormat,
-    min_value: i128,
-    max_value: i128,
+    min_value: i64,
+    max_value: i64,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     let details =
-        PropertyDescriptorDetails::Integer(IntegerDescriptor::new(format, min_value, max_value));
+         PropertyDescriptorDetails::Integer(IntegerDescriptor::new(format, min_value, max_value));
     let desc = new_property_descriptor(
         type_name,
         description,

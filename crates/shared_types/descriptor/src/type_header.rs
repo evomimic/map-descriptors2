@@ -1,3 +1,4 @@
+use std::fmt;
 use derive_new::new;
 use hdi::prelude::*;
 
@@ -14,9 +15,23 @@ pub enum BaseType {
     String,
     Enum,
 }
+impl fmt::Display for BaseType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            BaseType::Holon => write!(f, "Holon"),
+            BaseType::Collection => write!(f, "Collection"),
+            BaseType::Composite => write!(f, "Composite"),
+            BaseType::Relationship => write!(f, "Relationship"),
+            BaseType::Boolean => write!(f, "Boolean"),
+            BaseType::Integer => write!(f, "Integer"),
+            BaseType::String => write!(f, "String"),
+            BaseType::Enum => write!(f, "Enum"),
+        }
+    }
+}
+
 #[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
 pub struct SemanticVersion {
     major: u8,
     minor: u8,
@@ -33,6 +48,7 @@ impl Default for SemanticVersion {
 }
 #[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq)]
+
 pub struct TypeHeader {
     pub type_name: String,
     pub base_type: BaseType,

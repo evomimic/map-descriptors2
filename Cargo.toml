@@ -6,9 +6,10 @@ opt-level = "z"
 
 [workspace]
 resolver = "2"
-members = ["crates/coordinator/descriptors",
+members = [
+    "crates/coordinator/descriptors",
     "crates/integrity/descriptors_integrity",
-    "crates/shared_types/descriptor"
+    "crates/shared_types/descriptor",
 ]
 
 [workspace.dependencies]
@@ -18,6 +19,7 @@ hdk = "0.1"
 serde = "1"
 derive-new = "0.5"
 thiserror = "1"
+
 
 
 [workspace.dependencies.descriptors]
