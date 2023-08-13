@@ -20,7 +20,7 @@ export class HolochainApp extends LitElement {
 
   async firstUpdated() {
     // We pass '' as url because it will dynamically be replaced in launcher environments
-    this.client = await AppAgentWebsocket.connect('', 'map-descriptors2');
+    this.client = await AppAgentWebsocket.connect('', 'map-descriptors');
 
     this.loading = false;
   }

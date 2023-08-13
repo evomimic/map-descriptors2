@@ -46,8 +46,8 @@ To package the web happ:
 npm run package
 ```
 
-You'll have the `map-descriptors2.webhapp` in `workdir`. This is what you should distribute so that the Holochain Launcher can install it.
-You will also have its subcomponent `map-descriptors2.happ` in the same folder`.
+You'll have the `map-descriptors.webhapp` in `workdir`. This is what you should distribute so that the Holochain Launcher can install it.
+You will also have its subcomponent `map-descriptors.happ` in the same folder`.
 
 ## Documentation
 
