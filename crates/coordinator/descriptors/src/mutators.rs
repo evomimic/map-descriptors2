@@ -64,9 +64,14 @@ fn new_property_descriptor(
     details: PropertyDescriptorDetails,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     // Guard that base_type in header matches details
-    let header = new_type_header(type_name.to_string(), base_type, description.to_string(), is_dependent)?;
+    let header = new_type_header(
+        type_name.to_string(),
+        base_type,
+        description.to_string(),
+        is_dependent,
+    )?;
     //Ok(PropertyDescriptor::new(header))
-    Ok(PropertyDescriptor::new(header,details))
+    Ok(PropertyDescriptor::new(header, details))
 }
 ///
 /// Creates a new (empty) Composite Property Descriptor
@@ -76,7 +81,6 @@ pub fn new_composite_descriptor(
     is_dependent: bool,
     properties: PropertyDescriptorMap,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
-
     let details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(properties));
 
     let desc = new_property_descriptor(
@@ -116,7 +120,7 @@ pub fn new_integer_descriptor(
     max_value: i64,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     let details =
-         PropertyDescriptorDetails::Integer(IntegerDescriptor::new(format, min_value, max_value));
+        PropertyDescriptorDetails::Integer(IntegerDescriptor::new(format, min_value, max_value));
     let desc = new_property_descriptor(
         type_name,
         description,
@@ -157,7 +161,7 @@ mod tests {
         )
         .unwrap();
 
-        println!("{:#?}", header_success);
+        // println!("{:#?}", header_success);
 
         assert_eq!(header_success.type_name, "example_name".to_string());
 

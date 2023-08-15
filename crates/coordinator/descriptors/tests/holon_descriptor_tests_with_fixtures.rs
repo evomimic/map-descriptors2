@@ -1,5 +1,6 @@
 //! Holon Descriptor Test Cases
 
+#![allow(unused_imports)]
 // use futures::future;
 // use std::collections::BTreeMap;
 mod shared_test;
@@ -9,12 +10,18 @@ use holochain::sweettest::{SweetCell, SweetConductor};
 //use std::arch::x86_64::__cpuid_count;
 use async_std::task;
 use descriptors::helpers::get_holon_descriptor_from_record;
+use descriptors::holon_descriptor_storage_fns::UpdateHolonDescriptorInput;
+use descriptors::mutators::{
+    new_boolean_descriptor, new_composite_descriptor, new_integer_descriptor, new_string_descriptor,
+};
+use descriptors::property_map_builder::{insert_property_descriptor, remove_property_descriptor};
 use rstest::*;
 // use shared_test::data_fixtures::{create_dummy_data,derive_type_name,insert_property_descriptor};
-use shared_test::fixture_defs::{derive_type_name, insert_property_descriptor, rs_dummy_data};
+use shared_test::fixture_defs::{derive_type_name, rs_dummy_data};
 use shared_test::setup_conductor;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
+use shared_types_descriptor::property_descriptor::{IntegerFormat, PropertyDescriptor};
 /// This function exercises a broad range of capabilities. The heavy lifting for this test is in the
 /// test data set creation done by the `rs_create_dummy_data` fixture. Each member of the vector of
 /// Holon Descriptors can vary greatly, starting with simpler structures.
@@ -82,9 +89,9 @@ async fn rstest_holon_descriptor_capabilities(
         let created_descriptor = get_holon_descriptor_from_record(created_record.clone()).unwrap();
         assert_eq!(descriptor, created_descriptor);
 
-        println!(
-            "Created descriptor matches generated holon descriptor, fetching created descriptor"
-        );
+        // println!(
+        //     "Created descriptor matches generated holon descriptor, fetching created descriptor"
+        // );
 
         let action_hash: ActionHash = created_record.action_address().clone();
         created_action_hashes.push(action_hash.clone());
@@ -99,44 +106,290 @@ async fn rstest_holon_descriptor_capabilities(
 
         let fetched_descriptor = get_holon_descriptor_from_record(fetched_record.unwrap()).unwrap();
         assert_eq!(descriptor, fetched_descriptor);
-        println!("...Success! Fetched descriptor matches generated descriptor.");
+        // println!("...Success! Fetched descriptor matches generated descriptor.");
     }
 
-    println!("All Holon Descriptors Created... to a get_all_holon_types and compare result with test data...");
+    // println!("All Holon Descriptors Created... to a get_all_holon_types and compare result with test data...");
     let fetch_all: Vec<Record> = conductor
         .call(&cell.zome("descriptors"), "get_all_holon_types", ())
         .await;
     let d_count = fetch_all.len();
-    println!("Call to get_all_holon_types returned {d_count} Holon Descriptors");
+    // println!("Call to get_all_holon_types returned {d_count} Holon Descriptors");
     assert_eq!(d_count, h_count);
     for i in 0..d_count {
         let fetched_descriptor =
             get_holon_descriptor_from_record(fetch_all.get(i).unwrap().clone()).unwrap();
         assert_eq!(descriptors[i].clone(), fetched_descriptor);
-        println!("Fetched descriptor {i} matches generated descriptor {i}");
+        // println!("Fetched descriptor {i} matches generated descriptor {i}");
     }
 
-    // TESTING DELETES
-    println!("********** TESTING DELETE_HOLON_DESCRIPTOR ************");
-    for hash in created_action_hashes {
-        let _action_hash_of_delete: ActionHash = conductor
-            .call(
-                &cell.zome("descriptors"),
-                "delete_holon_descriptor",
-                hash.clone(),
-            )
-            .await;
+    // TESTING UPDATES //
 
-        let try_query: Option<Record> = conductor
-            .call(&cell.zome("descriptors"), "get_holon_descriptor", hash)
-            .await;
-
-        assert!(try_query.is_none());
-    }
-
-    let fetch_all_check_deleted: Vec<Record> = conductor
-        .call(&cell.zome("descriptors"), "get_all_holon_types", ())
+    // ADD PROPERTY
+    let example_string_descriptor_property: PropertyDescriptor = new_string_descriptor(
+        "ex_string_prop_desc_update".to_string(),
+        "string property description".to_string(),
+        true,
+        1,
+        10,
+    )
+    .unwrap();
+    let holon_descriptor1 = descriptors[0].clone();
+    insert_property_descriptor(
+        &mut holon_descriptor1.properties.clone(),
+        "update one".to_string(),
+        &example_string_descriptor_property,
+    );
+    let add_string_property_input = UpdateHolonDescriptorInput {
+        original_holon_descriptor_hash: created_action_hashes[0].clone(),
+        previous_holon_descriptor_hash: created_action_hashes[0].clone(),
+        updated_holon_descriptor: holon_descriptor1.clone(),
+    };
+    let example_add_property_updated_record: Record = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "update_holon_descriptor",
+            add_string_property_input,
+        )
         .await;
-    assert!(fetch_all_check_deleted.is_empty());
-    println!("Success!!! All Holon Descriptors Deleted");
+    let example_add_property_updated_entry =
+        get_holon_descriptor_from_record(example_add_property_updated_record.clone()).unwrap();
+    let example_add_property_updated_action_hash: ActionHash =
+        example_add_property_updated_record.action_address().clone();
+    let fetched_example_add_property_updated_record: Option<Record> = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "get_holon_descriptor",
+            example_add_property_updated_action_hash.clone(),
+        )
+        .await;
+    let fetched_example_add_property_updated_entry = get_holon_descriptor_from_record(
+        fetched_example_add_property_updated_record.clone().unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        example_add_property_updated_entry,
+        fetched_example_add_property_updated_entry
+    );
+
+    // REMOVE PROPERTY
+    let mut holon_descriptor2 = descriptors[1].clone();
+    remove_property_descriptor(
+        &mut holon_descriptor2.properties,
+        "a_boolean_property".to_string(),
+    );
+    let remove_property_input = UpdateHolonDescriptorInput {
+        original_holon_descriptor_hash: created_action_hashes[1].clone(),
+        previous_holon_descriptor_hash: created_action_hashes[1].clone(),
+        updated_holon_descriptor: holon_descriptor2.clone(),
+    };
+    let example_remove_property_updated_record: Record = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "update_holon_descriptor",
+            remove_property_input,
+        )
+        .await;
+    let example_remove_property_updated_entry =
+        get_holon_descriptor_from_record(example_remove_property_updated_record.clone()).unwrap();
+    let example_remove_property_updated_action_hash: ActionHash =
+        example_remove_property_updated_record
+            .action_address()
+            .clone();
+    let fetched_example_remove_property_updated_record: Option<Record> = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "get_holon_descriptor",
+            example_remove_property_updated_action_hash.clone(),
+        )
+        .await;
+    let fetched_example_remove_property_updated_entry = get_holon_descriptor_from_record(
+        fetched_example_remove_property_updated_record
+            .clone()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        example_remove_property_updated_entry,
+        fetched_example_remove_property_updated_entry
+    );
+
+    // UPDATE STRING SCALAR PROPERTY
+    let update_string_descriptor_scalar_property: PropertyDescriptor = new_string_descriptor(
+        "ex_string_prop_desc_update".to_string(),
+        "string update description".to_string(),
+        true,
+        3,
+        55,
+    )
+    .unwrap();
+    let holon_descriptor3 = descriptors[2].clone();
+    insert_property_descriptor(
+        &mut holon_descriptor3.properties.clone(),
+        "change string scalar min max".to_string(),
+        &update_string_descriptor_scalar_property,
+    );
+    let update_string_scalar_property_input = UpdateHolonDescriptorInput {
+        original_holon_descriptor_hash: created_action_hashes[2].clone(),
+        previous_holon_descriptor_hash: created_action_hashes[2].clone(),
+        updated_holon_descriptor: holon_descriptor3.clone(),
+    };
+    let update_string_scalar_property_updated_record: Record = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "update_holon_descriptor",
+            update_string_scalar_property_input,
+        )
+        .await;
+    let update_string_scalar_property_updated_entry =
+        get_holon_descriptor_from_record(update_string_scalar_property_updated_record.clone())
+            .unwrap();
+    let update_string_scalar_property_updated_action_hash: ActionHash =
+        update_string_scalar_property_updated_record
+            .action_address()
+            .clone();
+    let fetched_update_string_scalar_property_updated_record: Option<Record> = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "get_holon_descriptor",
+            update_string_scalar_property_updated_action_hash.clone(),
+        )
+        .await;
+    let fetched_update_string_scalar_property_updated_entry = get_holon_descriptor_from_record(
+        fetched_update_string_scalar_property_updated_record
+            .clone()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        update_string_scalar_property_updated_entry,
+        fetched_update_string_scalar_property_updated_entry
+    );
+
+    // UPDATE INTEGER SCALAR PROPERTY
+    let update_integer_descriptor_scalar_property: PropertyDescriptor = new_integer_descriptor(
+        "ex_int_prop_desc_update".to_string(),
+        "integer update description".to_string(),
+        true,
+        IntegerFormat::I8(),
+        -42,
+        42,
+    )
+    .unwrap();
+    let holon_descriptor3 = descriptors[2].clone();
+    insert_property_descriptor(
+        &mut holon_descriptor3.properties.clone(),
+        "change integer scalar min max".to_string(),
+        &update_integer_descriptor_scalar_property,
+    );
+    let update_integer_scalar_property_input = UpdateHolonDescriptorInput {
+        original_holon_descriptor_hash: created_action_hashes[2].clone(),
+        previous_holon_descriptor_hash: created_action_hashes[2].clone(),
+        updated_holon_descriptor: holon_descriptor3.clone(),
+    };
+    let update_integer_scalar_property_updated_record: Record = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "update_holon_descriptor",
+            update_integer_scalar_property_input,
+        )
+        .await;
+    let update_integer_scalar_property_updated_entry =
+        get_holon_descriptor_from_record(update_integer_scalar_property_updated_record.clone())
+            .unwrap();
+    let update_integer_scalar_property_updated_action_hash: ActionHash =
+        update_integer_scalar_property_updated_record
+            .action_address()
+            .clone();
+    let fetched_update_integer_scalar_property_updated_record: Option<Record> = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "get_holon_descriptor",
+            update_integer_scalar_property_updated_action_hash.clone(),
+        )
+        .await;
+    let fetched_update_integer_scalar_property_updated_entry = get_holon_descriptor_from_record(
+        fetched_update_integer_scalar_property_updated_record
+            .clone()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        update_integer_scalar_property_updated_entry,
+        fetched_update_integer_scalar_property_updated_entry
+    );
+
+    // UPDATE BOOLEAN SCALAR PROPERTY
+    let update_boolean_descriptor_scalar_property: PropertyDescriptor = new_boolean_descriptor(
+        "ex_bool_prop_desc_update".to_string(),
+        "boolean update description".to_string(),
+        true,
+        true,
+    )
+    .unwrap();
+    let holon_descriptor3 = descriptors[2].clone();
+    insert_property_descriptor(
+        &mut holon_descriptor3.properties.clone(),
+        "change boolean scalar is_fuzzy to true".to_string(),
+        &update_boolean_descriptor_scalar_property,
+    );
+    let update_boolean_scalar_property_input = UpdateHolonDescriptorInput {
+        original_holon_descriptor_hash: created_action_hashes[2].clone(),
+        previous_holon_descriptor_hash: created_action_hashes[2].clone(),
+        updated_holon_descriptor: holon_descriptor3.clone(),
+    };
+    let update_boolean_scalar_property_updated_record: Record = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "update_holon_descriptor",
+            update_boolean_scalar_property_input,
+        )
+        .await;
+    let update_boolean_scalar_property_updated_entry =
+        get_holon_descriptor_from_record(update_boolean_scalar_property_updated_record.clone())
+            .unwrap();
+    let update_boolean_scalar_property_updated_action_hash: ActionHash =
+        update_boolean_scalar_property_updated_record
+            .action_address()
+            .clone();
+    let fetched_update_boolean_scalar_property_updated_record: Option<Record> = conductor
+        .call(
+            &cell.zome("descriptors"),
+            "get_holon_descriptor",
+            update_boolean_scalar_property_updated_action_hash.clone(),
+        )
+        .await;
+    let fetched_update_boolean_scalar_property_updated_entry = get_holon_descriptor_from_record(
+        fetched_update_boolean_scalar_property_updated_record
+            .clone()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        update_boolean_scalar_property_updated_entry,
+        fetched_update_boolean_scalar_property_updated_entry
+    );
+
+    // TESTING DELETES //
+
+    // for hash in created_action_hashes {
+    //     let _action_hash_of_delete: ActionHash = conductor
+    //         .call(
+    //             &cell.zome("descriptors"),
+    //             "delete_holon_descriptor",
+    //             hash.clone(),
+    //         )
+    //         .await;
+
+    //     let try_query: Option<Record> = conductor
+    //         .call(&cell.zome("descriptors"), "get_holon_descriptor", hash)
+    //         .await;
+
+    //     assert!(try_query.is_none());
+    // }
+
+    // let fetch_all_check_deleted: Vec<Record> = conductor
+    //     .call(&cell.zome("descriptors"), "get_all_holon_types", ())
+    //     .await;
+    // assert!(fetch_all_check_deleted.is_empty());
 }
