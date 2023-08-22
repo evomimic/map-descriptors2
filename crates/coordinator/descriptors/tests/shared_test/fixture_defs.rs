@@ -18,9 +18,7 @@ use descriptors::mutators::{
     new_boolean_descriptor, new_composite_descriptor, new_holon_descriptor, new_integer_descriptor,
     new_string_descriptor,
 };
-pub use descriptors::property_map_builder::{
-    insert_property_descriptor, remove_property_descriptor,
-};
+use descriptors::property_map_builder::{insert_property_descriptor, remove_property_descriptor};
 use rstest::*;
 use std::collections::BTreeMap;
 // use hdk::prelude::*;
@@ -59,80 +57,80 @@ pub fn derive_type_name(prefix: &str, base_type: BaseType, suffix: &str) -> Stri
 /// This function creates a rich test dataset by creating a vector of HolonDescriptors of various
 /// kinds -- from simple to complex
 
-// #[fixture]
-// pub fn rs_dummy_data() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
-//     let mut test_data_set: Vec<HolonDescriptor> = Vec::new();
+#[fixture]
+pub fn rs_dummy_data() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
+    let mut test_data_set: Vec<HolonDescriptor> = Vec::new();
 
-//     // ----------------  HOLON WITH NO PROPERTIES-------------------------------
-//     let descriptor: HolonDescriptor = new_holon_descriptor(
-//         derive_type_name("", BaseType::Holon, "_with_no_properties"),
-//         "A simple holon type that has no properties.".to_string(),
-//         false,
-//     )?;
+    // ----------------  HOLON WITH NO PROPERTIES-------------------------------
+    let descriptor: HolonDescriptor = new_holon_descriptor(
+        derive_type_name("", BaseType::Holon, "_with_no_properties"),
+        "A simple holon type that has no properties.".to_string(),
+        false,
+    )?;
 
-//     test_data_set.push(descriptor);
+    test_data_set.push(descriptor);
 
-//     // ----------------  HOLON WITH SINGLE BOOLEAN PROPERTY -------------------------------
+    // ----------------  HOLON WITH SINGLE BOOLEAN PROPERTY -------------------------------
 
-//     let mut descriptor: HolonDescriptor = new_holon_descriptor(
-//         derive_type_name("", BaseType::Holon, "_with_single_boolean_property"),
-//         "A simple holon type that has a single boolean property".to_string(),
-//         false,
-//     )?;
+    let mut descriptor: HolonDescriptor = new_holon_descriptor(
+        derive_type_name("", BaseType::Holon, "_with_single_boolean_property"),
+        "A simple holon type that has a single boolean property".to_string(),
+        false,
+    )?;
 
-//     let bool_descriptor = new_boolean_descriptor(
-//         derive_type_name("simple", BaseType::Boolean, ""),
-//         "Simple Boolean Property Type description".to_string(),
-//         true,
-//         false,
-//     )?;
+    let bool_descriptor = new_boolean_descriptor(
+        derive_type_name("simple", BaseType::Boolean, ""),
+        "Simple Boolean Property Type description".to_string(),
+        true,
+        false,
+    )?;
 
-//     insert_property_descriptor(
-//         &mut descriptor.properties,
-//         "a_boolean_property".to_string(),
-//         &bool_descriptor,
-//     );
-//     test_data_set.push(descriptor);
+    insert_property_descriptor(
+        &mut descriptor.properties,
+        "a_boolean_property".to_string(),
+        &bool_descriptor,
+    );
+    test_data_set.push(descriptor);
 
-//     // ----------------  HOLON WITH SCALAR PROPERTIES -------------------------------
-//     let mut descriptor: HolonDescriptor = new_holon_descriptor(
-//         derive_type_name("", BaseType::Holon, "_with_scalar_properties"),
-//         "A holon type that has a single property of each scalar property type.".to_string(),
-//         false,
-//     )?;
-//     create_property_descriptors(&mut descriptor.properties);
+    // ----------------  HOLON WITH SCALAR PROPERTIES -------------------------------
+    let mut descriptor: HolonDescriptor = new_holon_descriptor(
+        derive_type_name("", BaseType::Holon, "_with_scalar_properties"),
+        "A holon type that has a single property of each scalar property type.".to_string(),
+        false,
+    )?;
+    create_property_descriptors(&mut descriptor.properties);
 
-//     test_data_set.push(descriptor);
+    test_data_set.push(descriptor);
 
-//     // ----------------  HOLON WITH COMPOSITE PROPERTY -------------------------------
-//     let mut descriptor: HolonDescriptor = new_holon_descriptor(
-//         derive_type_name("", BaseType::Holon, "_with_composite_properties"),
-//         "A holon type that has a single property of a composite property type.".to_string(),
-//         false,
-//     )?;
+    // ----------------  HOLON WITH COMPOSITE PROPERTY -------------------------------
+    let mut descriptor: HolonDescriptor = new_holon_descriptor(
+        derive_type_name("", BaseType::Holon, "_with_composite_properties"),
+        "A holon type that has a single property of a composite property type.".to_string(),
+        false,
+    )?;
 
-//     // Composite Property Descriptor
-//     let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
+    // Composite Property Descriptor
+    let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
 
-//     create_property_descriptors(&mut composite_properties);
+    create_property_descriptors(&mut composite_properties);
 
-//     let comp_descriptor = new_composite_descriptor(
-//         derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties"),
-//         "Simple Composite Property Type description".to_string(),
-//         true,
-//         composite_properties,
-//     )?;
+    let comp_descriptor = new_composite_descriptor(
+        derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties"),
+        "Simple Composite Property Type description".to_string(),
+        true,
+        composite_properties,
+    )?;
 
-//     insert_property_descriptor(
-//         &mut descriptor.properties,
-//         "a_composite_property".to_string(),
-//         &comp_descriptor,
-//     );
+    insert_property_descriptor(
+        &mut descriptor.properties,
+        "a_composite_property".to_string(),
+        &comp_descriptor,
+    );
 
-//     test_data_set.push(descriptor);
+    test_data_set.push(descriptor);
 
-//     Ok(test_data_set)
-// }
+    Ok(test_data_set)
+}
 
 // Builds initial HolonDescriptor with no properties
 #[fixture]

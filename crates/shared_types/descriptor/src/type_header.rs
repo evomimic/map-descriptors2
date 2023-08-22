@@ -1,9 +1,9 @@
-use std::fmt;
 use derive_new::new;
 use hdi::prelude::*;
+use std::fmt;
 
 #[hdk_entry_helper]
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(tag = "type")]
 pub enum BaseType {
     Holon,
@@ -31,7 +31,7 @@ impl fmt::Display for BaseType {
 }
 
 #[hdk_entry_helper]
-#[derive(new, Clone, PartialEq, Eq)]
+#[derive(new, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SemanticVersion {
     major: u8,
     minor: u8,
@@ -47,8 +47,7 @@ impl Default for SemanticVersion {
     }
 }
 #[hdk_entry_helper]
-#[derive(new, Clone, PartialEq, Eq)]
-
+#[derive(new, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct TypeHeader {
     pub type_name: String,
     pub base_type: BaseType,
