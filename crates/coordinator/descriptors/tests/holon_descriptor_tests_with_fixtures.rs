@@ -1,7 +1,7 @@
 //! Holon Descriptor Test Cases
 
 #![allow(unused_imports)]
-#![allow(unused_doc_comments)]
+
 // use futures::future;
 use std::collections::BTreeMap;
 mod shared_test;
@@ -27,18 +27,18 @@ use shared_types_descriptor::property_descriptor::{
     PropertyDescriptorMap,
 };
 
-// / This function exercises a broad range of capabilities. The heavy lifting for this test is in the
-// / test data set creation done by the `rs_create_dummy_data` fixture. Each member of the vector of
-// / Holon Descriptors can vary greatly, starting with simpler structures.
-// /
-// / Test Outline:
-// / 1. After initial setup, perform a `get_all_holon_types`, with an expectation of an empty result
-// / 2. For each member of the `descriptors` vector, perform a `create` followed by a `get` and verify
-// / 3. Once all data has been created in DHT, perform `get_all_holon_types` and verify the result.
-// /
-// / Note that this will exercise, create, get, and get_all capabilities across a variety of
-// / holon descriptors
-// /
+/// This function exercises a broad range of capabilities. The heavy lifting for this test is in the
+/// test data set creation done by the `rs_create_dummy_data` fixture. Each member of the vector of
+/// Holon Descriptors can vary greatly, starting with simpler structures.
+///
+/// Test Outline:
+/// 1. After initial setup, perform a `get_all_holon_types`, with an expectation of an empty result
+/// 2. For each member of the `descriptors` vector, perform a `create` followed by a `get` and verify
+/// 3. Once all data has been created in DHT, perform `get_all_holon_types` and verify the result.
+///
+/// Note that this will exercise, create, get, and get_all capabilities across a variety of
+/// holon descriptors
+///
 
 #[rstest]
 #[tokio::test(flavor = "multi_thread")]
@@ -119,17 +119,15 @@ async fn rstest_holon_descriptor_capabilities(
         .call(&cell.zome("descriptors"), "get_all_holon_types", ())
         .await;
     let d_count = fetch_all.len();
-    println!("Call to get_all_holon_types returned {d_count} Holon Descriptors");
+    println!("Call to get_all_holon_types returned {d_count} Holon Descriptors \n");
     assert_eq!(d_count, h_count);
     let mut fetched_entries = Vec::new();
-    for i in 0..d_count {
-        let fetched_descriptor =
-            get_holon_descriptor_from_record(fetch_all.get(i).unwrap().clone()).unwrap();
-        assert_eq!(descriptors[i].clone(), fetched_descriptor);
-        println!("Fetched descriptor {i} matches generated descriptor {i}");
+    for fetched_record in fetch_all {
+        let fetched_descriptor = get_holon_descriptor_from_record(fetched_record)
+            .clone()
+            .unwrap();
         fetched_entries.push(fetched_descriptor);
     }
-    println!();
     fetched_entries.sort_by(|a, b| a.header.type_name.cmp(&b.header.type_name));
     assert_eq!(descriptors, fetched_entries);
 

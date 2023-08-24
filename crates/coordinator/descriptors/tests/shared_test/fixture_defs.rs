@@ -12,7 +12,7 @@
 // The logic for CUD tests is identical, what varies is the test data.
 // BUT... if the test data set has all different variations in it, we may only need 1 test data set
 
-use crate::shared_test::UpdateData;
+use crate::shared_test::HolonDescriptorTestCase;
 use core::panic;
 use descriptors::mutators::{
     new_boolean_descriptor, new_composite_descriptor, new_holon_descriptor, new_integer_descriptor,
@@ -134,9 +134,10 @@ pub fn rs_dummy_data() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
 
 // Builds initial HolonDescriptor with no properties
 #[fixture]
-pub fn add_string_property() -> Result<UpdateData, DescriptorsError> {
-    let orig_descriptor = build_holon_descriptor_with_no_properties()?;
-    let mut updated_descriptor = orig_descriptor.clone();
+pub fn add_string_property() -> Result<HolonDescriptorTestCase, DescriptorsError> {
+    let original_descriptor = build_holon_descriptor_with_no_properties()?;
+    let mut updated_descriptor = original_descriptor.clone();
+    let mut updates = Vec::new();
 
     let example_string_descriptor_property: PropertyDescriptor = new_string_descriptor(
         "example_string_property".to_string(),
@@ -151,193 +152,209 @@ pub fn add_string_property() -> Result<UpdateData, DescriptorsError> {
         "a_string_property".to_string(),
         &example_string_descriptor_property,
     );
-    let update_data = UpdateData {
-        orig: orig_descriptor,
-        updates: updated_descriptor,
+    updates.push(updated_descriptor.clone());
+
+    // TODO: add each type of prop
+
+    let test_case = HolonDescriptorTestCase {
+        original: original_descriptor,
+        updates: updates,
     };
     // println!("Original & expected update: {:#?}", update_data);
-    Ok((update_data))
+    Ok((test_case))
 }
 
-#[fixture]
-pub fn remove_string_property(
-    add_string_property: Result<UpdateData, DescriptorsError>,
-) -> Result<UpdateData, DescriptorsError> {
-    let mut data = add_string_property?;
+// #[fixture]
+// pub fn remove_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> {
+//     let original_descriptor = build_holon_descriptor_with_scalar()?;
+//     let mut updated_descriptor = original_descriptor.clone();
+//     let mut updates = Vec::new();
 
-    remove_property_descriptor(
-        &mut data.updates.properties,
-        "a_string_property".to_string(),
-    );
+//     let test_case = HolonDescriptorTestCase {
+//         original: original_descriptor,
+//         updates: updates,
+//     };
+//     // TODO: rm each
+//     remove_property_descriptor(
+//         &mut updated_descriptor.properties,
+//         "a_string_property".to_string(),
+//     );
+//     updates.push(updated_descriptor.clone());
 
-    let update_data = UpdateData {
-        orig: data.orig,
-        updates: data.updates,
-    };
+//     remove_property_descriptor(
+//         &mut updated_descriptor.properties,
+//         "a_boolean_property".to_string(),
+//     );
+//     updates.push(updated_descriptor.clone());
 
-    // println!("{:#?}", update_data);
-    Ok((update_data))
-}
+//     let update_data = HolonDescriptorTestCase {
+//         original: updated_descriptor.original,
+//         updates: updated_descriptor.updates,
+//     };
 
-// Builds initial HolonDescritor with each type of scalar property
-#[fixture]
-pub fn update_each_scalar_details() -> Result<UpdateData, DescriptorsError> {
-    let orig_descriptor = build_holon_descriptor_with_scalar()?;
-    let mut updated_descriptor = orig_descriptor.clone();
+//     // println!("{:#?}", update_data);
+//     Ok((update_data))
+// }
 
-    let boolean_descriptor_property = new_boolean_descriptor(
-        derive_type_name("update", BaseType::Boolean, "1"),
-        "Change fuzzy to true".to_string(),
-        true,
-        true,
-    )?;
-    insert_property_descriptor(
-        &mut updated_descriptor.properties,
-        "a_boolean_property".to_string(),
-        &boolean_descriptor_property,
-    );
+// // Builds initial HolonDescritor with each type of scalar property
+// #[fixture]
+// pub fn update_each_scalar_details() -> Result<HolonDescriptorTestCase, DescriptorsError> {
+//     let original_descriptor = build_holon_descriptor_with_scalar()?;
+//     let mut updated_descriptor = original_descriptor.clone();
 
-    let string_descriptor_property = new_string_descriptor(
-        derive_type_name("update_", BaseType::String, "1"),
-        "Modify string min max".to_string(),
-        true,
-        7,
-        99,
-    )?;
-    insert_property_descriptor(
-        &mut updated_descriptor.properties,
-        "a_string_property".to_string(),
-        &string_descriptor_property,
-    );
+//     let boolean_descriptor_property = new_boolean_descriptor(
+//         derive_type_name("update", BaseType::Boolean, "1"),
+//         "Change fuzzy to true".to_string(),
+//         true,
+//         true,
+//     )?;
+//     insert_property_descriptor(
+//         &mut updated_descriptor.properties,
+//         "a_boolean_property".to_string(),
+//         &boolean_descriptor_property,
+//     );
 
-    let i32_descriptor_property = new_integer_descriptor(
-        derive_type_name("update_I32", BaseType::Integer, "1"),
-        "Shrink range".to_string(),
-        true,
-        IntegerFormat::I32(),
-        -111111,
-        333333,
-    )?;
-    insert_property_descriptor(
-        &mut updated_descriptor.properties,
-        "an_I32_property".to_string(),
-        &i32_descriptor_property,
-    );
+//     let string_descriptor_property = new_string_descriptor(
+//         derive_type_name("update_", BaseType::String, "1"),
+//         "Modify string min max".to_string(),
+//         true,
+//         7,
+//         99,
+//     )?;
+//     insert_property_descriptor(
+//         &mut updated_descriptor.properties,
+//         "a_string_property".to_string(),
+//         &string_descriptor_property,
+//     );
 
-    let u8_descriptor_property = new_integer_descriptor(
-        derive_type_name("update_U8", BaseType::Integer, "1"),
-        "Expand range".to_string(),
-        true,
-        IntegerFormat::U8(),
-        -4444,
-        4444,
-    )?;
-    insert_property_descriptor(
-        &mut updated_descriptor.properties,
-        "a_U8_property".to_string(),
-        &u8_descriptor_property,
-    );
+//     let i32_descriptor_property = new_integer_descriptor(
+//         derive_type_name("update_I32", BaseType::Integer, "1"),
+//         "Shrink range".to_string(),
+//         true,
+//         IntegerFormat::I32(),
+//         -111111,
+//         333333,
+//     )?;
+//     insert_property_descriptor(
+//         &mut updated_descriptor.properties,
+//         "an_I32_property".to_string(),
+//         &i32_descriptor_property,
+//     );
 
-    let update_data = UpdateData {
-        orig: orig_descriptor,
-        updates: updated_descriptor,
-    };
-    println!("{:#?}", update_data);
-    Ok((update_data))
-}
+//     let u8_descriptor_property = new_integer_descriptor(
+//         derive_type_name("update_U8", BaseType::Integer, "1"),
+//         "Expand range".to_string(),
+//         true,
+//         IntegerFormat::U8(),
+//         -4444,
+//         4444,
+//     )?;
+//     insert_property_descriptor(
+//         &mut updated_descriptor.properties,
+//         "a_U8_property".to_string(),
+//         &u8_descriptor_property,
+//     );
 
-// Builds initial HolonDescriptor with a composite property
-#[fixture]
-pub fn add_string_property_to_composite() -> Result<UpdateData, DescriptorsError> {
-    let orig_descriptor = build_holon_descriptor_with_composite()?;
-    let mut updated_descriptor = orig_descriptor.clone();
+//     let update_data = HolonDescriptorTestCase {
+//         original: original_descriptor,
+//         updates: updated_descriptor,
+//     };
+//     println!("{:#?}", update_data);
+//     Ok((update_data))
+// }
 
-    let string_descriptor_property: PropertyDescriptor = new_string_descriptor(
-        "example_string_property_inside_composite".to_string(),
-        "adding string property to a composite".to_string(),
-        true,
-        0,
-        42,
-    )?;
+// // Builds initial HolonDescriptor with a composite property
+// #[fixture]
+// pub fn add_string_property_to_composite() -> Result<HolonDescriptorTestCase, DescriptorsError> {
+//     let original_descriptor = build_holon_descriptor_with_composite()?;
+//     let mut updated_descriptor = original_descriptor.clone();
 
-    let original_composite_property_descriptor = orig_descriptor
-        .properties
-        .properties
-        .get("a_composite_property");
+//     let string_descriptor_property: PropertyDescriptor = new_string_descriptor(
+//         "example_string_property_inside_composite".to_string(),
+//         "adding string property to a composite".to_string(),
+//         true,
+//         0,
+//         42,
+//     )?;
 
-    if let Some(descriptor) = original_composite_property_descriptor {
-        let mut composite_descriptor_map = get_composite_descriptor_map(&descriptor.details);
-        composite_descriptor_map.properties.insert(
-            "another_string_property".to_string(),
-            string_descriptor_property,
-        );
+//     let originalinal_composite_property_descriptor = original_descriptor
+//         .properties
+//         .properties
+//         .get("a_composite_property");
 
-        let updated_composite_descriptor = PropertyDescriptor {
-            header: descriptor.header.clone(),
-            details: PropertyDescriptorDetails::Composite(CompositeDescriptor {
-                properties: composite_descriptor_map.clone(),
-            }),
-        };
+//     if let Some(descriptor) = originalinal_composite_property_descriptor {
+//         let mut composite_descriptor_map = get_composite_descriptor_map(&descriptor.details);
+//         composite_descriptor_map.properties.insert(
+//             "another_string_property".to_string(),
+//             string_descriptor_property,
+//         );
 
-        insert_property_descriptor(
-            &mut updated_descriptor.properties,
-            "a_composite_property".to_string(),
-            &updated_composite_descriptor,
-        );
+//         let updated_composite_descriptor = PropertyDescriptor {
+//             header: descriptor.header.clone(),
+//             details: PropertyDescriptorDetails::Composite(CompositeDescriptor {
+//                 properties: composite_descriptor_map.clone(),
+//             }),
+//         };
 
-        let update_data = UpdateData {
-            orig: orig_descriptor,
-            updates: updated_descriptor,
-        };
-        // println!("Original & expected update: {:#?}", update_data);
-        return Ok((update_data));
-    } else {
-        panic!("error getting composite");
-    }
-}
+//         insert_property_descriptor(
+//             &mut updated_descriptor.properties,
+//             "a_composite_property".to_string(),
+//             &updated_composite_descriptor,
+//         );
 
-#[fixture]
-pub fn remove_string_property_from_composite(
-    add_string_property_to_composite: Result<UpdateData, DescriptorsError>,
-) -> Result<UpdateData, DescriptorsError> {
-    let mut data = add_string_property_to_composite?;
-    let orig_descriptor = data.orig;
-    let mut updated_descriptor = data.updates;
+//         let update_data = HolonDescriptorTestCase {
+//             original: original_descriptor,
+//             updates: updated_descriptor,
+//         };
+//         // println!("Originalinal & expected update: {:#?}", update_data);
+//         return Ok((update_data));
+//     } else {
+//         panic!("error getting composite");
+//     }
+// }
 
-    let original_composite_property_descriptor = orig_descriptor
-        .properties
-        .properties
-        .get("a_composite_property");
+// #[fixture]
+// pub fn remove_string_property_from_composite(
+//     add_string_property_to_composite: Result<HolonDescriptorTestCase, DescriptorsError>,
+// ) -> Result<HolonDescriptorTestCase, DescriptorsError> {
+//     let mut data = add_string_property_to_composite?;
+//     let original_descriptor = data.original;
+//     let mut updated_descriptor = data.updates;
 
-    if let Some(descriptor) = original_composite_property_descriptor {
-        let mut composite_descriptor_map = get_composite_descriptor_map(&descriptor.details);
-        composite_descriptor_map
-            .properties
-            .remove("another_string_property");
+//     let originalinal_composite_property_descriptor = original_descriptor
+//         .properties
+//         .properties
+//         .get("a_composite_property");
 
-        let updated_composite_descriptor = PropertyDescriptor {
-            header: descriptor.header.clone(),
-            details: PropertyDescriptorDetails::Composite(CompositeDescriptor {
-                properties: composite_descriptor_map.clone(),
-            }),
-        };
+//     if let Some(descriptor) = originalinal_composite_property_descriptor {
+//         let mut composite_descriptor_map = get_composite_descriptor_map(&descriptor.details);
+//         composite_descriptor_map
+//             .properties
+//             .remove("another_string_property");
 
-        insert_property_descriptor(
-            &mut updated_descriptor.properties,
-            "a_composite_property".to_string(),
-            &updated_composite_descriptor,
-        );
+//         let updated_composite_descriptor = PropertyDescriptor {
+//             header: descriptor.header.clone(),
+//             details: PropertyDescriptorDetails::Composite(CompositeDescriptor {
+//                 properties: composite_descriptor_map.clone(),
+//             }),
+//         };
 
-        let update_data = UpdateData {
-            orig: orig_descriptor,
-            updates: updated_descriptor,
-        };
-        // println!("{:#?}", update_data);
-        return Ok((update_data));
-    } else {
-        panic!("error getting composite");
-    }
-}
+//         insert_property_descriptor(
+//             &mut updated_descriptor.properties,
+//             "a_composite_property".to_string(),
+//             &updated_composite_descriptor,
+//         );
+
+//         let update_data = HolonDescriptorTestCase {
+//             originalinal: originalinal_descriptor,
+//             updates: updated_descriptor,
+//         };
+//         // println!("{:#?}", update_data);
+//         return Ok((update_data));
+//     } else {
+//         panic!("error getting composite");
+//     }
+// }
 
 // Private local fns
 
