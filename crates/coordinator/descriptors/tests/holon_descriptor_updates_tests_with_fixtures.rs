@@ -17,7 +17,8 @@ use descriptors::mutators::{
 use descriptors::property_map_builder::{insert_property_descriptor, remove_property_descriptor};
 use rstest::*;
 use shared_test::fixture_defs::{
-    add_properties, derive_type_name, remove_properties, update_each_scalar_details,
+    add_properties, add_properties_to_composite, derive_type_name, remove_properties,
+    remove_properties_from_composite, update_each_scalar_details,
 };
 use shared_test::HolonDescriptorTestCase;
 use shared_types_descriptor::error::DescriptorsError;
@@ -28,13 +29,13 @@ use shared_types_descriptor::property_descriptor::{
 };
 
 #[rstest]
-// #[case::add_string_property_to_holon_descriptor(add_properties())]
-// #[case::remove_properties_from_holon_descriptor(remove_properties())]
+#[case::add_string_property_to_holon_descriptor(add_properties())]
+#[case::remove_properties_from_holon_descriptor(remove_properties())]
 #[case::update_each_scalar_property_details(update_each_scalar_details())]
-// #[case::add_property_to_composite_descriptor(add_properties_to_composite())]
-// #[case::remove_property_to_composite_descriptor(remove_properties_from_composite(
-//     add_properties_to_composite()
-// ))]
+#[case::add_property_to_composite_descriptor(add_properties_to_composite())]
+#[case::remove_property_to_composite_descriptor(remove_properties_from_composite(
+    add_properties_to_composite()
+))]
 #[tokio::test(flavor = "multi_thread")]
 async fn rstest_holon_descriptor_updates(
     #[case] input: Result<HolonDescriptorTestCase, DescriptorsError>,
