@@ -74,9 +74,9 @@ async fn rstest_holon_descriptor_capabilities(
         let name = descriptor.header.type_name.clone();
         let p_count = descriptor.properties.properties.len();
         println!();
-        println!("Starting create/get test for the following HolonDescriptor");
-        println!("{:#?}", descriptor);
-        println!("Creating {name} with {p_count} properties");
+        // println!("Starting create/get test for the following HolonDescriptor");
+        // println!("{:#?}", descriptor);
+        // println!("Creating {name} with {p_count} properties");
 
         let created_record: Record = conductor
             .call(
