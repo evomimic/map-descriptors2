@@ -59,9 +59,8 @@ pub fn derive_type_name(prefix: &str, base_type: BaseType, suffix: &str) -> Stri
 
 /// This function creates a rich test dataset by creating a vector of HolonDescriptors of various
 /// kinds -- from simple to complex
-
 #[fixture]
-pub fn rs_dummy_data() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
+pub fn new_holons_fixture() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
     let mut test_data_set: Vec<HolonDescriptor> = Vec::new();
 
     // ----------------  HOLON WITH NO PROPERTIES-------------------------------

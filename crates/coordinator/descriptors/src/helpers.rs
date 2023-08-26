@@ -1,6 +1,6 @@
 use hdk::prelude::*;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::{PropertyDescriptor, PropertyDescriptorDetails};
+use shared_types_descriptor::property_descriptor::{PropertyDescriptor};
 
 // pub fn try_entry_from_record(record: Record) -> ExternResult<Entry> {
 //     record

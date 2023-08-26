@@ -4,6 +4,7 @@
 
 use core::panic;
 use std::collections::BTreeMap;
+
 mod shared_test;
 
 use hdk::prelude::*;
@@ -28,13 +29,17 @@ use shared_types_descriptor::property_descriptor::{
     PropertyDescriptorMap,
 };
 
+
+/// These tests exercise update actions on HolonDescriptors
+/// To execute ONLY the tests in this file, use:
+///      cargo test -p descriptors --test holon_descriptor_updates_tests -- --show-output
 #[rstest]
 #[case::add_string_property_to_holon_descriptor(add_properties())]
 #[case::remove_properties_from_holon_descriptor(remove_properties())]
 #[case::update_each_scalar_property_details(update_each_scalar_details())]
 #[case::add_property_to_composite_descriptor(add_properties_to_composite())]
 #[case::remove_property_to_composite_descriptor(remove_properties_from_composite(
-    add_properties_to_composite()
+add_properties_to_composite()
 ))]
 #[tokio::test(flavor = "multi_thread")]
 async fn rstest_holon_descriptor_updates(
@@ -80,7 +85,7 @@ async fn rstest_holon_descriptor_updates(
             &previous_record,
             &descriptor,
         )
-        .await;
+            .await;
     }
 }
 
