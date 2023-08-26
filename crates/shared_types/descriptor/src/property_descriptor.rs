@@ -41,7 +41,7 @@ pub enum PropertyDescriptorDetails {
 }
 
 #[hdk_entry_helper]
-#[derive(new, Clone, PartialEq, Eq)]
+#[derive(new, Default, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct BooleanDescriptor {
     pub is_fuzzy: bool, // if true, this property has FuzzyBoolean value, otherwise just true or false
@@ -79,7 +79,7 @@ pub enum IntegerFormat {
 }
 
 #[hdk_entry_helper]
-#[derive(new, Clone, PartialEq, Eq)]
+#[derive(new, Default, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct StringDescriptor {
     pub min_length: u32,

@@ -1,6 +1,6 @@
 use hdk::prelude::*;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::PropertyDescriptor;
+use shared_types_descriptor::property_descriptor::{PropertyDescriptor};
 
 // pub fn try_entry_from_record(record: Record) -> ExternResult<Entry> {
 //     record
@@ -12,6 +12,7 @@ use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 //         .cloned()
 // }
 
+// ?TODO: change input reference
 pub fn get_holon_descriptor_from_record(record: Record) -> ExternResult<HolonDescriptor> {
     match record.entry() {
         record::RecordEntry::Present(entry) => {
