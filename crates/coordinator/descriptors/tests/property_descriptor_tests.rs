@@ -14,6 +14,21 @@ use shared_test::fixture_defs::new_property_descriptors_fixture;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 
+/// This function exercises a broad range of capabilities. The heavy lifting for this test is in the
+/// test data set creation done within fixtures.
+///
+/// Test Outline:
+/// 1. After initial setup, perform a `get_all_property_types`, with an expectation of an empty result
+/// 2. For each member of the `descriptors` vector, perform a `create` followed by a `get` and verify
+/// 3. Once all data has been created in DHT, perform `get_all_property_types` and verify the result.
+///
+/// Note that this will exercise, create, get, and get_all capabilities across a variety of
+/// holon descriptors
+///
+/// To selectively run JUST THE TESTS in this file, use:
+///      cargo test -p descriptors --test property_descriptor_tests  -- --show-output
+///
+///
 #[rstest]
 #[case::mixture_of_property_types(new_property_descriptors_fixture())]
 #[tokio::test(flavor = "multi_thread")]

@@ -13,6 +13,9 @@ use shared_test::PropertyDescriptorTestCase;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 
+/// These tests exercise update actions on PropertyDescriptors
+/// To execute ONLY the tests in this file, use:
+///      cargo test -p descriptors --test property_descriptor_updates_tests -- --show-output
 #[rstest]
 #[case::update_composite_descriptor(update_property_descriptor_composite())]
 #[tokio::test(flavor = "multi_thread")]
@@ -59,7 +62,7 @@ async fn rstest_property_descriptor_updates(
             &previous_record,
             &descriptor,
         )
-        .await;
+            .await;
     }
 }
 
