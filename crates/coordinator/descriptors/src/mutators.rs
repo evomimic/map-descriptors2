@@ -243,10 +243,10 @@ pub fn update_integer_descriptor(
     }
 
     updated_descriptor.details = PropertyDescriptorDetails::Integer(integer_descriptor);
-    println!(
-        "testing update string_descriptor: {:#?}",
-        updated_descriptor
-    );
+    // println!(
+    //     "testing update string_descriptor: {:#?}",
+    //     updated_descriptor
+    // );
 
     Ok(updated_descriptor)
 }

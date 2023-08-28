@@ -400,6 +400,40 @@ pub fn remove_properties_from_composite(
     }
 }
 
+#[fixture]
+pub fn update_property_descriptor_composite() -> Result<PropertyDescriptorTestCase, DescriptorsError>
+{
+    let original_descriptor = build_property_descriptor_with_composite()?;
+    let mut updated_descriptor = original_descriptor.clone();
+    let mut updates = Vec::new();
+
+    let mut composite_descriptor =
+        get_composite_descriptor_from_details(&original_descriptor.details);
+    let mut descriptor_map = get_composite_descriptor_map(&original_descriptor.details);
+
+    let update_properties = create_example_updates_for_property_descriptors(&mut descriptor_map)?;
+
+    for (name, property) in update_properties.properties.clone() {
+        insert_property_descriptor(&mut descriptor_map, name, &property);
+    }
+
+    composite_descriptor.properties = descriptor_map;
+
+    let updated_descriptor = PropertyDescriptor {
+        header: original_descriptor.header.clone(),
+        details: PropertyDescriptorDetails::Composite(composite_descriptor),
+    };
+
+    updates.push(updated_descriptor.clone());
+
+    let test_case = PropertyDescriptorTestCase {
+        original: original_descriptor,
+        updates: updates,
+    };
+    // println!("Original & expected update: {:#?}", test_case);
+    Ok((test_case))
+}
+
 // Private local fns
 
 fn build_holon_descriptor_with_no_properties() -> Result<HolonDescriptor, DescriptorsError> {
