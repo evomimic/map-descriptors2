@@ -39,7 +39,7 @@ use shared_types_descriptor::property_descriptor::{
 /// Note that this will exercise, create, get, and get_all capabilities across a variety of
 /// holon descriptors
 ///
-/// To selectively run JUST THIS TESTS in this file, use:
+/// To selectively run JUST THE TESTS in this file, use:
 ///      cargo test -p descriptors --test holon_descriptor_tests  -- --show-output
 ///
 #[rstest]
