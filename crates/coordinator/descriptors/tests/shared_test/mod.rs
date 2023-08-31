@@ -1,4 +1,4 @@
-#![allow(warnings)]
+// #![allow(warnings)]
 
 pub mod fixture_defs;
 pub mod property_descriptor_data_creators;
