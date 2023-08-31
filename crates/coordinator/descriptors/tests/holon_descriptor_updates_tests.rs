@@ -1,10 +1,5 @@
 //! Holon Descriptor Updates Test Cases
 
-#![allow(unused_imports)]
-
-use core::panic;
-use std::collections::BTreeMap;
-
 mod shared_test;
 
 use hdk::prelude::*;
@@ -12,23 +7,14 @@ use holochain::sweettest::{SweetCell, SweetConductor};
 
 use descriptors::helpers::get_holon_descriptor_from_record;
 use descriptors::holon_descriptor_storage_fns::UpdateHolonDescriptorInput;
-use descriptors::mutators::{
-    new_boolean_descriptor, new_composite_descriptor, new_integer_descriptor, new_string_descriptor,
-};
-use descriptors::property_map_builder::{insert_property_descriptor, remove_property_descriptor};
 use rstest::*;
 use shared_test::fixture_defs::{
-    add_properties, add_properties_to_composite, derive_type_name, remove_properties,
+    add_properties, add_properties_to_composite, remove_properties,
     remove_properties_from_composite, update_each_scalar_details,
 };
 use shared_test::HolonDescriptorTestCase;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::{
-    CompositeDescriptor, IntegerFormat, PropertyDescriptor, PropertyDescriptorDetails,
-    PropertyDescriptorMap,
-};
-
 
 /// These tests exercise update actions on HolonDescriptors
 /// To execute ONLY the tests in this file, use:
@@ -39,7 +25,7 @@ use shared_types_descriptor::property_descriptor::{
 #[case::update_each_scalar_property_details(update_each_scalar_details())]
 #[case::add_property_to_composite_descriptor(add_properties_to_composite())]
 #[case::remove_property_to_composite_descriptor(remove_properties_from_composite(
-add_properties_to_composite()
+    add_properties_to_composite()
 ))]
 #[tokio::test(flavor = "multi_thread")]
 async fn rstest_holon_descriptor_updates(
@@ -85,7 +71,7 @@ async fn rstest_holon_descriptor_updates(
             &previous_record,
             &descriptor,
         )
-            .await;
+        .await;
     }
 }
 
