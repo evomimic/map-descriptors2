@@ -1,4 +1,6 @@
-use shared_types_descriptor::property_descriptor::{PropertyDescriptor, PropertyDescriptorMap};
+use shared_types_descriptor::property_descriptor::{
+    PropertyDescriptorMap, PropertyDescriptorUsage,
+};
 
 ///
 /// PropertyMapBuilder and its associated methods provide a common way to insert various types
@@ -8,11 +10,11 @@ use shared_types_descriptor::property_descriptor::{PropertyDescriptor, PropertyD
 pub fn upsert_property_descriptor(
     property_map: &mut PropertyDescriptorMap,
     property_name: String,
-    property_descriptor: &PropertyDescriptor,
+    property_usage: &PropertyDescriptorUsage,
 ) -> () {
     property_map
         .properties
-        .insert(property_name, property_descriptor.clone());
+        .insert(property_name, property_usage.clone());
 }
 
 pub fn remove_property_descriptor(
