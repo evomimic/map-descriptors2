@@ -1,3 +1,4 @@
+use crate::holon_descriptor::HolonReference;
 use crate::type_header::TypeHeader;
 use derive_new::new;
 use hdi::prelude::*;
@@ -7,7 +8,16 @@ use std::collections::BTreeMap;
 #[derive(new, Clone, PartialEq, Eq)]
 pub struct PropertyDescriptor {
     pub header: TypeHeader,
+    pub sharing: DescriptorSharing,
     pub details: PropertyDescriptorDetails,
+}
+
+#[hdk_entry_helper]
+#[derive(Default, Clone, PartialEq, Eq)]
+pub enum DescriptorSharing {
+    #[default]
+    Dedicated,
+    Shared(HolonReference),
 }
 
 #[hdk_entry_helper]

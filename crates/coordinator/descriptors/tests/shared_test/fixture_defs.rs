@@ -28,8 +28,8 @@ use crate::shared_test::property_descriptor_data_creators::{
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::{
-    CompositeDescriptor, IntegerFormat, PropertyDescriptor, PropertyDescriptorDetails,
-    PropertyDescriptorMap, PropertyDescriptorUsage,
+    CompositeDescriptor, DescriptorSharing, IntegerFormat, PropertyDescriptor,
+    PropertyDescriptorDetails, PropertyDescriptorMap, PropertyDescriptorUsage,
 };
 use shared_types_descriptor::type_header::BaseType;
 
@@ -343,6 +343,7 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
 
         let updated_composite_descriptor = PropertyDescriptor {
             header: new_descriptor.header,
+            sharing: DescriptorSharing::default(),
             details: PropertyDescriptorDetails::Composite(CompositeDescriptor {
                 properties: composite_descriptor_map.clone(),
             }),
@@ -400,6 +401,7 @@ pub fn remove_properties_from_composite(
 
         let updated_composite_descriptor = PropertyDescriptor {
             header: usage.descriptor.header.clone(),
+            sharing: DescriptorSharing::default(),
             details: PropertyDescriptorDetails::Composite(CompositeDescriptor {
                 properties: composite_descriptor_map.clone(),
             }),
@@ -446,6 +448,7 @@ pub fn update_property_descriptor_composite() -> Result<PropertyDescriptorTestCa
 
     let updated_descriptor = PropertyDescriptor {
         header: original_descriptor.header.clone(),
+        sharing: DescriptorSharing::default(),
         details: PropertyDescriptorDetails::Composite(composite_descriptor),
     };
 
