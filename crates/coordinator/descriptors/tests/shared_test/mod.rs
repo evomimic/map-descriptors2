@@ -23,6 +23,11 @@ pub struct PropertyDescriptorTestCase {
     pub updates: Vec<PropertyDescriptor>,
 }
 
+pub struct SharedTypesTestCase {
+    pub shared_types: Vec<PropertyDescriptor>,
+    pub referencing_types: Vec<PropertyDescriptor>, // composite descriptors, each of which references one or more of the shared_types
+}
+
 /// MOCK CONDUCTOR
 
 pub async fn setup_conductor() -> (SweetConductor, AgentPubKey, SweetCell) {

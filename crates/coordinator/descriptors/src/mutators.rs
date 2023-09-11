@@ -71,10 +71,10 @@ fn new_property_descriptor(
         description.to_string(),
         is_dependent,
     )?;
-    //Ok(PropertyDescriptor::new(header))
     Ok(PropertyDescriptor::new(
         header,
-        DescriptorSharing::default(),
+        // Default is Dedicated
+        DescriptorSharing::default(), // NOTE: will need to change this in the future to accomodate shared or make a seperate function
         details,
     ))
 }

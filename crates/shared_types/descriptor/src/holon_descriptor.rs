@@ -13,7 +13,8 @@ pub struct HolonDescriptor {
 #[hdk_entry_helper]
 #[derive(Clone, PartialEq, Eq)]
 pub struct HolonReference {
-    pub id: ActionHash,
+    pub id: Option<ActionHash>,
+    pub name: Option<String>, // the String identifier of the referenced object
 }
 
 #[hdk_entry_helper]

@@ -12,8 +12,11 @@
 // The logic for CUD tests is identical, what varies is the test data.
 // BUT... if the test data set has all different variations in it, we may only need 1 test data set
 
-use crate::shared_test::{HolonDescriptorTestCase, PropertyDescriptorTestCase};
+use crate::shared_test::{
+    HolonDescriptorTestCase, PropertyDescriptorTestCase, SharedTypesTestCase,
+};
 use core::panic;
+use descriptors::helpers::{get_composite_descriptor_from_details, get_composite_descriptor_map};
 use descriptors::mutators::{
     new_boolean_descriptor, new_composite_descriptor, new_holon_descriptor, new_integer_descriptor,
     new_string_descriptor,
@@ -26,7 +29,7 @@ use crate::shared_test::property_descriptor_data_creators::{
     create_example_property_descriptors, create_example_updates_for_property_descriptors,
 };
 use shared_types_descriptor::error::DescriptorsError;
-use shared_types_descriptor::holon_descriptor::HolonDescriptor;
+use shared_types_descriptor::holon_descriptor::{HolonDescriptor, HolonReference};
 use shared_types_descriptor::property_descriptor::{
     CompositeDescriptor, DescriptorSharing, IntegerFormat, PropertyDescriptor,
     PropertyDescriptorDetails, PropertyDescriptorMap, PropertyDescriptorUsage,
@@ -140,38 +143,39 @@ pub fn new_holons_fixture() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
 }
 
 #[fixture]
-pub fn new_property_descriptors_fixture() -> Result<Vec<PropertyDescriptor>, DescriptorsError> {
+pub fn new_dedicated_property_descriptors_fixture(
+) -> Result<Vec<PropertyDescriptor>, DescriptorsError> {
     let mut test_data_set: Vec<PropertyDescriptor> = Vec::new();
 
     // ----------------  PROPERTY DESCRIPTOR WITH STRING PROPERTY -------------------------------
     let string_descriptor = new_string_descriptor(
         derive_type_name("simple", BaseType::String, "example"),
         "Simple Example String Property Type description".to_string(),
-        true,
+        false,
         0,
         100,
     )?;
     test_data_set.push(string_descriptor);
 
     // ----------------  PROPERTY DESCRIPTOR WITH INTEGER PROPERTY -------------------------------
-    let int_descriptor = new_integer_descriptor(
+    let integer_descriptor = new_integer_descriptor(
         derive_type_name("simple_I64", BaseType::Integer, "example"),
         "Simple Example Integer (I64) Property Type description".to_string(),
-        true,
+        false,
         IntegerFormat::I64(),
         -3.168e9 as i64,
         4.44e9 as i64,
     )?;
-    test_data_set.push(int_descriptor);
+    test_data_set.push(integer_descriptor);
 
     // ----------------  PROPERTY DESCRIPTOR WITH BOOLEAN PROPERTY -------------------------------
-    let bool_descriptor = new_boolean_descriptor(
+    let boolean_descriptor = new_boolean_descriptor(
         derive_type_name("simple", BaseType::Boolean, "example"),
         "Simple Example Boolean Property Type description".to_string(),
-        true,
+        false,
         false,
     )?;
-    test_data_set.push(bool_descriptor);
+    test_data_set.push(boolean_descriptor);
 
     // ----------------  PROPERTY DESCRIPTOR WITH COMPOSITE PROPERTY -------------------------------
     let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
@@ -179,7 +183,7 @@ pub fn new_property_descriptors_fixture() -> Result<Vec<PropertyDescriptor>, Des
     let composite_descriptor = new_composite_descriptor(
         derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties"),
         "Simple Composite Property Type description".to_string(),
-        true,
+        false,
         composite_properties.clone(),
     )?;
     let composite_usage = PropertyDescriptorUsage::new(
@@ -194,6 +198,125 @@ pub fn new_property_descriptors_fixture() -> Result<Vec<PropertyDescriptor>, Des
     test_data_set.push(composite_descriptor);
 
     Ok(test_data_set)
+}
+
+#[fixture]
+pub fn new_shared_property_descriptors_fixture() -> Result<SharedTypesTestCase, DescriptorsError> {
+    let mut shared_types: Vec<PropertyDescriptor> = Vec::new();
+
+    let mut string_descriptor = new_string_descriptor(
+        derive_type_name("Shared", BaseType::String, "example"),
+        "Example Shared String Property Type description".to_string(),
+        true,
+        0,
+        100,
+    )?;
+    string_descriptor.sharing = DescriptorSharing::Shared(HolonReference {
+        id: None,
+        name: Some("Shared_String_Type_example".to_string()),
+    });
+    shared_types.push(string_descriptor);
+
+    let mut integer_descriptor = new_integer_descriptor(
+        derive_type_name("Shared_I64", BaseType::Integer, "example"),
+        "Example Shared Integer (I64) Property Type description".to_string(),
+        true,
+        IntegerFormat::I64(),
+        -3.168e9 as i64,
+        4.44e9 as i64,
+    )?;
+    integer_descriptor.sharing = DescriptorSharing::Shared(HolonReference {
+        id: None,
+        name: Some("Shared_I64_Integer_Type_Example".to_string()),
+    });
+    shared_types.push(integer_descriptor);
+
+    let mut boolean_descriptor = new_boolean_descriptor(
+        derive_type_name("Shared", BaseType::Boolean, "example"),
+        "Example Shared Boolean Property Type description".to_string(),
+        true,
+        false,
+    )?;
+    boolean_descriptor.sharing = DescriptorSharing::Shared(HolonReference {
+        id: None,
+        name: Some("Shared_Boolean_Type_example".to_string()),
+    });
+    shared_types.push(boolean_descriptor);
+
+    let mut referencing_types: Vec<PropertyDescriptor> = Vec::new(); // composites
+
+    let mut composite1_properties = PropertyDescriptorMap::new(BTreeMap::new());
+    let composite_descriptor1 = new_composite_descriptor(
+        derive_type_name(
+            "TestComposite1_",
+            BaseType::Composite,
+            "_referencing_string",
+        ),
+        "Test Composite Property referencing shared string type".to_string(),
+        false,
+        composite1_properties.clone(),
+    )?;
+    let composite_usage1 = PropertyDescriptorUsage::new(
+        "testing reference from composite to shared string".to_string(),
+        composite_descriptor1.clone(),
+    );
+    upsert_property_descriptor(
+        &mut composite1_properties,
+        "test_composite_property_1".to_string(),
+        &composite_usage1,
+    );
+    referencing_types.push(composite_descriptor1);
+
+    let mut composite2_properties = PropertyDescriptorMap::new(BTreeMap::new());
+    let composite_descriptor2 = new_composite_descriptor(
+        derive_type_name(
+            "TestComposite2_",
+            BaseType::Composite,
+            "_referencing_integer",
+        ),
+        "Test Composite Property referencing shared integer type".to_string(),
+        false,
+        composite2_properties.clone(),
+    )?;
+    let composite_usage2 = PropertyDescriptorUsage::new(
+        "testing reference from composite to shared integer".to_string(),
+        composite_descriptor2.clone(),
+    );
+    upsert_property_descriptor(
+        &mut composite2_properties,
+        "test_composite_property_2".to_string(),
+        &composite_usage2,
+    );
+    referencing_types.push(composite_descriptor2);
+
+    let mut composite3_properties = PropertyDescriptorMap::new(BTreeMap::new());
+    let composite_descriptor3 = new_composite_descriptor(
+        derive_type_name(
+            "TestComposite3_",
+            BaseType::Composite,
+            "_referencing_boolean",
+        ),
+        "Test Composite Property referencing shared boolean type".to_string(),
+        false,
+        composite3_properties.clone(),
+    )?;
+    let composite_usage3 = PropertyDescriptorUsage::new(
+        "testing reference from composite to shared boolean".to_string(),
+        composite_descriptor3.clone(),
+    );
+    upsert_property_descriptor(
+        &mut composite3_properties,
+        "test_composite_property_3".to_string(),
+        &composite_usage3,
+    );
+    referencing_types.push(composite_descriptor3);
+
+    let test_case = SharedTypesTestCase {
+        shared_types,
+        referencing_types,
+    };
+
+    Ok(test_case)
 }
 
 // Builds initial HolonDescriptor with no properties
@@ -531,22 +654,6 @@ fn build_property_descriptor_with_composite() -> Result<PropertyDescriptor, Desc
     );
 
     Ok(composite_descriptor)
-}
-
-fn get_composite_descriptor_map(details: &PropertyDescriptorDetails) -> PropertyDescriptorMap {
-    match details {
-        PropertyDescriptorDetails::Composite(map) => map.properties.clone(),
-        _ => panic!("error matching composite details"),
-    }
-}
-
-fn get_composite_descriptor_from_details(
-    details: &PropertyDescriptorDetails,
-) -> CompositeDescriptor {
-    match details {
-        PropertyDescriptorDetails::Composite(map) => map.clone(),
-        _ => panic!("error matching composite details"),
-    }
 }
 
 // #[cfg(test)]
