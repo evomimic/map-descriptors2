@@ -1,7 +1,11 @@
 // #![allow(warnings)]
 
-pub mod fixture_defs;
+
 pub mod property_descriptor_data_creators;
+pub mod test_data_types;
+pub mod holon_descriptor_fixtures;
+pub mod fixture_helpers;
+pub mod property_descriptor_fixtures;
 
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::PropertyDescriptor;
@@ -10,23 +14,6 @@ use hdk::prelude::*;
 use holochain::sweettest::{SweetAgents, SweetCell, SweetConductor, SweetDnaFile};
 
 const DNA_FILEPATH: &str = "../../../workdir/map_descriptors.dna";
-
-#[derive(Clone, Debug)]
-pub struct HolonDescriptorTestCase {
-    pub original: HolonDescriptor,
-    pub updates: Vec<HolonDescriptor>,
-}
-
-#[derive(Clone, Debug)]
-pub struct PropertyDescriptorTestCase {
-    pub original: PropertyDescriptor,
-    pub updates: Vec<PropertyDescriptor>,
-}
-
-pub struct SharedTypesTestCase {
-    pub shared_types: Vec<PropertyDescriptor>,
-    pub referencing_types: Vec<PropertyDescriptor>, // composite descriptors, each of which references one or more of the shared_types
-}
 
 /// MOCK CONDUCTOR
 

@@ -19,7 +19,8 @@ use descriptors::mutators::{
 use descriptors::property_map_builder::{remove_property_descriptor, upsert_property_descriptor};
 use rstest::*;
 // use shared_test::data_fixtures::{create_dummy_data,derive_type_name,insert_property_descriptor};
-use shared_test::fixture_defs::{derive_type_name, new_holons_fixture};
+use shared_test::fixture_helpers::{derive_type_name};
+use shared_test::holon_descriptor_fixtures::*;
 use shared_test::setup_conductor;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;

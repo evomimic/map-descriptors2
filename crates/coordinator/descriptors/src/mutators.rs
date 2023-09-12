@@ -41,6 +41,7 @@ fn example_header_check(header: TypeHeader) -> Result<TypeHeader, DescriptorsErr
     }
     Ok(header)
 }
+
 /// Creates an empty holon descriptor.
 ///
 pub fn new_holon_descriptor(
@@ -74,10 +75,11 @@ fn new_property_descriptor(
     Ok(PropertyDescriptor::new(
         header,
         // Default is Dedicated
-        DescriptorSharing::default(), // NOTE: will need to change this in the future to accomodate shared or make a seperate function
+        //DescriptorSharing::default(), // NOTE: will need to change this in the future to accomodate shared or make a seperate function
         details,
     ))
 }
+
 ///
 /// Creates a new (empty) Composite Property Descriptor
 pub fn new_composite_descriptor(
@@ -135,6 +137,7 @@ pub fn new_integer_descriptor(
     )?;
     Ok(desc)
 }
+
 pub fn new_boolean_descriptor(
     type_name: String,
     description: String,

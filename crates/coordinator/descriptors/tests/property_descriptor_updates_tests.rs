@@ -8,10 +8,11 @@ use holochain::sweettest::{SweetCell, SweetConductor};
 use descriptors::helpers::get_property_descriptor_from_record;
 use descriptors::property_descriptor_storage_fns::UpdatePropertyDescriptorInput;
 use rstest::*;
-use shared_test::fixture_defs::update_property_descriptor_composite;
-use shared_test::PropertyDescriptorTestCase;
+use shared_test::property_descriptor_fixtures::*;
+use shared_test::test_data_types::PropertyDescriptorTestCase;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::property_descriptor::PropertyDescriptor;
+use shared_test::property_descriptor_fixtures;
 
 /// These tests exercise update actions on PropertyDescriptors
 /// To execute ONLY the tests in this file, use:

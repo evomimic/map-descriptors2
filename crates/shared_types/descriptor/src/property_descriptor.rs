@@ -8,7 +8,6 @@ use std::collections::BTreeMap;
 #[derive(new, Clone, PartialEq, Eq)]
 pub struct PropertyDescriptor {
     pub header: TypeHeader,
-    pub sharing: DescriptorSharing,
     pub details: PropertyDescriptorDetails,
 }
 
@@ -25,12 +24,13 @@ pub enum DescriptorSharing {
 pub struct PropertyDescriptorUsage {
     pub description: String,
     pub descriptor: PropertyDescriptor,
+    pub sharing: DescriptorSharing,
 }
+
 
 /// PropertyMap contains a set of (property_name, PropertyDescriptor) pairs
 /// that can be used in various contexts. For example, by HolonDescriptor and CompositeDescriptor
 ///
-
 #[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
@@ -42,7 +42,6 @@ pub struct PropertyDescriptorMap {
 /// PropertyDescriptor enumerates the subset of TypeDescriptors whose instances cannot exist
 /// independent of a parent instance. In other words, they cannot be identified or stored
 /// independently of their parent instance
-
 #[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
@@ -77,6 +76,7 @@ pub struct IntegerDescriptor {
     pub min_value: i64,
     pub max_value: i64,
 }
+
 #[hdk_entry_helper]
 #[derive(Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
@@ -109,9 +109,11 @@ pub struct StringDescriptor {
 #[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ValueCollectionDescriptor {
-    pub contains_items_of_type: String, // TODO: replace this with a ref
+    pub contains_items_of_type: String,
+    // TODO: replace this with a ref
     pub min_items: u32,
     pub max_items: u32,
-    pub unique_items: bool, // true means duplicate items are not allowed
+    pub unique_items: bool,
+    // true means duplicate items are not allowed
     pub is_ordered: bool,   // if items have an intrinsic order
 }

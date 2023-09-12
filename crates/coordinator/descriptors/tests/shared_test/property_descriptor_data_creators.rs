@@ -1,4 +1,3 @@
-use crate::shared_test::fixture_defs::derive_type_name;
 use descriptors::mutators::{
     new_boolean_descriptor, new_integer_descriptor, new_string_descriptor,
     update_boolean_descriptor, update_integer_descriptor, update_string_descriptor,
@@ -6,10 +5,9 @@ use descriptors::mutators::{
 use descriptors::property_map_builder::upsert_property_descriptor;
 // use hdk::prelude::*;
 use shared_types_descriptor::error::DescriptorsError;
-use shared_types_descriptor::property_descriptor::{
-    IntegerFormat, PropertyDescriptorMap, PropertyDescriptorUsage,
-};
+use shared_types_descriptor::property_descriptor::{DescriptorSharing, IntegerFormat, PropertyDescriptorMap, PropertyDescriptorUsage};
 use shared_types_descriptor::type_header::BaseType;
+use crate::shared_test::fixture_helpers::derive_type_name;
 
 /// This function adds a set of PropertyDescriptors of various Scalar Types to supplied PropertyMap
 ///
@@ -26,6 +24,7 @@ pub fn create_example_property_descriptors(
     let boolean_usage = PropertyDescriptorUsage::new(
         "example boolean usage description".to_string(),
         boolean_descriptor,
+        DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
@@ -44,6 +43,7 @@ pub fn create_example_property_descriptors(
     let string_usage = PropertyDescriptorUsage::new(
         "example string usage description".to_string(),
         string_descriptor,
+        DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
@@ -63,6 +63,7 @@ pub fn create_example_property_descriptors(
     let i8_usage = PropertyDescriptorUsage::new(
         "example string usage description".to_string(),
         i8_descriptor,
+        DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
@@ -82,6 +83,7 @@ pub fn create_example_property_descriptors(
     let i16_usage = PropertyDescriptorUsage::new(
         "example string usage description".to_string(),
         i16_descriptor,
+        DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
@@ -101,6 +103,7 @@ pub fn create_example_property_descriptors(
     let i32_usage = PropertyDescriptorUsage::new(
         "example string usage description".to_string(),
         i32_descriptor,
+        DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
@@ -120,6 +123,7 @@ pub fn create_example_property_descriptors(
     let i64_usage = PropertyDescriptorUsage::new(
         "example string usage description".to_string(),
         i64_descriptor,
+        DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
@@ -139,6 +143,7 @@ pub fn create_example_property_descriptors(
     let u8_usage = PropertyDescriptorUsage::new(
         "example string usage description".to_string(),
         u8_descriptor,
+        DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
@@ -158,6 +163,7 @@ pub fn create_example_property_descriptors(
     let u16_usage = PropertyDescriptorUsage::new(
         "example string usage description".to_string(),
         u16_descriptor,
+        DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
@@ -177,6 +183,7 @@ pub fn create_example_property_descriptors(
     let u32_usage = PropertyDescriptorUsage::new(
         "example string usage description".to_string(),
         u32_descriptor,
+        DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
@@ -196,6 +203,7 @@ pub fn create_example_property_descriptors(
     let u64_usage = PropertyDescriptorUsage::new(
         "example string usage description".to_string(),
         u64_descriptor,
+        DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
