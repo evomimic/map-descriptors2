@@ -1,5 +1,5 @@
-use shared_types_descriptor::{
-    property_descriptor::{PropertyDescriptor, PropertyDescriptorMap},
+use shared_types_descriptor::property_descriptor::{
+    PropertyDescriptorMap, PropertyDescriptorUsage,
 };
 
 ///
@@ -7,14 +7,14 @@ use shared_types_descriptor::{
 /// of PropertyDescriptors into a BTreeMap that can be leveraged by both Holon and Composite
 ///
 
-pub fn insert_property_descriptor( // TODO: rename to upsert
-                                   property_map: &mut PropertyDescriptorMap,
-                                   property_name: String,
-                                   property_descriptor: &PropertyDescriptor,
+pub fn upsert_property_descriptor(
+    property_map: &mut PropertyDescriptorMap,
+    property_name: String,
+    property_usage: &PropertyDescriptorUsage,
 ) -> () {
     property_map
         .properties
-        .insert(property_name, property_descriptor.clone());
+        .insert(property_name, property_usage.clone());
 }
 
 pub fn remove_property_descriptor(

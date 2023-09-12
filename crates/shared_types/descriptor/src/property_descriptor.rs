@@ -1,5 +1,7 @@
+use crate::type_header::TypeHeader;
 use derive_new::new;
 use hdi::prelude::*;
+use std::collections::BTreeMap;
 
 #[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq)]
@@ -8,9 +10,12 @@ pub struct PropertyDescriptor {
     pub details: PropertyDescriptorDetails,
 }
 
-use std::collections::BTreeMap;
-
-use crate::type_header::TypeHeader;
+#[hdk_entry_helper]
+#[derive(new, Clone, PartialEq, Eq)]
+pub struct PropertyDescriptorUsage {
+    pub description: String,
+    pub descriptor: PropertyDescriptor,
+}
 
 /// PropertyMap contains a set of (property_name, PropertyDescriptor) pairs
 /// that can be used in various contexts. For example, by HolonDescriptor and CompositeDescriptor
@@ -20,7 +25,7 @@ use crate::type_header::TypeHeader;
 #[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct PropertyDescriptorMap {
-    pub properties: BTreeMap<String, PropertyDescriptor>,
+    pub properties: BTreeMap<String, PropertyDescriptorUsage>,
 }
 
 ///
