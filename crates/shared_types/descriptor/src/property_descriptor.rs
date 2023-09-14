@@ -27,8 +27,7 @@ pub struct PropertyDescriptorUsage {
     pub sharing: DescriptorSharing,
 }
 
-
-/// PropertyMap contains a set of (property_name, PropertyDescriptor) pairs
+/// PropertyMap contains a set of (property_name, PropertyDescriptorUsage) pairs
 /// that can be used in various contexts. For example, by HolonDescriptor and CompositeDescriptor
 ///
 #[hdk_entry_helper]
@@ -115,5 +114,5 @@ pub struct ValueCollectionDescriptor {
     pub max_items: u32,
     pub unique_items: bool,
     // true means duplicate items are not allowed
-    pub is_ordered: bool,   // if items have an intrinsic order
+    pub is_ordered: bool, // if items have an intrinsic order
 }
