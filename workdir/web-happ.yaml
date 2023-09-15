@@ -1,7 +1,7 @@
 ---
 manifest_version: "1"
-name: map-descriptors2
+name: map-descriptors
 ui:
   bundled: "../ui/dist.zip"
 happ_manifest:
-  bundled: "./workdir/map-descriptors2.happ"
+  bundled: "./workdir/map-descriptors.happ"
