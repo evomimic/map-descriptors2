@@ -17,7 +17,40 @@ use shared_types_descriptor::property_descriptor::{
     CompositeDescriptor, DescriptorSharing, PropertyDescriptor, PropertyDescriptorDetails,
 };
 
-/// Testing shared variants of properties within a composite
+/// To selectively run JUST THE TESTS in this file, use:
+///      cargo test -p descriptors --test shared_property_descriptor_tests -- --show-output
+///
+/// This function exercises a broad range of capabilities related to references to shared types
+/// from within composite types. The heavy lifting for this test is in the
+/// SharedTypesTestCase creation done within fixtures.
+///
+/// Each such test case contains a vector of shared property types and a vector of referencing
+/// property types. The latter are composites that contain properties that reference the
+/// shared types. Since the fixture doesn't know the ActionHash of the shared type at the time
+/// the referenced_types are created, it stores the type_name of the shared type in the
+/// HolonReference.
+///
+/// In the test function, a type_name_map of (type_name -> ActionHash) is populated as the
+/// shared_types are persisted in holochain.
+///
+/// Test Outline:
+/// 1. After initial setup, create & persist the shared_types. For each shared_type,
+///    perform a `create` followed by a `get`, assert input type = fetched type. Then add
+///    an entry for that shared type to the type_name_map.
+/// 2. Once all data has been created in DHT, perform `get_all_holon_types` and verify the result.
+/// 3. Once the shared_types have been verified as having been created correctly, iterate through
+///     the referencing_types.
+/// 4. For each referencing_type, iterate through its contained properties, extract the name of the
+///    shared_type from its HolonReference, lookup the ActionHash for that type_name in the
+///    type_name_map and update the HolonReference with that ActionHash.
+///
+///    Once HolonReference for all of the referencing type's properties have been populated, then
+///    persist the referencing_type in holochain, fetch it, and assert expected = actual.
+/// 5. Iterate through the fetched referencing type descriptor and, for each of its properties,
+///    fetch the shared property descriptor using via the ActionHash within its HolonRefernce.
+///    Verify that the fetched type descriptor = the expected shared_type descriptor.
+///
+///
 #[rstest]
 #[case::mixture_of_property_types(new_shared_property_descriptors_fixture())]
 #[tokio::test(flavor = "multi_thread")]
@@ -89,7 +122,7 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
         // Then fetch the referenced descriptor and add its actionHash to the
         // PropertyDescriptorUsage's HolonReference.
         for (referenced_property_name, referenced_property_usage) in
-            composite_properties.clone().properties
+        composite_properties.clone().properties
         {
             let referenced_name = match referenced_property_usage.sharing.clone() {
                 DescriptorSharing::Shared(reference) => reference.name,
@@ -151,10 +184,13 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
             get_composite_descriptor_map(&fetched_property_descriptor.details);
 
         for (fetched_property_name, fetched_property_usage) in
-            fetched_composite_map.properties.iter()
+        fetched_composite_map.properties.iter()
         {
             let fetched_holon_reference =
                 get_holon_reference_from_sharing(&fetched_property_usage.sharing);
+
+            // Not sure the following is foolproof way of retrieving the original shared_type
+            // for this usage, but it is probably good enough for now
 
             let created_shared_type = composite_properties
                 .clone()
