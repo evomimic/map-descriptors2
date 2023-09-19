@@ -1,14 +1,10 @@
 // #![allow(warnings)]
 
-
-pub mod property_descriptor_data_creators;
-pub mod test_data_types;
-pub mod holon_descriptor_fixtures;
 pub mod fixture_helpers;
+pub mod holon_descriptor_fixtures;
+pub mod property_descriptor_data_creators;
 pub mod property_descriptor_fixtures;
-
-use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::PropertyDescriptor;
+pub mod test_data_types;
 
 use hdk::prelude::*;
 use holochain::sweettest::{SweetAgents, SweetCell, SweetConductor, SweetDnaFile};

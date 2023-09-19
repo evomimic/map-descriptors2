@@ -10,24 +10,12 @@ mod shared_test;
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
 
-use descriptors::helpers::{
-    get_composite_descriptor_from_details, get_composite_descriptor_map,
-    get_holon_reference_from_sharing, get_property_descriptor_from_record,
-};
-use descriptors::property_map_builder::upsert_property_descriptor;
+use descriptors::helpers::get_property_descriptor_from_record;
 
 use rstest::*;
-use shared_test::property_descriptor_fixtures::{
-    new_dedicated_property_descriptors_fixture, new_shared_property_descriptors_fixture,
-};
-use shared_test::test_data_types::SharedTypesTestCase;
+use shared_test::property_descriptor_fixtures::new_dedicated_property_descriptors_fixture;
 use shared_types_descriptor::error::DescriptorsError;
-use shared_types_descriptor::property_descriptor::{
-    CompositeDescriptor, DescriptorSharing, PropertyDescriptor, PropertyDescriptorDetails,
-    PropertyDescriptorMap, PropertyDescriptorUsage,
-};
-
-use shared_types_descriptor::holon_descriptor::HolonReference;
+use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 
 /// This function exercises a broad range of capabilities. The heavy lifting for this test is in the
 /// test data set creation done within fixtures.
@@ -131,4 +119,3 @@ async fn rstest_property_descriptor_capabilities(
     fetched_entries.sort_by(|a, b| a.header.type_name.cmp(&b.header.type_name));
     assert_eq!(descriptors, fetched_entries);
 }
-

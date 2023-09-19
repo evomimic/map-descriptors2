@@ -12,26 +12,28 @@
 // The logic for CUD tests is identical, what varies is the test data.
 // BUT... if the test data set has all different variations in it, we may only need 1 test data set
 
+#![allow(dead_code)]
+
 use crate::shared_test::test_data_types::HolonDescriptorTestCase;
 use core::panic;
-use std::collections::btree_map::BTreeMap;
 use descriptors::helpers::*;
 use descriptors::mutators::*;
 use descriptors::property_map_builder::*;
 use rstest::*;
+use std::collections::btree_map::BTreeMap;
 
 // use hdk::prelude::*;
+use crate::shared_test::fixture_helpers::derive_type_name;
 use crate::shared_test::property_descriptor_data_creators::{
     create_example_property_descriptors, create_example_updates_for_property_descriptors,
 };
 use shared_types_descriptor::error::DescriptorsError;
-use shared_types_descriptor::holon_descriptor::{HolonDescriptor, HolonReference};
+use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::{
     CompositeDescriptor, DescriptorSharing, IntegerFormat, PropertyDescriptor,
     PropertyDescriptorDetails, PropertyDescriptorMap, PropertyDescriptorUsage,
 };
 use shared_types_descriptor::type_header::BaseType;
-use crate::shared_test::fixture_helpers::derive_type_name;
 
 /// This function creates a rich test dataset by creating a vector of HolonDescriptors of various
 /// kinds -- from simple to complex
@@ -117,7 +119,6 @@ pub fn new_holons_fixture() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
 
     Ok(test_data_set)
 }
-
 
 // Builds initial HolonDescriptor with no properties
 #[fixture]
@@ -229,12 +230,11 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
         -42,
         42,
     )?;
-    let i8_usage =
-        PropertyDescriptorUsage::new(
-            "new i8 usage description".to_string(),
-            new_i8_descriptor,
-            DescriptorSharing::default(),
-        );
+    let i8_usage = PropertyDescriptorUsage::new(
+        "new i8 usage description".to_string(),
+        new_i8_descriptor,
+        DescriptorSharing::default(),
+    );
 
     let new_u64_descriptor = new_integer_descriptor(
         derive_type_name("new", BaseType::Integer, "addition"),
@@ -244,12 +244,11 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
         111111111,
         999999999,
     )?;
-    let u64_usage =
-        PropertyDescriptorUsage::new(
-            "new u64 usage description".to_string(),
-            new_u64_descriptor,
-            DescriptorSharing::default(),
-        );
+    let u64_usage = PropertyDescriptorUsage::new(
+        "new u64 usage description".to_string(),
+        new_u64_descriptor,
+        DescriptorSharing::default(),
+    );
 
     let original_composite_property_descriptor = original_descriptor
         .properties
@@ -360,7 +359,6 @@ pub fn remove_properties_from_composite(
         panic!("error getting composite");
     }
 }
-
 
 // Private local fns
 

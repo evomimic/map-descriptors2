@@ -12,7 +12,6 @@ use shared_test::property_descriptor_fixtures::*;
 use shared_test::test_data_types::PropertyDescriptorTestCase;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::property_descriptor::PropertyDescriptor;
-use shared_test::property_descriptor_fixtures;
 
 /// These tests exercise update actions on PropertyDescriptors
 /// To execute ONLY the tests in this file, use:
@@ -63,7 +62,7 @@ async fn rstest_property_descriptor_updates(
             &previous_record,
             &descriptor,
         )
-            .await;
+        .await;
     }
 }
 

@@ -1,25 +1,15 @@
-use crate::shared_test::test_data_types::{
-    HolonDescriptorTestCase, PropertyDescriptorTestCase, SharedTypesTestCase,
-};
-use core::panic;
+#![allow(dead_code)]
+
+use descriptors::mutators::{new_composite_descriptor, new_holon_descriptor};
+use descriptors::property_map_builder::upsert_property_descriptor;
 use std::collections::btree_map::BTreeMap;
-use descriptors::helpers::{get_composite_descriptor_from_details, get_composite_descriptor_map};
-use descriptors::mutators::{
-    new_boolean_descriptor, new_composite_descriptor, new_holon_descriptor, new_integer_descriptor,
-    new_string_descriptor,
-};
-use descriptors::property_map_builder::{remove_property_descriptor, upsert_property_descriptor};
-use rstest::*;
 
 // use hdk::prelude::*;
-use crate::shared_test::property_descriptor_data_creators::{
-    create_example_property_descriptors, create_example_updates_for_property_descriptors,
-};
+use crate::shared_test::property_descriptor_data_creators::create_example_property_descriptors;
 use shared_types_descriptor::error::DescriptorsError;
-use shared_types_descriptor::holon_descriptor::{HolonDescriptor, HolonReference};
+use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::{
-    CompositeDescriptor, DescriptorSharing, IntegerFormat, PropertyDescriptor,
-    PropertyDescriptorDetails, PropertyDescriptorMap, PropertyDescriptorUsage,
+    DescriptorSharing, PropertyDescriptor, PropertyDescriptorMap, PropertyDescriptorUsage,
 };
 use shared_types_descriptor::type_header::BaseType;
 
@@ -42,14 +32,12 @@ pub fn derive_type_name(prefix: &str, base_type: BaseType, suffix: &str) -> Stri
     result.to_string()
 }
 
-
 // fn derive_type_description(type_name: String)-> String {
 //    format!("{type_name},_description")
 //}
 
 /// This function creates a rich test dataset by creating a vector of HolonDescriptors of various
 /// kinds -- from simple to complex
-
 
 // Private local fns
 
@@ -135,4 +123,3 @@ fn build_property_descriptor_with_composite() -> Result<PropertyDescriptor, Desc
 //         println!("{:#?}", data);
 //     }
 // }
-

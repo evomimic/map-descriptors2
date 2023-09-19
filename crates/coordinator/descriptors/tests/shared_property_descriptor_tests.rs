@@ -7,15 +7,14 @@ use holochain::sweettest::{SweetCell, SweetConductor};
 use std::collections::BTreeMap;
 
 use descriptors::helpers::*;
-use descriptors::property_descriptor_storage_fns::UpdatePropertyDescriptorInput;
 use rstest::*;
 
 use shared_test::property_descriptor_fixtures::*;
-use shared_test::test_data_types::{PropertyDescriptorTestCase, SharedTypesTestCase};
+use shared_test::test_data_types::SharedTypesTestCase;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonReference;
 use shared_types_descriptor::property_descriptor::{
-    DescriptorSharing, PropertyDescriptor, PropertyDescriptorDetails, PropertyDescriptorMap,
+    CompositeDescriptor, DescriptorSharing, PropertyDescriptor, PropertyDescriptorDetails,
 };
 
 /// Testing shared variants of properties within a composite
@@ -32,14 +31,14 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
 
     let test_case = input.unwrap();
     let shared_types = test_case.shared_types;
-    let referencing_types = test_case.referencing_types;
+    let mut referencing_types = test_case.referencing_types;
 
     let mut created_shared_types: Vec<PropertyDescriptor> = Vec::new();
-    let mut type_name_map: BTreeMap<String, ActionHash> = BTreeMap::new(); //  WHY NEEDED?
+    let mut type_name_map: BTreeMap<String, ActionHash> = BTreeMap::new();
 
     // Create each shared type as an entry in Holochain, then collect them
     for descriptor in shared_types.clone() {
-        println!("Creating shared type: {:#?} \n", &descriptor);
+        // println!("shared type: {:#?}", descriptor);
         let created_record: Record = conductor
             .call(
                 &cell.zome("descriptors"),
@@ -74,28 +73,28 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
     //
     // Iterate through the referenced types
 
-    for composite in referencing_types.clone() {
-        let type_name = &composite.header.type_name; // IS THIS OK? type_name == property_name  CORRECT??
-                                                     // First get the composite's properties
-        let mut composite_properties = match composite.details.clone() {
+    for composite in &mut referencing_types {
+        // println!("composite: {:#?}", composite);
+        // First get the composite's properties
+        let composite_properties_result = match composite.details.clone() {
             PropertyDescriptorDetails::Composite(composite_details) => {
                 Ok(composite_details.properties)
             }
             _ => Err("Error: Expected Composite Type"), // make this an Error: Expected Composite Type
         };
+        let mut composite_properties = composite_properties_result.unwrap();
 
         // iterate through this composite's properties, extracting the name of the shared
         // Property Descriptor that that property references.
         // Then fetch the referenced descriptor and add its actionHash to the
         // PropertyDescriptorUsage's HolonReference.
-        for (referenced_property, referenced_property_usage) in
-            composite_properties.unwrap().properties.iter()
+        for (referenced_property_name, referenced_property_usage) in
+            composite_properties.clone().properties
         {
             let referenced_name = match referenced_property_usage.sharing.clone() {
                 DescriptorSharing::Shared(reference) => reference.name,
                 _ => None,
             };
-            assert_eq!(*referenced_property, referenced_name.clone().unwrap());
 
             let mut property_usage_with_hash = referenced_property_usage.clone();
 
@@ -108,7 +107,16 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
                     panic!("Couldn't find referenced type in the list of shared types provided.");
                 }
             };
+            composite_properties
+                .properties
+                .insert(referenced_property_name, property_usage_with_hash);
+
+            composite.details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(
+                composite_properties.clone(),
+            ));
         }
+
+        println!("composite {:#?}", composite);
 
         // All of the HolonReferences have been updated with their id, ready to create the composite type
 
@@ -126,59 +134,49 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
                 created_composite_record.action_address().clone(),
             )
             .await;
+        assert_eq!(
+            created_composite_record.clone(),
+            fetched_composite_record.clone().unwrap()
+        );
 
         let fetched_property_descriptor =
             get_property_descriptor_from_record(fetched_composite_record.unwrap()).unwrap();
 
+        // println!(
+        //     "created_composite_descriptor {:#?}",
+        //     &fetched_property_descriptor
+        // );
+
         let fetched_composite_map =
             get_composite_descriptor_map(&fetched_property_descriptor.details);
 
-        let usage = fetched_composite_map.properties.get(type_name).unwrap();
+        for (fetched_property_name, fetched_property_usage) in
+            fetched_composite_map.properties.iter()
+        {
+            let fetched_holon_reference =
+                get_holon_reference_from_sharing(&fetched_property_usage.sharing);
 
-        let fetched_action_hash = get_holon_reference_from_sharing(&usage.sharing).id.unwrap();
+            let created_shared_type = composite_properties
+                .clone()
+                .properties
+                .get(fetched_property_name)
+                .unwrap()
+                .clone()
+                .descriptor;
 
-        let fetched_shared_descriptor_record: Option<Record> = conductor
-            .call(
-                &cell.zome("descriptors"),
-                "get_property_descriptor",
-                fetched_action_hash,
-            )
-            .await;
+            let fetched_shared_descriptor_record: Option<Record> = conductor
+                .call(
+                    &cell.zome("descriptors"),
+                    "get_property_descriptor",
+                    fetched_holon_reference.id,
+                )
+                .await;
 
-        let fetched_shared_descriptor =
-            get_property_descriptor_from_record(fetched_shared_descriptor_record.unwrap()).unwrap();
+            let fetched_shared_descriptor =
+                get_property_descriptor_from_record(fetched_shared_descriptor_record.unwrap())
+                    .unwrap();
 
-        let created_shared_type: PropertyDescriptor = created_shared_types
-            .iter()
-            .find(|descriptor| descriptor.header.type_name == *type_name)
-            .unwrap()
-            .clone();
-
-        assert_eq!(created_shared_type, fetched_shared_descriptor);
+            assert_eq!(created_shared_type, fetched_shared_descriptor);
+        }
     }
-
-    ////
-    // let created_shared_string_type: PropertyDescriptor = created_shared_types
-    //     .iter()
-    //     .find(|descriptor| descriptor.header.type_name == shared_string_name)
-    //     .unwrap()
-    //     .clone();
-    //
-    // let created_shared_integer_type: PropertyDescriptor = created_shared_types
-    //     .iter()
-    //     .find(|descriptor| descriptor.header.type_name == shared_integer_name)
-    //     .unwrap()
-    //     .clone();
-    //
-    // let created_shared_boolean_type: PropertyDescriptor = created_shared_types
-    //     .iter()
-    //     .find(|descriptor| descriptor.header.type_name == shared_boolean_name)
-    //     .unwrap()
-    //     .clone();
-
-    // println!(
-    //     "string: {:#?}, \n int: {:#?}, \n bool: {:#?}",
-    //     shared_string_tuple, shared_integer_tuple, shared_boolean_tuple
-    // );
-    // println!("referencing types: {:#?}", referencing_types);
 }
