@@ -1,6 +1,9 @@
 use hdk::prelude::*;
-use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::PropertyDescriptor;
+use shared_types_descriptor::holon_descriptor::{HolonDescriptor, HolonReference};
+use shared_types_descriptor::property_descriptor::{
+    CompositeDescriptor, DescriptorSharing, PropertyDescriptor, PropertyDescriptorDetails,
+    PropertyDescriptorMap,
+};
 
 // pub fn try_entry_from_record(record: Record) -> ExternResult<Entry> {
 //     record
@@ -50,5 +53,32 @@ pub fn get_property_descriptor_from_record(record: Record) -> ExternResult<Prope
             )))
         }
         _ => Err(wasm_error!("Record {:?} does not have an entry", record)),
+    }
+}
+
+// TEST HELPERS
+
+// assumes map exists
+pub fn get_composite_descriptor_map(details: &PropertyDescriptorDetails) -> PropertyDescriptorMap {
+    match details {
+        PropertyDescriptorDetails::Composite(map) => map.properties.clone(),
+        _ => panic!("error matching composite details"), // ?TODO: change this
+    }
+}
+// assumes details are composite
+pub fn get_composite_descriptor_from_details(
+    details: &PropertyDescriptorDetails,
+) -> CompositeDescriptor {
+    match details {
+        PropertyDescriptorDetails::Composite(map) => map.clone(),
+        _ => panic!("error matching composite details"), // ?TODO: change this
+    }
+}
+
+// assumes shared
+pub fn get_holon_reference_from_sharing(sharing: &DescriptorSharing) -> HolonReference {
+    match sharing {
+        DescriptorSharing::Shared(holon_reference) => holon_reference.clone(),
+        _ => panic!("error matching shared holon reference"), // ?TODO: change this
     }
 }

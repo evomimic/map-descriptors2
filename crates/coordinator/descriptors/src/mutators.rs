@@ -7,8 +7,8 @@ use std::collections::BTreeMap;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::{
-    BooleanDescriptor, CompositeDescriptor, IntegerDescriptor, IntegerFormat, PropertyDescriptor,
-    PropertyDescriptorDetails, PropertyDescriptorMap, StringDescriptor,
+    BooleanDescriptor, CompositeDescriptor, DescriptorSharing, IntegerDescriptor, IntegerFormat,
+    PropertyDescriptor, PropertyDescriptorDetails, PropertyDescriptorMap, StringDescriptor,
 };
 use shared_types_descriptor::type_header::{BaseType, SemanticVersion, TypeHeader};
 
@@ -41,6 +41,7 @@ fn example_header_check(header: TypeHeader) -> Result<TypeHeader, DescriptorsErr
     }
     Ok(header)
 }
+
 /// Creates an empty holon descriptor.
 ///
 pub fn new_holon_descriptor(
@@ -71,9 +72,14 @@ fn new_property_descriptor(
         description.to_string(),
         is_dependent,
     )?;
-    //Ok(PropertyDescriptor::new(header))
-    Ok(PropertyDescriptor::new(header, details))
+    Ok(PropertyDescriptor::new(
+        header,
+        // Default is Dedicated
+        //DescriptorSharing::default(), // NOTE: will need to change this in the future to accomodate shared or make a seperate function
+        details,
+    ))
 }
+
 ///
 /// Creates a new (empty) Composite Property Descriptor
 pub fn new_composite_descriptor(
@@ -131,6 +137,7 @@ pub fn new_integer_descriptor(
     )?;
     Ok(desc)
 }
+
 pub fn new_boolean_descriptor(
     type_name: String,
     description: String,

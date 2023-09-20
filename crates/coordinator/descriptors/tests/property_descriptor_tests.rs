@@ -5,12 +5,15 @@
 
 mod shared_test;
 
+// use core::panic;
+
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
 
 use descriptors::helpers::get_property_descriptor_from_record;
+
 use rstest::*;
-use shared_test::fixture_defs::new_property_descriptors_fixture;
+use shared_test::property_descriptor_fixtures::new_dedicated_property_descriptors_fixture;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 
@@ -30,7 +33,7 @@ use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 ///
 ///
 #[rstest]
-#[case::mixture_of_property_types(new_property_descriptors_fixture())]
+#[case::mixture_of_dedicated_property_types(new_dedicated_property_descriptors_fixture())]
 #[tokio::test(flavor = "multi_thread")]
 async fn rstest_property_descriptor_capabilities(
     #[case] input: Result<Vec<PropertyDescriptor>, DescriptorsError>,

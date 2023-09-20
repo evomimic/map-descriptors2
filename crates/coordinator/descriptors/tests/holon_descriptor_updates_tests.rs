@@ -8,11 +8,8 @@ use holochain::sweettest::{SweetCell, SweetConductor};
 use descriptors::helpers::get_holon_descriptor_from_record;
 use descriptors::holon_descriptor_storage_fns::UpdateHolonDescriptorInput;
 use rstest::*;
-use shared_test::fixture_defs::{
-    add_properties, add_properties_to_composite, remove_properties,
-    remove_properties_from_composite, update_each_scalar_details,
-};
-use shared_test::HolonDescriptorTestCase;
+use shared_test::holon_descriptor_fixtures::*;
+use shared_test::test_data_types::HolonDescriptorTestCase;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 
@@ -25,7 +22,7 @@ use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 #[case::update_each_scalar_property_details(update_each_scalar_details())]
 #[case::add_property_to_composite_descriptor(add_properties_to_composite())]
 #[case::remove_property_to_composite_descriptor(remove_properties_from_composite(
-    add_properties_to_composite()
+add_properties_to_composite()
 ))]
 #[tokio::test(flavor = "multi_thread")]
 async fn rstest_holon_descriptor_updates(
@@ -71,7 +68,7 @@ async fn rstest_holon_descriptor_updates(
             &previous_record,
             &descriptor,
         )
-        .await;
+            .await;
     }
 }
 

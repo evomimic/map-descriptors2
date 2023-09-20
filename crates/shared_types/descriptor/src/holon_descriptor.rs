@@ -11,6 +11,14 @@ pub struct HolonDescriptor {
 }
 
 #[hdk_entry_helper]
+#[derive(new, Default, Clone, PartialEq, Eq)]
+pub struct HolonReference {
+    pub id: Option<ActionHash>,
+    // TODO: change to type_name
+    pub name: Option<String>, // the String identifier of the referenced object // same as type_name
+}
+
+#[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct HolonCollectionDescriptor {
