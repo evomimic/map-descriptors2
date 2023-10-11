@@ -21,12 +21,14 @@ fn new_type_header(
     type_name: String,
     base_type: BaseType,
     description: String,
+    label: String,
     is_dependent: bool,
 ) -> Result<TypeHeader, DescriptorsError> {
     let header = TypeHeader::new(
         type_name,
         base_type,
         description,
+        label,
         SemanticVersion::default(),
         is_dependent,
     );
@@ -47,9 +49,10 @@ fn example_header_check(header: TypeHeader) -> Result<TypeHeader, DescriptorsErr
 pub fn new_holon_descriptor(
     type_name: String,
     description: String,
+    label: String,
     is_dependent: bool,
 ) -> Result<HolonDescriptor, DescriptorsError> {
-    let header = new_type_header(type_name, BaseType::Holon, description, is_dependent)?;
+    let header = new_type_header(type_name, BaseType::Holon, description, label, is_dependent)?;
 
     let descriptor = HolonDescriptor::new(header, PropertyDescriptorMap::new(BTreeMap::new()));
 
@@ -61,6 +64,7 @@ pub fn new_holon_descriptor(
 fn new_property_descriptor(
     type_name: String,
     description: String,
+    label: String,
     base_type: BaseType,
     is_dependent: bool,
     details: PropertyDescriptorDetails,
@@ -70,6 +74,7 @@ fn new_property_descriptor(
         type_name.to_string(),
         base_type,
         description.to_string(),
+        label,
         is_dependent,
     )?;
     Ok(PropertyDescriptor::new(
@@ -85,6 +90,7 @@ fn new_property_descriptor(
 pub fn new_composite_descriptor(
     type_name: String,
     description: String,
+    label: String,
     is_dependent: bool,
     properties: PropertyDescriptorMap,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
@@ -93,6 +99,7 @@ pub fn new_composite_descriptor(
     let desc = new_property_descriptor(
         type_name,
         description,
+        label,
         BaseType::Composite,
         is_dependent,
         details,
@@ -103,6 +110,7 @@ pub fn new_composite_descriptor(
 pub fn new_string_descriptor(
     type_name: String,
     description: String,
+    label: String,
     is_dependent: bool,
     min_length: u32,
     max_length: u32,
@@ -111,6 +119,7 @@ pub fn new_string_descriptor(
     let desc = new_property_descriptor(
         type_name,
         description,
+        label,
         BaseType::String,
         is_dependent,
         details,
@@ -121,6 +130,7 @@ pub fn new_string_descriptor(
 pub fn new_integer_descriptor(
     type_name: String,
     description: String,
+    label: String,
     is_dependent: bool,
     format: IntegerFormat,
     min_value: i64,
@@ -131,6 +141,7 @@ pub fn new_integer_descriptor(
     let desc = new_property_descriptor(
         type_name,
         description,
+        label,
         BaseType::Integer,
         is_dependent,
         details,
@@ -141,6 +152,7 @@ pub fn new_integer_descriptor(
 pub fn new_boolean_descriptor(
     type_name: String,
     description: String,
+    label: String,
     is_dependent: bool,
     is_fuzzy: bool,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
@@ -148,6 +160,7 @@ pub fn new_boolean_descriptor(
     let desc = new_property_descriptor(
         type_name,
         description,
+        label,
         BaseType::Boolean,
         is_dependent,
         details,

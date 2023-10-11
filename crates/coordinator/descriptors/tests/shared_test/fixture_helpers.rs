@@ -32,9 +32,13 @@ pub fn derive_type_name(prefix: &str, base_type: BaseType, suffix: &str) -> Stri
     result.to_string()
 }
 
-// fn derive_type_description(type_name: String)-> String {
-//    format!("{type_name},_description")
-//}
+pub fn derive_label(type_name: &str) -> String {
+    format!("human readable label for {type_name}")
+}
+
+pub fn derive_type_description(type_name: &str) -> String {
+    format!("description for {type_name}")
+}
 
 /// This function creates a rich test dataset by creating a vector of HolonDescriptors of various
 /// kinds -- from simple to complex
@@ -42,18 +46,22 @@ pub fn derive_type_name(prefix: &str, base_type: BaseType, suffix: &str) -> Stri
 // Private local fns
 
 fn build_holon_descriptor_with_no_properties() -> Result<HolonDescriptor, DescriptorsError> {
+    let type_name = derive_type_name("", BaseType::Holon, "_with_no_properties");
     let descriptor: HolonDescriptor = new_holon_descriptor(
-        derive_type_name("", BaseType::Holon, "_with_no_properties"),
-        "A simple holon type that has no properties.".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
     )?;
     Ok(descriptor)
 }
 
 fn build_holon_descriptor_with_scalar() -> Result<HolonDescriptor, DescriptorsError> {
+    let type_name = derive_type_name("", BaseType::Holon, "_with_scalar_properties");
     let mut descriptor: HolonDescriptor = new_holon_descriptor(
-        derive_type_name("", BaseType::Holon, "_with_scalar_properties"),
-        "A holon type that has a single property of each scalar property type.".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
     )?;
     let _unused_result = create_example_property_descriptors(&mut descriptor.properties);
@@ -61,17 +69,21 @@ fn build_holon_descriptor_with_scalar() -> Result<HolonDescriptor, DescriptorsEr
 }
 
 fn build_holon_descriptor_with_composite() -> Result<HolonDescriptor, DescriptorsError> {
+    let type_name = derive_type_name("", BaseType::Holon, "_with_composite_properties");
     let mut holon_descriptor: HolonDescriptor = new_holon_descriptor(
-        derive_type_name("", BaseType::Holon, "_with_composite_properties"),
-        "A holon type that has a single property of a composite property type.".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
     )?;
     let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
     // Adds properties of each scalar type
     let _unused_result = create_example_property_descriptors(&mut composite_properties)?;
+    let type_name = derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties");
     let composite_descriptor = new_composite_descriptor(
-        derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties"),
-        "Simple Composite Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         true,
         composite_properties,
     )?;
@@ -92,9 +104,11 @@ fn build_holon_descriptor_with_composite() -> Result<HolonDescriptor, Descriptor
 fn build_property_descriptor_with_composite() -> Result<PropertyDescriptor, DescriptorsError> {
     let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
     let _unused_result = create_example_property_descriptors(&mut composite_properties)?;
+    let type_name = derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties");
     let composite_descriptor = new_composite_descriptor(
-        derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties"),
-        "Simple Composite Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         true,
         composite_properties.clone(),
     )?;

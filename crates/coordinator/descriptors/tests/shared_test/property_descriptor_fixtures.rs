@@ -22,7 +22,7 @@ use rstest::*;
 use std::collections::btree_map::BTreeMap;
 
 // use hdk::prelude::*;
-use crate::shared_test::fixture_helpers::derive_type_name;
+use crate::shared_test::fixture_helpers::{derive_label, derive_type_description, derive_type_name};
 use crate::shared_test::property_descriptor_data_creators::{
     create_example_property_descriptors, create_example_updates_for_property_descriptors,
 };
@@ -35,14 +35,15 @@ use shared_types_descriptor::property_descriptor::{
 use shared_types_descriptor::type_header::BaseType;
 
 #[fixture]
-pub fn new_dedicated_property_descriptors_fixture(
-) -> Result<Vec<PropertyDescriptor>, DescriptorsError> {
+pub fn new_dedicated_property_descriptors_fixture() -> Result<Vec<PropertyDescriptor>, DescriptorsError> {
     let mut test_data_set: Vec<PropertyDescriptor> = Vec::new();
 
     // ----------------  PROPERTY DESCRIPTOR WITH STRING PROPERTY -------------------------------
+    let type_name = derive_type_name("simple", BaseType::String, "example");
     let string_descriptor = new_string_descriptor(
-        derive_type_name("simple", BaseType::String, "example"),
-        "Simple Example String Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         true,
         0,
         100,
@@ -50,9 +51,11 @@ pub fn new_dedicated_property_descriptors_fixture(
     test_data_set.push(string_descriptor);
 
     // ----------------  PROPERTY DESCRIPTOR WITH INTEGER PROPERTY -------------------------------
+    let type_name = derive_type_name("simple_I64", BaseType::Integer, "example");
     let integer_descriptor = new_integer_descriptor(
-        derive_type_name("simple_I64", BaseType::Integer, "example"),
-        "Simple Example Integer (I64) Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         true,
         IntegerFormat::I64(),
         -3.168e9 as i64,
@@ -61,9 +64,11 @@ pub fn new_dedicated_property_descriptors_fixture(
     test_data_set.push(integer_descriptor);
 
     // ----------------  PROPERTY DESCRIPTOR WITH BOOLEAN PROPERTY -------------------------------
+    let type_name = derive_type_name("simple", BaseType::Boolean, "example");
     let boolean_descriptor = new_boolean_descriptor(
-        derive_type_name("simple", BaseType::Boolean, "example"),
-        "Simple Example Boolean Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         true,
         false,
     )?;
@@ -72,9 +77,12 @@ pub fn new_dedicated_property_descriptors_fixture(
     // ----------------  PROPERTY DESCRIPTOR WITH COMPOSITE PROPERTY -------------------------------
     let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
     let _unused_result = create_example_property_descriptors(&mut composite_properties)?;
+
+    let type_name = derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties");
     let composite_descriptor = new_composite_descriptor(
-        derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties"),
-        "Simple Composite Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         true,
         composite_properties.clone(),
     )?;
@@ -100,18 +108,22 @@ pub fn new_shared_property_descriptors_fixture() -> Result<SharedTypesTestCase, 
 
     let mut shared_types: Vec<PropertyDescriptor> = Vec::new();
 
+    let type_name = derive_type_name("Shared", BaseType::String, "example");
     let string_descriptor = new_string_descriptor(
-        derive_type_name("Shared", BaseType::String, "example"),
-        "Example Shared String Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
         0,
         100,
     )?;
     shared_types.push(string_descriptor);
 
+    let type_name = derive_type_name("Shared_I64", BaseType::Integer, "example");
     let integer_descriptor = new_integer_descriptor(
-        derive_type_name("Shared_I64", BaseType::Integer, "example"),
-        "Example Shared Integer (I64) Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
         IntegerFormat::I64(),
         -3.168e9 as i64,
@@ -119,9 +131,11 @@ pub fn new_shared_property_descriptors_fixture() -> Result<SharedTypesTestCase, 
     )?;
     shared_types.push(integer_descriptor);
 
+    let type_name = derive_type_name("Shared", BaseType::Boolean, "example");
     let boolean_descriptor = new_boolean_descriptor(
-        derive_type_name("Shared", BaseType::Boolean, "example"),
-        "Example Shared Boolean Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
         false,
     )?;
@@ -150,9 +164,11 @@ pub fn new_shared_property_descriptors_fixture() -> Result<SharedTypesTestCase, 
         );
         i += 1;
     }
+    let type_name = derive_type_name("TestComposite1_", BaseType::Composite, "");
     let composite_descriptor1 = new_composite_descriptor(
-        derive_type_name("TestComposite1_", BaseType::Composite, ""),
-        "Test Composite Property referencing various shared property types".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
         composite1_properties.clone(),
     )?;
@@ -202,9 +218,12 @@ pub fn update_property_descriptor_composite() -> Result<PropertyDescriptorTestCa
 fn build_property_descriptor_with_composite() -> Result<PropertyDescriptor, DescriptorsError> {
     let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
     let _unused_result = create_example_property_descriptors(&mut composite_properties)?;
+
+    let type_name = derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties");
     let composite_descriptor = new_composite_descriptor(
-        derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties"),
-        "Simple Composite Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         true,
         composite_properties.clone(),
     )?;
@@ -221,6 +240,7 @@ fn build_property_descriptor_with_composite() -> Result<PropertyDescriptor, Desc
 
     Ok(composite_descriptor)
 }
+
 
 // #[cfg(test)]
 // mod tests {

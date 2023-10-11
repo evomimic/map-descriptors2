@@ -15,6 +15,7 @@ pub enum BaseType {
     String,
     Enum,
 }
+
 impl fmt::Display for BaseType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -37,6 +38,7 @@ pub struct SemanticVersion {
     minor: u8,
     patch: u8,
 }
+
 impl Default for SemanticVersion {
     fn default() -> Self {
         SemanticVersion {
@@ -46,12 +48,15 @@ impl Default for SemanticVersion {
         }
     }
 }
+
 #[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct TypeHeader {
     pub type_name: String,
     pub base_type: BaseType,
     pub description: String,
+    // human-readable name for this type
+    pub label: String,
     pub version: SemanticVersion,
     pub is_dependent: bool,
 }
