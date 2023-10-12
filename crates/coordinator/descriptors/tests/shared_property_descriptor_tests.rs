@@ -111,7 +111,7 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
         // First get the composite's properties
         let composite_properties_result = match composite.details.clone() {
             PropertyDescriptorDetails::Composite(composite_details) => {
-                Ok(composite_details.properties)
+                Ok(composite_details.property_map)
             }
             _ => Err("Error: Expected Composite Type"), // make this an Error: Expected Composite Type
         };

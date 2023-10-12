@@ -18,7 +18,7 @@ use shared_types_descriptor::property_descriptor::{
 // ?TODO: change input reference
 pub fn get_holon_descriptor_from_record(record: Record) -> ExternResult<HolonDescriptor> {
     match record.entry() {
-        record::RecordEntry::Present(entry) => {
+        RecordEntry::Present(entry) => {
             HolonDescriptor::try_from(entry.clone()).or(Err(wasm_error!(
                 "Couldn't convert Record entry {:?} into data type {}",
                 entry,
@@ -61,10 +61,11 @@ pub fn get_property_descriptor_from_record(record: Record) -> ExternResult<Prope
 // assumes map exists
 pub fn get_composite_descriptor_map(details: &PropertyDescriptorDetails) -> PropertyDescriptorMap {
     match details {
-        PropertyDescriptorDetails::Composite(map) => map.properties.clone(),
+        PropertyDescriptorDetails::Composite(map) => map.property_map.clone(),
         _ => panic!("error matching composite details"), // ?TODO: change this
     }
 }
+
 // assumes details are composite
 pub fn get_composite_descriptor_from_details(
     details: &PropertyDescriptorDetails,

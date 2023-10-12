@@ -24,6 +24,7 @@ pub enum DescriptorSharing {
 pub struct PropertyDescriptorUsage {
     pub description: String,
     pub descriptor: PropertyDescriptor,
+    pub label: String,
     pub sharing: DescriptorSharing,
 }
 
@@ -64,7 +65,7 @@ pub struct BooleanDescriptor {
 #[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct CompositeDescriptor {
-    pub properties: PropertyDescriptorMap,
+    pub property_map: PropertyDescriptorMap,
 }
 
 #[hdk_entry_helper]

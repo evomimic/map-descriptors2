@@ -14,7 +14,7 @@
 
 #![allow(dead_code)]
 
-use crate::shared_test::test_data_types::HolonDescriptorTestCase;
+
 use core::panic;
 use descriptors::helpers::*;
 use descriptors::mutators::*;
@@ -23,7 +23,9 @@ use rstest::*;
 use std::collections::btree_map::BTreeMap;
 
 // use hdk::prelude::*;
-use crate::shared_test::fixture_helpers::derive_type_name;
+
+use crate::shared_test::test_data_types::HolonDescriptorTestCase;
+use crate::shared_test::fixture_helpers::{derive_type_name, derive_type_description, derive_label};
 use crate::shared_test::property_descriptor_data_creators::{
     create_example_property_descriptors, create_example_updates_for_property_descriptors,
 };
@@ -42,54 +44,64 @@ pub fn new_holons_fixture() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
     let mut test_data_set: Vec<HolonDescriptor> = Vec::new();
 
     // ----------------  HOLON WITH NO PROPERTIES-------------------------------
+    let type_name = derive_type_name("", BaseType::Holon, "_with_no_properties");
     let holon_descriptor: HolonDescriptor = new_holon_descriptor(
-        derive_type_name("", BaseType::Holon, "_with_no_properties"),
-        "A simple holon type that has no properties.".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
     )?;
 
     test_data_set.push(holon_descriptor);
 
     // ----------------  HOLON WITH SINGLE BOOLEAN PROPERTY -------------------------------
-
+    let type_name = derive_type_name("", BaseType::Holon, "_with_single_boolean_property");
     let mut holon_descriptor: HolonDescriptor = new_holon_descriptor(
-        derive_type_name("", BaseType::Holon, "_with_single_boolean_property"),
-        "A simple holon type that has a single boolean property".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
     )?;
 
+    let type_name = derive_type_name("simple", BaseType::Boolean, "");
     let boolean_descriptor = new_boolean_descriptor(
-        derive_type_name("simple", BaseType::Boolean, ""),
-        "Simple Boolean Property Type description".to_string(),
-        true,
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
+        false,
         false,
     )?;
     let boolean_usage = PropertyDescriptorUsage::new(
         "example boolean usage description".to_string(),
         boolean_descriptor,
+        "a boolean property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
-        &mut holon_descriptor.properties,
+        &mut holon_descriptor.property_map,
         "a_boolean_property".to_string(),
         &boolean_usage,
     );
     test_data_set.push(holon_descriptor);
 
     // ----------------  HOLON WITH SCALAR PROPERTIES -------------------------------
+    let type_name = derive_type_name("", BaseType::Holon, "_with_scalar_properties");
     let mut holon_descriptor: HolonDescriptor = new_holon_descriptor(
-        derive_type_name("", BaseType::Holon, "_with_scalar_properties"),
-        "A holon type that has a single property of each scalar property type.".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
     )?;
-    let _unused_result = create_example_property_descriptors(&mut holon_descriptor.properties)?;
+    let _unused_result = create_example_property_descriptors(&mut holon_descriptor.property_map)?;
 
     test_data_set.push(holon_descriptor);
 
     // ----------------  HOLON WITH COMPOSITE PROPERTY -------------------------------
+    let type_name = derive_type_name("", BaseType::Holon, "_with_composite_properties");
     let mut holon_descriptor: HolonDescriptor = new_holon_descriptor(
-        derive_type_name("", BaseType::Holon, "_with_composite_properties"),
-        "A holon type that has a single property of a composite property type.".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         false,
     )?;
 
@@ -98,19 +110,22 @@ pub fn new_holons_fixture() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
 
     let _unused_result = create_example_property_descriptors(&mut composite_properties)?;
 
+    let type_name = derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties");
     let composite_descriptor = new_composite_descriptor(
-        derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties"),
-        "Simple Composite Property Type description".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         true,
         composite_properties,
     )?;
     let composite_usage = PropertyDescriptorUsage::new(
         "example composite usage description".to_string(),
         composite_descriptor,
+        "a composite property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
-        &mut holon_descriptor.properties,
+        &mut holon_descriptor.property_map,
         "a_composite_property".to_string(),
         &composite_usage,
     );
@@ -128,10 +143,10 @@ pub fn add_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> {
     let mut updates = Vec::new();
 
     let properties: PropertyDescriptorMap =
-        create_example_property_descriptors(&mut updated_descriptor.properties)?;
+        create_example_property_descriptors(&mut updated_descriptor.property_map)?;
 
     for (name, property) in properties.properties {
-        upsert_property_descriptor(&mut updated_descriptor.properties, name, &property);
+        upsert_property_descriptor(&mut updated_descriptor.property_map, name, &property);
         updates.push(updated_descriptor.clone());
     }
 
@@ -151,8 +166,8 @@ pub fn remove_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> 
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
 
-    for (name, _property) in original_descriptor.properties.properties.clone() {
-        remove_property_descriptor(&mut updated_descriptor.properties, name);
+    for (name, _property) in original_descriptor.property_map.properties.clone() {
+        remove_property_descriptor(&mut updated_descriptor.property_map, name);
         updates.push(updated_descriptor.clone());
     }
 
@@ -174,10 +189,10 @@ pub fn update_each_scalar_details() -> Result<HolonDescriptorTestCase, Descripto
     let mut updates = Vec::new();
 
     let update_properties =
-        create_example_updates_for_property_descriptors(&mut updated_descriptor.properties)?;
+        create_example_updates_for_property_descriptors(&mut updated_descriptor.property_map)?;
 
     for (name, property) in update_properties.properties.clone() {
-        upsert_property_descriptor(&mut updated_descriptor.properties, name, &property);
+        upsert_property_descriptor(&mut updated_descriptor.property_map, name, &property);
         updates.push(updated_descriptor.clone());
     }
 
@@ -197,21 +212,26 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
 
+    let type_name = derive_type_name("new", BaseType::Boolean, "addition");
     let new_boolean_descriptor = new_boolean_descriptor(
-        derive_type_name("new", BaseType::Boolean, "addition"),
-        "add new boolean descriptor to composite property".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         true,
         false,
     )?;
     let boolean_usage = PropertyDescriptorUsage::new(
         "new boolean usage description".to_string(),
         new_boolean_descriptor,
+        "a boolean property".to_string(),
         DescriptorSharing::default(),
     );
 
+    let type_name = derive_type_name("new", BaseType::String, "addition");
     let new_string_descriptor = new_string_descriptor(
-        derive_type_name("new", BaseType::String, "addition"),
-        "add new string descriptor to composite property".to_string(),
+        type_name.clone(),
+        derive_type_description(&type_name),
+        derive_label(&type_name),
         true,
         3,
         5000,
@@ -219,12 +239,15 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
     let string_usage = PropertyDescriptorUsage::new(
         "new string usage description".to_string(),
         new_string_descriptor,
+        "a string property".to_string(),
         DescriptorSharing::default(),
     );
 
+    let type_name = derive_type_name("new", BaseType::Integer, "addition");
     let new_i8_descriptor = new_integer_descriptor(
-        derive_type_name("new", BaseType::Integer, "addition"),
+        type_name.clone(),
         "add new integer I8 descriptor to composite property".to_string(),
+        derive_label(&type_name),
         true,
         IntegerFormat::I8(),
         -42,
@@ -233,12 +256,15 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
     let i8_usage = PropertyDescriptorUsage::new(
         "new i8 usage description".to_string(),
         new_i8_descriptor,
+        "an i9 integer property".to_string(),
         DescriptorSharing::default(),
     );
 
+    let type_name = derive_type_name("new", BaseType::Integer, "addition");
     let new_u64_descriptor = new_integer_descriptor(
-        derive_type_name("new", BaseType::Integer, "addition"),
+        type_name.clone(),
         "add new integer U64 descriptor to composite property".to_string(),
+        derive_label(&type_name),
         true,
         IntegerFormat::U64(),
         111111111,
@@ -247,11 +273,12 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
     let u64_usage = PropertyDescriptorUsage::new(
         "new u64 usage description".to_string(),
         new_u64_descriptor,
+        "a u64 integer property".to_string(),
         DescriptorSharing::default(),
     );
 
     let original_composite_property_descriptor = original_descriptor
-        .properties
+        .property_map
         .properties
         .get("a_composite_property");
 
@@ -276,16 +303,17 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
         let updated_composite_descriptor = PropertyDescriptor {
             header: new_descriptor.header,
             details: PropertyDescriptorDetails::Composite(CompositeDescriptor {
-                properties: composite_descriptor_map.clone(),
+                property_map: composite_descriptor_map.clone(),
             }),
         };
         let composite_usage = PropertyDescriptorUsage::new(
             "new composite usage description".to_string(),
             updated_composite_descriptor,
+            "a composite property".to_string(),
             DescriptorSharing::default(),
         );
         upsert_property_descriptor(
-            &mut updated_descriptor.properties,
+            &mut updated_descriptor.property_map,
             "a_composite_property".to_string(),
             &composite_usage,
         );
@@ -312,7 +340,7 @@ pub fn remove_properties_from_composite(
     let mut updates = Vec::new();
 
     let originalinal_composite_property_descriptor = original_descriptor
-        .properties
+        .property_map
         .properties
         .get("a_composite_property");
 
@@ -334,16 +362,17 @@ pub fn remove_properties_from_composite(
         let updated_composite_descriptor = PropertyDescriptor {
             header: usage.descriptor.header.clone(),
             details: PropertyDescriptorDetails::Composite(CompositeDescriptor {
-                properties: composite_descriptor_map.clone(),
+                property_map: composite_descriptor_map.clone(),
             }),
         };
         let composite_usage = PropertyDescriptorUsage::new(
             "new composite usage description".to_string(),
             updated_composite_descriptor,
+            "a composite property".to_string(),
             DescriptorSharing::default(),
         );
         upsert_property_descriptor(
-            &mut updated_descriptor.properties,
+            &mut updated_descriptor.property_map,
             "a_composite_property".to_string(),
             &composite_usage,
         );
@@ -363,46 +392,56 @@ pub fn remove_properties_from_composite(
 // Private local fns
 
 fn build_holon_descriptor_with_no_properties() -> Result<HolonDescriptor, DescriptorsError> {
+    let type_name = derive_type_name("", BaseType::Holon, "_with_no_properties");
     let descriptor: HolonDescriptor = new_holon_descriptor(
-        derive_type_name("", BaseType::Holon, "_with_no_properties"),
+        type_name.clone(),
         "A simple holon type that has no properties.".to_string(),
+        derive_label(&type_name),
         false,
     )?;
     Ok(descriptor)
 }
 
 fn build_holon_descriptor_with_scalar() -> Result<HolonDescriptor, DescriptorsError> {
+    let type_name = derive_type_name("", BaseType::Holon, "_with_scalar_properties");
     let mut descriptor: HolonDescriptor = new_holon_descriptor(
-        derive_type_name("", BaseType::Holon, "_with_scalar_properties"),
+        type_name.clone(),
         "A holon type that has a single property of each scalar property type.".to_string(),
+        derive_label(&type_name),
         false,
     )?;
-    let _unused_result = create_example_property_descriptors(&mut descriptor.properties);
+    let _unused_result = create_example_property_descriptors(&mut descriptor.property_map);
     Ok(descriptor)
 }
 
 fn build_holon_descriptor_with_composite() -> Result<HolonDescriptor, DescriptorsError> {
+    let type_name = derive_type_name("", BaseType::Holon, "_with_composite_properties");
     let mut holon_descriptor: HolonDescriptor = new_holon_descriptor(
-        derive_type_name("", BaseType::Holon, "_with_composite_properties"),
+        type_name.clone(),
         "A holon type that has a single property of a composite property type.".to_string(),
+        derive_label(&type_name),
         false,
     )?;
     let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
     // Adds properties of each scalar type
     let _unused_result = create_example_property_descriptors(&mut composite_properties)?;
+
+    let type_name = derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties");
     let composite_descriptor = new_composite_descriptor(
-        derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties"),
+        type_name.clone(),
         "Simple Composite Property Type description".to_string(),
+        derive_type_description(&type_name),
         true,
         composite_properties,
     )?;
     let composite_usage = PropertyDescriptorUsage::new(
         "example composite usage description".to_string(),
         composite_descriptor,
+        "a composite property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
-        &mut holon_descriptor.properties,
+        &mut holon_descriptor.property_map,
         "a_composite_property".to_string(),
         &composite_usage,
     );
@@ -413,15 +452,19 @@ fn build_holon_descriptor_with_composite() -> Result<HolonDescriptor, Descriptor
 fn build_property_descriptor_with_composite() -> Result<PropertyDescriptor, DescriptorsError> {
     let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
     let _unused_result = create_example_property_descriptors(&mut composite_properties)?;
+
+    let type_name = derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties");
     let composite_descriptor = new_composite_descriptor(
-        derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties"),
+        type_name.clone(),
         "Simple Composite Property Type description".to_string(),
+        derive_label(&type_name),
         true,
         composite_properties.clone(),
     )?;
     let composite_usage = PropertyDescriptorUsage::new(
         "new composite usage description".to_string(),
         composite_descriptor.clone(),
+        "a composite property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(

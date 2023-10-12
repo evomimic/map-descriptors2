@@ -76,7 +76,7 @@ async fn rstest_holon_descriptor_capabilities(
     // then get the created descriptor and comparing it to the generated descriptor.
     for descriptor in descriptors.clone() {
         let name = descriptor.header.type_name.clone();
-        let p_count = descriptor.properties.properties.len();
+        let p_count = descriptor.property_map.properties.len();
         println!();
         println!("****** Starting create/get test for the following HolonDescriptor");
         println!("{:#?}", descriptor);
