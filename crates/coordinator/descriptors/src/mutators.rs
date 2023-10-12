@@ -171,12 +171,17 @@ pub fn new_boolean_descriptor(
 pub fn update_boolean_descriptor(
     original_descriptor: &PropertyDescriptor,
     new_description: Option<String>,
+    new_label: Option<String>,
     is_fuzzy: Option<bool>,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     let mut updated_descriptor = original_descriptor.clone();
     if let Some(description) = new_description {
         updated_descriptor.header.description = description;
     }
+    if let Some(label) = new_label {
+        updated_descriptor.header.label = label;
+    }
+
     let mut bool_descriptor = BooleanDescriptor::default();
     match original_descriptor.details.clone() {
         PropertyDescriptorDetails::Boolean(descriptor) => {
@@ -201,12 +206,16 @@ pub fn update_boolean_descriptor(
 pub fn update_string_descriptor(
     original_descriptor: &PropertyDescriptor,
     new_description: Option<String>,
+    new_label: Option<String>,
     min_length: Option<u32>,
     max_length: Option<u32>,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     let mut updated_descriptor = original_descriptor.clone();
     if let Some(description) = new_description {
         updated_descriptor.header.description = description;
+    }
+    if let Some(label) = new_label {
+        updated_descriptor.header.label = label;
     }
     let mut string_descriptor = StringDescriptor::default();
     match original_descriptor.details.clone() {
@@ -237,6 +246,7 @@ pub fn update_string_descriptor(
 pub fn update_integer_descriptor(
     original_descriptor: &PropertyDescriptor,
     new_description: Option<String>,
+    new_label: Option<String>,
     format: IntegerFormat,
     min_value: Option<i64>,
     max_value: Option<i64>,
@@ -244,6 +254,9 @@ pub fn update_integer_descriptor(
     let mut updated_descriptor = original_descriptor.clone();
     if let Some(description) = new_description {
         updated_descriptor.header.description = description;
+    }
+    if let Some(label) = new_label {
+        updated_descriptor.header.label = label;
     }
     let mut integer_descriptor = IntegerDescriptor::new(format, 0, 0);
     match original_descriptor.details.clone() {

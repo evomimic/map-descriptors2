@@ -255,6 +255,7 @@ pub fn create_example_updates_for_property_descriptors(
         updated_boolean_usage.descriptor = update_boolean_descriptor(
             &boolean_usage.descriptor,
             Some("change is_fuzzy to true".to_string()),
+            Some("a new label".to_string()),
             Some(true),
         )?;
         upsert_property_descriptor(
@@ -274,6 +275,7 @@ pub fn create_example_updates_for_property_descriptors(
         updated_string_usage.descriptor = update_string_descriptor(
             &string_usage.descriptor,
             Some("changed min".to_string()),
+            Some("a new label".to_string()),
             Some(3),
             None,
         )?;
@@ -294,6 +296,7 @@ pub fn create_example_updates_for_property_descriptors(
         updated_i8_usage.descriptor = update_integer_descriptor(
             &i8_usage.descriptor,
             Some("change min".to_string()),
+            Some("a new label".to_string()),
             IntegerFormat::I8(),
             Some(0),
             None,
@@ -315,6 +318,7 @@ pub fn create_example_updates_for_property_descriptors(
         updated_i16_usage.descriptor = update_integer_descriptor(
             &i16_usage.descriptor,
             Some("change max".to_string()),
+            Some("a new label".to_string()),
             IntegerFormat::I16(),
             None,
             Some(444444),
@@ -336,6 +340,7 @@ pub fn create_example_updates_for_property_descriptors(
         updated_i32_usage.descriptor = update_integer_descriptor(
             &i32_usage.descriptor,
             Some("change min max".to_string()),
+            Some("a new label".to_string()),
             IntegerFormat::I32(),
             Some(-123456789),
             Some(987654321),
@@ -357,6 +362,7 @@ pub fn create_example_updates_for_property_descriptors(
         updated_i64_usage.descriptor = update_integer_descriptor(
             &i64_usage.descriptor,
             Some("change min max".to_string()),
+            Some("a new label".to_string()),
             IntegerFormat::I64(),
             Some(-3.333333e9 as i64),
             Some(7.777777e14 as i64),
@@ -378,6 +384,7 @@ pub fn create_example_updates_for_property_descriptors(
         updated_u8_usage.descriptor = update_integer_descriptor(
             &u8_usage.descriptor,
             Some("change min".to_string()),
+            Some("a new label".to_string()),
             IntegerFormat::U8(),
             Some(1),
             None,
@@ -399,6 +406,7 @@ pub fn create_example_updates_for_property_descriptors(
         updated_u16_usage.descriptor = update_integer_descriptor(
             &u16_usage.descriptor,
             Some("change max".to_string()),
+            Some("a new label".to_string()),
             IntegerFormat::U16(),
             None,
             Some(444),
@@ -420,6 +428,7 @@ pub fn create_example_updates_for_property_descriptors(
         updated_u32_usage.descriptor = update_integer_descriptor(
             &u32_usage.descriptor,
             Some("change min max".to_string()),
+            Some("a new label".to_string()),
             IntegerFormat::U32(),
             Some(12345),
             Some(67329),
@@ -441,6 +450,7 @@ pub fn create_example_updates_for_property_descriptors(
         updated_u64_usage.descriptor = update_integer_descriptor(
             &u64_usage.descriptor,
             Some("change min max".to_string()),
+            Some("a new label".to_string()),
             IntegerFormat::U64(),
             Some(2.1618e9 as i64),
             Some(8.5555e12 as i64),
