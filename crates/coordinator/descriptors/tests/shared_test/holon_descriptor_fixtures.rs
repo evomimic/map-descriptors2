@@ -74,10 +74,11 @@ pub fn new_holons_fixture() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
     let boolean_usage = PropertyDescriptorUsage::new(
         "example boolean usage description".to_string(),
         boolean_descriptor,
+        "a boolean property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
-        &mut holon_descriptor.properties,
+        &mut holon_descriptor.property_map,
         "a_boolean_property".to_string(),
         &boolean_usage,
     );
@@ -91,7 +92,7 @@ pub fn new_holons_fixture() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
         derive_label(&type_name),
         false,
     )?;
-    let _unused_result = create_example_property_descriptors(&mut holon_descriptor.properties)?;
+    let _unused_result = create_example_property_descriptors(&mut holon_descriptor.property_map)?;
 
     test_data_set.push(holon_descriptor);
 
@@ -120,10 +121,11 @@ pub fn new_holons_fixture() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
     let composite_usage = PropertyDescriptorUsage::new(
         "example composite usage description".to_string(),
         composite_descriptor,
+        "a composite property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
-        &mut holon_descriptor.properties,
+        &mut holon_descriptor.property_map,
         "a_composite_property".to_string(),
         &composite_usage,
     );
@@ -141,10 +143,10 @@ pub fn add_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> {
     let mut updates = Vec::new();
 
     let properties: PropertyDescriptorMap =
-        create_example_property_descriptors(&mut updated_descriptor.properties)?;
+        create_example_property_descriptors(&mut updated_descriptor.property_map)?;
 
     for (name, property) in properties.properties {
-        upsert_property_descriptor(&mut updated_descriptor.properties, name, &property);
+        upsert_property_descriptor(&mut updated_descriptor.property_map, name, &property);
         updates.push(updated_descriptor.clone());
     }
 
@@ -164,8 +166,8 @@ pub fn remove_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> 
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
 
-    for (name, _property) in original_descriptor.properties.properties.clone() {
-        remove_property_descriptor(&mut updated_descriptor.properties, name);
+    for (name, _property) in original_descriptor.property_map.properties.clone() {
+        remove_property_descriptor(&mut updated_descriptor.property_map, name);
         updates.push(updated_descriptor.clone());
     }
 
@@ -187,10 +189,10 @@ pub fn update_each_scalar_details() -> Result<HolonDescriptorTestCase, Descripto
     let mut updates = Vec::new();
 
     let update_properties =
-        create_example_updates_for_property_descriptors(&mut updated_descriptor.properties)?;
+        create_example_updates_for_property_descriptors(&mut updated_descriptor.property_map)?;
 
     for (name, property) in update_properties.properties.clone() {
-        upsert_property_descriptor(&mut updated_descriptor.properties, name, &property);
+        upsert_property_descriptor(&mut updated_descriptor.property_map, name, &property);
         updates.push(updated_descriptor.clone());
     }
 
@@ -221,6 +223,7 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
     let boolean_usage = PropertyDescriptorUsage::new(
         "new boolean usage description".to_string(),
         new_boolean_descriptor,
+        "a boolean property".to_string(),
         DescriptorSharing::default(),
     );
 
@@ -236,6 +239,7 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
     let string_usage = PropertyDescriptorUsage::new(
         "new string usage description".to_string(),
         new_string_descriptor,
+        "a string property".to_string(),
         DescriptorSharing::default(),
     );
 
@@ -252,6 +256,7 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
     let i8_usage = PropertyDescriptorUsage::new(
         "new i8 usage description".to_string(),
         new_i8_descriptor,
+        "an i9 integer property".to_string(),
         DescriptorSharing::default(),
     );
 
@@ -268,11 +273,12 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
     let u64_usage = PropertyDescriptorUsage::new(
         "new u64 usage description".to_string(),
         new_u64_descriptor,
+        "a u64 integer property".to_string(),
         DescriptorSharing::default(),
     );
 
     let original_composite_property_descriptor = original_descriptor
-        .properties
+        .property_map
         .properties
         .get("a_composite_property");
 
@@ -297,16 +303,17 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
         let updated_composite_descriptor = PropertyDescriptor {
             header: new_descriptor.header,
             details: PropertyDescriptorDetails::Composite(CompositeDescriptor {
-                properties: composite_descriptor_map.clone(),
+                property_map: composite_descriptor_map.clone(),
             }),
         };
         let composite_usage = PropertyDescriptorUsage::new(
             "new composite usage description".to_string(),
             updated_composite_descriptor,
+            "a composite property".to_string(),
             DescriptorSharing::default(),
         );
         upsert_property_descriptor(
-            &mut updated_descriptor.properties,
+            &mut updated_descriptor.property_map,
             "a_composite_property".to_string(),
             &composite_usage,
         );
@@ -333,7 +340,7 @@ pub fn remove_properties_from_composite(
     let mut updates = Vec::new();
 
     let originalinal_composite_property_descriptor = original_descriptor
-        .properties
+        .property_map
         .properties
         .get("a_composite_property");
 
@@ -355,16 +362,17 @@ pub fn remove_properties_from_composite(
         let updated_composite_descriptor = PropertyDescriptor {
             header: usage.descriptor.header.clone(),
             details: PropertyDescriptorDetails::Composite(CompositeDescriptor {
-                properties: composite_descriptor_map.clone(),
+                property_map: composite_descriptor_map.clone(),
             }),
         };
         let composite_usage = PropertyDescriptorUsage::new(
             "new composite usage description".to_string(),
             updated_composite_descriptor,
+            "a composite property".to_string(),
             DescriptorSharing::default(),
         );
         upsert_property_descriptor(
-            &mut updated_descriptor.properties,
+            &mut updated_descriptor.property_map,
             "a_composite_property".to_string(),
             &composite_usage,
         );
@@ -402,7 +410,7 @@ fn build_holon_descriptor_with_scalar() -> Result<HolonDescriptor, DescriptorsEr
         derive_label(&type_name),
         false,
     )?;
-    let _unused_result = create_example_property_descriptors(&mut descriptor.properties);
+    let _unused_result = create_example_property_descriptors(&mut descriptor.property_map);
     Ok(descriptor)
 }
 
@@ -429,10 +437,11 @@ fn build_holon_descriptor_with_composite() -> Result<HolonDescriptor, Descriptor
     let composite_usage = PropertyDescriptorUsage::new(
         "example composite usage description".to_string(),
         composite_descriptor,
+        "a composite property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
-        &mut holon_descriptor.properties,
+        &mut holon_descriptor.property_map,
         "a_composite_property".to_string(),
         &composite_usage,
     );
@@ -455,6 +464,7 @@ fn build_property_descriptor_with_composite() -> Result<PropertyDescriptor, Desc
     let composite_usage = PropertyDescriptorUsage::new(
         "new composite usage description".to_string(),
         composite_descriptor.clone(),
+        "a composite property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(

@@ -7,7 +7,7 @@ use hdi::prelude::*;
 #[derive(new, Clone, PartialEq, Eq)]
 pub struct HolonDescriptor {
     pub header: TypeHeader,
-    pub properties: PropertyDescriptorMap,
+    pub property_map: PropertyDescriptorMap,
 }
 
 #[hdk_entry_helper]
@@ -26,6 +26,7 @@ pub struct HolonCollectionDescriptor {
     pub contains_items_of_type: HolonDescriptor,
     pub min_items: u32,
     pub max_items: u32,
-    pub unique_items: bool, // true means duplicate items are not allowed
+    pub unique_items: bool,
+    // true means duplicate items are not allowed
     pub is_ordered: bool, // if items have an intrinsic order (e.g., is_ordered=false mathematical set)
 }

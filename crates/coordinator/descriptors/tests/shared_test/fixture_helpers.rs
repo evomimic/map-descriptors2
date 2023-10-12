@@ -64,7 +64,7 @@ fn build_holon_descriptor_with_scalar() -> Result<HolonDescriptor, DescriptorsEr
         derive_label(&type_name),
         false,
     )?;
-    let _unused_result = create_example_property_descriptors(&mut descriptor.properties);
+    let _unused_result = create_example_property_descriptors(&mut descriptor.property_map);
     Ok(descriptor)
 }
 
@@ -90,10 +90,11 @@ fn build_holon_descriptor_with_composite() -> Result<HolonDescriptor, Descriptor
     let composite_usage = PropertyDescriptorUsage::new(
         "example composite usage description".to_string(),
         composite_descriptor,
+        "a composite property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
-        &mut holon_descriptor.properties,
+        &mut holon_descriptor.property_map,
         "a_composite_property".to_string(),
         &composite_usage,
     );
@@ -115,6 +116,7 @@ fn build_property_descriptor_with_composite() -> Result<PropertyDescriptor, Desc
     let composite_usage = PropertyDescriptorUsage::new(
         "new composite usage description".to_string(),
         composite_descriptor.clone(),
+        "a composite property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(

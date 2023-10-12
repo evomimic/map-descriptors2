@@ -26,6 +26,7 @@ pub fn create_example_property_descriptors(
     let boolean_usage = PropertyDescriptorUsage::new(
         "example boolean usage description".to_string(),
         boolean_descriptor,
+        "a boolean property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
@@ -47,6 +48,7 @@ pub fn create_example_property_descriptors(
     let string_usage = PropertyDescriptorUsage::new(
         "example string usage description".to_string(),
         string_descriptor,
+        "a string property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
@@ -67,8 +69,9 @@ pub fn create_example_property_descriptors(
         127,
     )?;
     let i8_usage = PropertyDescriptorUsage::new(
-        "example string usage description".to_string(),
+        "example integer usage description".to_string(),
         i8_descriptor,
+        "an i8 integer property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
@@ -89,8 +92,9 @@ pub fn create_example_property_descriptors(
         32767,
     )?;
     let i16_usage = PropertyDescriptorUsage::new(
-        "example string usage description".to_string(),
+        "example integer usage description".to_string(),
         i16_descriptor,
+        "am i16 integer property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
@@ -111,8 +115,9 @@ pub fn create_example_property_descriptors(
         2147483648,
     )?;
     let i32_usage = PropertyDescriptorUsage::new(
-        "example string usage description".to_string(),
+        "example i32 integer property description".to_string(),
         i32_descriptor,
+        "an i32 integer property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
@@ -133,8 +138,9 @@ pub fn create_example_property_descriptors(
         9.223372036855e18 as i64,
     )?;
     let i64_usage = PropertyDescriptorUsage::new(
-        "example string usage description".to_string(),
+        "example i64 integer property description".to_string(),
         i64_descriptor,
+        "an i64 integer property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
@@ -155,8 +161,9 @@ pub fn create_example_property_descriptors(
         127,
     )?;
     let u8_usage = PropertyDescriptorUsage::new(
-        "example string usage description".to_string(),
+        "example u8 integer property description".to_string(),
         u8_descriptor,
+        "a u8 integer property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
@@ -177,8 +184,9 @@ pub fn create_example_property_descriptors(
         32767,
     )?;
     let u16_usage = PropertyDescriptorUsage::new(
-        "example string usage description".to_string(),
+        "example u16 integer property description".to_string(),
         u16_descriptor,
+        "a u16 integer property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
@@ -199,8 +207,9 @@ pub fn create_example_property_descriptors(
         2147483648,
     )?;
     let u32_usage = PropertyDescriptorUsage::new(
-        "example string usage description".to_string(),
+        "example u32 integer property description".to_string(),
         u32_descriptor,
+        "a u32 integer property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
@@ -221,8 +230,9 @@ pub fn create_example_property_descriptors(
         9.223372036855e18 as i64,
     )?;
     let u64_usage = PropertyDescriptorUsage::new(
-        "example string usage description".to_string(),
+        "example u64 integer property description".to_string(),
         u64_descriptor,
+        "a u64 integer property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(

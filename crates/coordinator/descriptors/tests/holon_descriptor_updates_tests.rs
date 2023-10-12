@@ -82,7 +82,7 @@ pub async fn rstest_1_holon_descriptor_update(
     let original_action_hash: ActionHash =
         original_holon_descriptor_record.action_address().clone();
 
-    let original_descriptor =
+    let _original_descriptor =
         get_holon_descriptor_from_record(original_holon_descriptor_record.clone()).unwrap();
 
     // println!("original: {:#?} \n", original_descriptor);

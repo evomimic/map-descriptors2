@@ -89,6 +89,7 @@ pub fn new_dedicated_property_descriptors_fixture() -> Result<Vec<PropertyDescri
     let composite_usage = PropertyDescriptorUsage::new(
         "example composite usage description".to_string(),
         composite_descriptor.clone(),
+        "a composite property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
@@ -152,6 +153,7 @@ pub fn new_shared_property_descriptors_fixture() -> Result<SharedTypesTestCase, 
         let usage = PropertyDescriptorUsage::new(
             "testing referenced usage of from composite".to_string(),
             shared_type.clone(),
+            "a shared property".to_string(),
             DescriptorSharing::Shared(HolonReference {
                 id: None,
                 name: Some(shared_type.header.type_name.clone()),
@@ -198,7 +200,7 @@ pub fn update_property_descriptor_composite() -> Result<PropertyDescriptorTestCa
         upsert_property_descriptor(&mut descriptor_map, name, &property);
     }
 
-    composite_descriptor.properties = descriptor_map;
+    composite_descriptor.property_map = descriptor_map;
 
     let updated_descriptor = PropertyDescriptor {
         header: original_descriptor.header.clone(),
@@ -230,6 +232,7 @@ fn build_property_descriptor_with_composite() -> Result<PropertyDescriptor, Desc
     let composite_usage = PropertyDescriptorUsage::new(
         "new composite usage description".to_string(),
         composite_descriptor.clone(),
+        "a composite property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
