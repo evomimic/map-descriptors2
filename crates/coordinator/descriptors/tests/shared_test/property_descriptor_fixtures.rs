@@ -29,7 +29,7 @@ use crate::shared_test::property_descriptor_data_creators::{
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonReference;
 use shared_types_descriptor::property_descriptor::{
-    DescriptorSharing, IntegerFormat, PropertyDescriptor, PropertyDescriptorDetails,
+    DescriptorSharing, PropertyDescriptor, PropertyDescriptorDetails,
     PropertyDescriptorMap, PropertyDescriptorUsage,
 };
 use shared_types_descriptor::type_header::BaseType;
@@ -51,13 +51,12 @@ pub fn new_dedicated_property_descriptors_fixture() -> Result<Vec<PropertyDescri
     test_data_set.push(string_descriptor);
 
     // ----------------  PROPERTY DESCRIPTOR WITH INTEGER PROPERTY -------------------------------
-    let type_name = derive_type_name("simple_I64", BaseType::Integer, "example");
+    let type_name = derive_type_name("simple", BaseType::Integer, "example");
     let integer_descriptor = new_integer_descriptor(
         type_name.clone(),
         derive_type_description(&type_name),
         derive_label(&type_name),
         true,
-        IntegerFormat::I64(),
         -3.168e9 as i64,
         4.44e9 as i64,
     )?;
@@ -120,13 +119,12 @@ pub fn new_shared_property_descriptors_fixture() -> Result<SharedTypesTestCase, 
     )?;
     shared_types.push(string_descriptor);
 
-    let type_name = derive_type_name("Shared_I64", BaseType::Integer, "example");
+    let type_name = derive_type_name("Shared_", BaseType::Integer, "example");
     let integer_descriptor = new_integer_descriptor(
         type_name.clone(),
         derive_type_description(&type_name),
         derive_label(&type_name),
         false,
-        IntegerFormat::I64(),
         -3.168e9 as i64,
         4.44e9 as i64,
     )?;

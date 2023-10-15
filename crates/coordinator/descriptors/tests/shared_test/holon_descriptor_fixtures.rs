@@ -32,7 +32,7 @@ use crate::shared_test::property_descriptor_data_creators::{
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::{
-    CompositeDescriptor, DescriptorSharing, IntegerFormat, PropertyDescriptor,
+    CompositeDescriptor, DescriptorSharing, PropertyDescriptor,
     PropertyDescriptorDetails, PropertyDescriptorMap, PropertyDescriptorUsage,
 };
 use shared_types_descriptor::type_header::BaseType;
@@ -244,36 +244,18 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
     );
 
     let type_name = derive_type_name("new", BaseType::Integer, "addition");
-    let new_i8_descriptor = new_integer_descriptor(
+    let new_integer_descriptor = new_integer_descriptor(
         type_name.clone(),
-        "add new integer I8 descriptor to composite property".to_string(),
+        "add new integer descriptor to composite property".to_string(),
         derive_label(&type_name),
         true,
-        IntegerFormat::I8(),
         -42,
         42,
     )?;
-    let i8_usage = PropertyDescriptorUsage::new(
-        "new i8 usage description".to_string(),
-        new_i8_descriptor,
-        "an i9 integer property".to_string(),
-        DescriptorSharing::default(),
-    );
-
-    let type_name = derive_type_name("new", BaseType::Integer, "addition");
-    let new_u64_descriptor = new_integer_descriptor(
-        type_name.clone(),
-        "add new integer U64 descriptor to composite property".to_string(),
-        derive_label(&type_name),
-        true,
-        IntegerFormat::U64(),
-        111111111,
-        999999999,
-    )?;
-    let u64_usage = PropertyDescriptorUsage::new(
-        "new u64 usage description".to_string(),
-        new_u64_descriptor,
-        "a u64 integer property".to_string(),
+    let integer_usage = PropertyDescriptorUsage::new(
+        "new integer usage description".to_string(),
+        new_integer_descriptor,
+        "an integer property".to_string(),
         DescriptorSharing::default(),
     );
 
@@ -292,10 +274,7 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
             .insert("another_boolean_property".to_string(), boolean_usage);
         composite_descriptor_map
             .properties
-            .insert("another_I8_property".to_string(), i8_usage);
-        composite_descriptor_map
-            .properties
-            .insert("another_U64_property".to_string(), u64_usage);
+            .insert("another_integer_property".to_string(), integer_usage);
 
         let mut new_descriptor = usage.descriptor.clone();
         new_descriptor.header.description = "reflecting added properties".to_string();
