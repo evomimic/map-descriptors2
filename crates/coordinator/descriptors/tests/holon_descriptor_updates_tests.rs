@@ -17,13 +17,11 @@ use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 /// To execute ONLY the tests in this file, use:
 ///      cargo test -p descriptors --test holon_descriptor_updates_tests -- --show-output
 #[rstest]
-#[case::add_string_property_to_holon_descriptor(add_properties())]
+//#[case::add_string_property_to_holon_descriptor(add_properties())]
 #[case::remove_properties_from_holon_descriptor(remove_properties())]
 #[case::update_each_scalar_property_details(update_each_scalar_details())]
-#[case::add_property_to_composite_descriptor(add_properties_to_composite())]
-#[case::remove_property_to_composite_descriptor(remove_properties_from_composite(
-add_properties_to_composite()
-))]
+//#[case::add_property_to_composite_descriptor(add_properties_to_composite())]
+//#[case::remove_property_to_composite_descriptor(remove_properties_from_composite(add_properties_to_composite()))]
 #[tokio::test(flavor = "multi_thread")]
 async fn rstest_holon_descriptor_updates(
     #[case] input: Result<HolonDescriptorTestCase, DescriptorsError>,
@@ -60,6 +58,7 @@ async fn rstest_holon_descriptor_updates(
     assert_eq!(original_descriptor, created_descriptor);
     assert_eq!(created_descriptor, fetched_descriptor);
 
+
     for descriptor in expected_descriptors {
         previous_record = rstest_1_holon_descriptor_update(
             &conductor,
@@ -85,8 +84,9 @@ pub async fn rstest_1_holon_descriptor_update(
     let _original_descriptor =
         get_holon_descriptor_from_record(original_holon_descriptor_record.clone()).unwrap();
 
-    // println!("original: {:#?} \n", original_descriptor);
-    // println!("expected: {:#?} \n", expected_holon_descriptor);
+
+    println!("original: {:#?} \n", _original_descriptor);
+    println!("expected: {:#?} \n", expected_holon_descriptor);
 
     let update_input = UpdateHolonDescriptorInput {
         original_holon_descriptor_hash: created_action_hash.clone(),

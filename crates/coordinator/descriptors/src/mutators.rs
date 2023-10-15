@@ -7,7 +7,7 @@ use std::collections::BTreeMap;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::{
-    BooleanDescriptor, CompositeDescriptor, DescriptorSharing, IntegerDescriptor, IntegerFormat,
+    BooleanDescriptor, CompositeDescriptor, DescriptorSharing, IntegerDescriptor,
     PropertyDescriptor, PropertyDescriptorDetails, PropertyDescriptorMap, StringDescriptor,
 };
 use shared_types_descriptor::type_header::{BaseType, SemanticVersion, TypeHeader};
@@ -132,12 +132,11 @@ pub fn new_integer_descriptor(
     description: String,
     label: String,
     is_dependent: bool,
-    format: IntegerFormat,
     min_value: i64,
     max_value: i64,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
     let details =
-        PropertyDescriptorDetails::Integer(IntegerDescriptor::new(format, min_value, max_value));
+        PropertyDescriptorDetails::Integer(IntegerDescriptor::new(min_value, max_value));
     let desc = new_property_descriptor(
         type_name,
         description,
@@ -247,7 +246,6 @@ pub fn update_integer_descriptor(
     original_descriptor: &PropertyDescriptor,
     new_description: Option<String>,
     new_label: Option<String>,
-    format: IntegerFormat,
     min_value: Option<i64>,
     max_value: Option<i64>,
 ) -> Result<PropertyDescriptor, DescriptorsError> {
@@ -258,7 +256,7 @@ pub fn update_integer_descriptor(
     if let Some(label) = new_label {
         updated_descriptor.header.label = label;
     }
-    let mut integer_descriptor = IntegerDescriptor::new(format, 0, 0);
+    let mut integer_descriptor = IntegerDescriptor::new(0, 0);
     match original_descriptor.details.clone() {
         PropertyDescriptorDetails::Integer(descriptor) => {
             if let Some(min) = min_value {

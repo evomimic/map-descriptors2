@@ -5,7 +5,7 @@ use descriptors::mutators::{
 use descriptors::property_map_builder::upsert_property_descriptor;
 // use hdk::prelude::*;
 use shared_types_descriptor::error::DescriptorsError;
-use shared_types_descriptor::property_descriptor::{DescriptorSharing, IntegerFormat, PropertyDescriptorMap, PropertyDescriptorUsage};
+use shared_types_descriptor::property_descriptor::{DescriptorSharing, PropertyDescriptorMap, PropertyDescriptorUsage};
 use shared_types_descriptor::type_header::BaseType;
 use crate::shared_test::fixture_helpers::{derive_label, derive_type_description, derive_type_name};
 
@@ -57,37 +57,35 @@ pub fn create_example_property_descriptors(
         &string_usage,
     );
 
-    // Add Integer I8
+    // Add Integer
     let type_name = derive_type_name("simple_I8", BaseType::Integer, "");
-    let i8_descriptor = new_integer_descriptor(
+    let integer_descriptor = new_integer_descriptor(
         type_name.clone(),
         derive_type_description(&type_name),
         derive_label(&type_name),
         true,
-        IntegerFormat::I8(),
         -127,
         127,
     )?;
-    let i8_usage = PropertyDescriptorUsage::new(
+    let integer_usage = PropertyDescriptorUsage::new(
         "example integer usage description".to_string(),
-        i8_descriptor,
-        "an i8 integer property".to_string(),
+        integer_descriptor,
+        "an integer property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
         "an_I8_property".to_string(),
-        &i8_usage,
+        &integer_usage,
     );
 
-    // Integer I16
+    // Integer
     let type_name = derive_type_name("simple_I16", BaseType::Integer, "");
     let i16_descriptor = new_integer_descriptor(
         type_name.clone(),
         derive_type_description(&type_name),
         derive_label(&type_name),
         true,
-        IntegerFormat::I16(),
         -32767,
         32767,
     )?;
@@ -110,7 +108,6 @@ pub fn create_example_property_descriptors(
         derive_type_description(&type_name),
         derive_label(&type_name),
         true,
-        IntegerFormat::I32(),
         -2147483648,
         2147483648,
     )?;
@@ -133,7 +130,6 @@ pub fn create_example_property_descriptors(
         derive_type_description(&type_name),
         derive_label(&type_name),
         true,
-        IntegerFormat::I64(),
         -9.223372036855e18 as i64,
         9.223372036855e18 as i64,
     )?;
@@ -149,27 +145,26 @@ pub fn create_example_property_descriptors(
         &i64_usage,
     );
 
-    // Integer U8
+    // Integer
     let type_name = derive_type_name("simple_U8", BaseType::Integer, "");
-    let u8_descriptor = new_integer_descriptor(
+    let integer_descriptor = new_integer_descriptor(
         type_name.clone(),
         derive_type_description(&type_name),
         derive_label(&type_name),
         true,
-        IntegerFormat::U8(),
         0,
         127,
     )?;
-    let u8_usage = PropertyDescriptorUsage::new(
+    let integer_usage = PropertyDescriptorUsage::new(
         "example u8 integer property description".to_string(),
-        u8_descriptor,
+        integer_descriptor,
         "a u8 integer property".to_string(),
         DescriptorSharing::default(),
     );
     upsert_property_descriptor(
         property_descriptor_map,
         "a_U8_property".to_string(),
-        &u8_usage,
+        &integer_usage,
     );
 
     // Integer U16
@@ -179,7 +174,6 @@ pub fn create_example_property_descriptors(
         derive_type_description(&type_name),
         derive_label(&type_name),
         true,
-        IntegerFormat::U16(),
         0,
         32767,
     )?;
@@ -202,7 +196,6 @@ pub fn create_example_property_descriptors(
         derive_type_description(&type_name),
         derive_label(&type_name),
         true,
-        IntegerFormat::U32(),
         0,
         2147483648,
     )?;
@@ -225,7 +218,6 @@ pub fn create_example_property_descriptors(
         derive_type_description(&type_name),
         derive_label(&type_name),
         true,
-        IntegerFormat::U64(),
         0,
         9.223372036855e18 as i64,
     )?;
@@ -288,23 +280,22 @@ pub fn create_example_updates_for_property_descriptors(
         panic!("Expected {:?}, not found", property_name);
     }
 
-    // Update Integer I8
+    // Update Integer
     let property_name = "an_I8_property".to_string();
-    let expected_i8_descriptor = property_descriptor_map.properties.get(&property_name);
-    if let Some(i8_usage) = expected_i8_descriptor {
-        let mut updated_i8_usage = i8_usage.clone();
-        updated_i8_usage.descriptor = update_integer_descriptor(
-            &i8_usage.descriptor,
+    let expected_integer_descriptor = property_descriptor_map.properties.get(&property_name);
+    if let Some(integer_usage) = expected_integer_descriptor {
+        let mut updated_integer_usage = integer_usage.clone();
+        updated_integer_usage.descriptor = update_integer_descriptor(
+            &integer_usage.descriptor,
             Some("change min".to_string()),
             Some("a new label".to_string()),
-            IntegerFormat::I8(),
             Some(0),
             None,
         )?;
         upsert_property_descriptor(
             property_descriptor_map,
             "an_I8_property".to_string(),
-            &updated_i8_usage,
+            &updated_integer_usage,
         );
     } else {
         panic!("Expected {:?}, not found", property_name);
@@ -319,7 +310,6 @@ pub fn create_example_updates_for_property_descriptors(
             &i16_usage.descriptor,
             Some("change max".to_string()),
             Some("a new label".to_string()),
-            IntegerFormat::I16(),
             None,
             Some(444444),
         )?;
@@ -341,7 +331,6 @@ pub fn create_example_updates_for_property_descriptors(
             &i32_usage.descriptor,
             Some("change min max".to_string()),
             Some("a new label".to_string()),
-            IntegerFormat::I32(),
             Some(-123456789),
             Some(987654321),
         )?;
@@ -363,7 +352,6 @@ pub fn create_example_updates_for_property_descriptors(
             &i64_usage.descriptor,
             Some("change min max".to_string()),
             Some("a new label".to_string()),
-            IntegerFormat::I64(),
             Some(-3.333333e9 as i64),
             Some(7.777777e14 as i64),
         )?;
@@ -378,27 +366,26 @@ pub fn create_example_updates_for_property_descriptors(
 
     // Update Integer U8
     let property_name = "a_U8_property".to_string();
-    let expected_u8_descriptor = property_descriptor_map.properties.get(&property_name);
-    if let Some(u8_usage) = expected_u8_descriptor {
-        let mut updated_u8_usage = u8_usage.clone();
-        updated_u8_usage.descriptor = update_integer_descriptor(
-            &u8_usage.descriptor,
+    let expected_integer_descriptor = property_descriptor_map.properties.get(&property_name);
+    if let Some(integer_usage) = expected_integer_descriptor {
+        let mut updated_integer_usage = integer_usage.clone();
+        updated_integer_usage.descriptor = update_integer_descriptor(
+            &integer_usage.descriptor,
             Some("change min".to_string()),
             Some("a new label".to_string()),
-            IntegerFormat::U8(),
             Some(1),
             None,
         )?;
         upsert_property_descriptor(
             property_descriptor_map,
-            "a_U8_property".to_string(),
-            &updated_u8_usage,
+            "a_property".to_string(),
+            &updated_integer_usage,
         );
     } else {
         panic!("Expected {:?}, not found", property_name);
     }
 
-    // Update Integer U16
+    // Update Integer
     let property_name = "a_U16_property".to_string();
     let expected_u16_descriptor = property_descriptor_map.properties.get(&property_name);
     if let Some(u16_usage) = expected_u16_descriptor {
@@ -407,7 +394,6 @@ pub fn create_example_updates_for_property_descriptors(
             &u16_usage.descriptor,
             Some("change max".to_string()),
             Some("a new label".to_string()),
-            IntegerFormat::U16(),
             None,
             Some(444),
         )?;
@@ -429,7 +415,6 @@ pub fn create_example_updates_for_property_descriptors(
             &u32_usage.descriptor,
             Some("change min max".to_string()),
             Some("a new label".to_string()),
-            IntegerFormat::U32(),
             Some(12345),
             Some(67329),
         )?;
@@ -451,7 +436,6 @@ pub fn create_example_updates_for_property_descriptors(
             &u64_usage.descriptor,
             Some("change min max".to_string()),
             Some("a new label".to_string()),
-            IntegerFormat::U64(),
             Some(2.1618e9 as i64),
             Some(8.5555e12 as i64),
         )?;

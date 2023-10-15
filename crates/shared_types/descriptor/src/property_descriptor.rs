@@ -72,26 +72,10 @@ pub struct CompositeDescriptor {
 #[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct IntegerDescriptor {
-    pub format: IntegerFormat,
     pub min_value: i64,
     pub max_value: i64,
 }
 
-#[hdk_entry_helper]
-#[derive(Clone, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-pub enum IntegerFormat {
-    I8(),
-    I16(),
-    I32(),
-    I64(),
-    // I128(),
-    U8(),
-    U16(),
-    U32(),
-    U64(),
-    // U128(),
-}
 
 #[hdk_entry_helper]
 #[derive(new, Default, Clone, PartialEq, Eq)]
