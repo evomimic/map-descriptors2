@@ -8,7 +8,7 @@ use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::property_descriptor::{
     BooleanDescriptor, CompositeDescriptor, DescriptorSharing, IntegerDescriptor,
-    PropertyDescriptor, PropertyDescriptorDetails, PropertyDescriptorMap, StringDescriptor,
+    ValueDescriptor, ValueDescriptorDetails, PropertyDescriptorMap, StringDescriptor,
 };
 use shared_types_descriptor::type_header::{BaseType, SemanticVersion, TypeHeader};
 
@@ -67,8 +67,8 @@ fn new_property_descriptor(
     label: String,
     base_type: BaseType,
     is_dependent: bool,
-    details: PropertyDescriptorDetails,
-) -> Result<PropertyDescriptor, DescriptorsError> {
+    details: ValueDescriptorDetails,
+) -> Result<ValueDescriptor, DescriptorsError> {
     // Guard that base_type in header matches details
     let header = new_type_header(
         type_name.to_string(),
@@ -77,7 +77,7 @@ fn new_property_descriptor(
         label,
         is_dependent,
     )?;
-    Ok(PropertyDescriptor::new(
+    Ok(ValueDescriptor::new(
         header,
         // Default is Dedicated
         //DescriptorSharing::default(), // NOTE: will need to change this in the future to accomodate shared or make a seperate function
@@ -93,8 +93,8 @@ pub fn new_composite_descriptor(
     label: String,
     is_dependent: bool,
     properties: PropertyDescriptorMap,
-) -> Result<PropertyDescriptor, DescriptorsError> {
-    let details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(properties));
+) -> Result<ValueDescriptor, DescriptorsError> {
+    let details = ValueDescriptorDetails::Composite(CompositeDescriptor::new(properties));
 
     let desc = new_property_descriptor(
         type_name,
@@ -114,8 +114,8 @@ pub fn new_string_descriptor(
     is_dependent: bool,
     min_length: u32,
     max_length: u32,
-) -> Result<PropertyDescriptor, DescriptorsError> {
-    let details = PropertyDescriptorDetails::String(StringDescriptor::new(min_length, max_length));
+) -> Result<ValueDescriptor, DescriptorsError> {
+    let details = ValueDescriptorDetails::String(StringDescriptor::new(min_length, max_length));
     let desc = new_property_descriptor(
         type_name,
         description,
@@ -134,9 +134,9 @@ pub fn new_integer_descriptor(
     is_dependent: bool,
     min_value: i64,
     max_value: i64,
-) -> Result<PropertyDescriptor, DescriptorsError> {
+) -> Result<ValueDescriptor, DescriptorsError> {
     let details =
-        PropertyDescriptorDetails::Integer(IntegerDescriptor::new(min_value, max_value));
+        ValueDescriptorDetails::Integer(IntegerDescriptor::new(min_value, max_value));
     let desc = new_property_descriptor(
         type_name,
         description,
@@ -154,8 +154,8 @@ pub fn new_boolean_descriptor(
     label: String,
     is_dependent: bool,
     is_fuzzy: bool,
-) -> Result<PropertyDescriptor, DescriptorsError> {
-    let details = PropertyDescriptorDetails::Boolean(BooleanDescriptor::new(is_fuzzy));
+) -> Result<ValueDescriptor, DescriptorsError> {
+    let details = ValueDescriptorDetails::Boolean(BooleanDescriptor::new(is_fuzzy));
     let desc = new_property_descriptor(
         type_name,
         description,
@@ -168,11 +168,11 @@ pub fn new_boolean_descriptor(
 }
 
 pub fn update_boolean_descriptor(
-    original_descriptor: &PropertyDescriptor,
+    original_descriptor: &ValueDescriptor,
     new_description: Option<String>,
     new_label: Option<String>,
     is_fuzzy: Option<bool>,
-) -> Result<PropertyDescriptor, DescriptorsError> {
+) -> Result<ValueDescriptor, DescriptorsError> {
     let mut updated_descriptor = original_descriptor.clone();
     if let Some(description) = new_description {
         updated_descriptor.header.description = description;
@@ -183,7 +183,7 @@ pub fn update_boolean_descriptor(
 
     let mut bool_descriptor = BooleanDescriptor::default();
     match original_descriptor.details.clone() {
-        PropertyDescriptorDetails::Boolean(descriptor) => {
+        ValueDescriptorDetails::Boolean(descriptor) => {
             if let Some(fuzz) = is_fuzzy {
                 bool_descriptor.is_fuzzy = fuzz
             } else {
@@ -193,7 +193,7 @@ pub fn update_boolean_descriptor(
         _ => panic!("Expected BooleanDescriptor"),
     }
 
-    updated_descriptor.details = PropertyDescriptorDetails::Boolean(bool_descriptor);
+    updated_descriptor.details = ValueDescriptorDetails::Boolean(bool_descriptor);
     println!(
         "testing update boolean_descriptor: {:#?}",
         updated_descriptor
@@ -203,12 +203,12 @@ pub fn update_boolean_descriptor(
 }
 
 pub fn update_string_descriptor(
-    original_descriptor: &PropertyDescriptor,
+    original_descriptor: &ValueDescriptor,
     new_description: Option<String>,
     new_label: Option<String>,
     min_length: Option<u32>,
     max_length: Option<u32>,
-) -> Result<PropertyDescriptor, DescriptorsError> {
+) -> Result<ValueDescriptor, DescriptorsError> {
     let mut updated_descriptor = original_descriptor.clone();
     if let Some(description) = new_description {
         updated_descriptor.header.description = description;
@@ -218,7 +218,7 @@ pub fn update_string_descriptor(
     }
     let mut string_descriptor = StringDescriptor::default();
     match original_descriptor.details.clone() {
-        PropertyDescriptorDetails::String(descriptor) => {
+        ValueDescriptorDetails::String(descriptor) => {
             if let Some(min) = min_length {
                 string_descriptor.min_length = min
             } else {
@@ -233,7 +233,7 @@ pub fn update_string_descriptor(
         _ => panic!("Expected StringDescriptor"),
     }
 
-    updated_descriptor.details = PropertyDescriptorDetails::String(string_descriptor);
+    updated_descriptor.details = ValueDescriptorDetails::String(string_descriptor);
     println!(
         "testing update string_descriptor: {:#?}",
         updated_descriptor
@@ -243,12 +243,12 @@ pub fn update_string_descriptor(
 }
 
 pub fn update_integer_descriptor(
-    original_descriptor: &PropertyDescriptor,
+    original_descriptor: &ValueDescriptor,
     new_description: Option<String>,
     new_label: Option<String>,
     min_value: Option<i64>,
     max_value: Option<i64>,
-) -> Result<PropertyDescriptor, DescriptorsError> {
+) -> Result<ValueDescriptor, DescriptorsError> {
     let mut updated_descriptor = original_descriptor.clone();
     if let Some(description) = new_description {
         updated_descriptor.header.description = description;
@@ -258,7 +258,7 @@ pub fn update_integer_descriptor(
     }
     let mut integer_descriptor = IntegerDescriptor::new(0, 0);
     match original_descriptor.details.clone() {
-        PropertyDescriptorDetails::Integer(descriptor) => {
+        ValueDescriptorDetails::Integer(descriptor) => {
             if let Some(min) = min_value {
                 integer_descriptor.min_value = min
             } else {
@@ -273,7 +273,7 @@ pub fn update_integer_descriptor(
         _ => panic!("Expected StringDescriptor"),
     }
 
-    updated_descriptor.details = PropertyDescriptorDetails::Integer(integer_descriptor);
+    updated_descriptor.details = ValueDescriptorDetails::Integer(integer_descriptor);
     // println!(
     //     "testing update string_descriptor: {:#?}",
     //     updated_descriptor

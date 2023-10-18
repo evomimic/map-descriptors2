@@ -2,7 +2,7 @@ pub mod holon_descriptor_validators;
 pub mod property_descriptor_validators;
 
 use shared_types_descriptor::holon_descriptor::{HolonDescriptor};
-use shared_types_descriptor::property_descriptor::{PropertyDescriptor};
+use shared_types_descriptor::property_descriptor::{ValueDescriptor};
 use crate::holon_descriptor_validators::{
     validate_create_link_holon_descriptor_updates,
     validate_update_holon_descriptor,
@@ -29,8 +29,9 @@ use crate::property_descriptor_validators::{
 #[unit_enum(UnitEntryTypes)]
 pub enum EntryTypes {
     HolonDescriptor(HolonDescriptor),
-    PropertyDescriptor(PropertyDescriptor),
+    PropertyDescriptor(ValueDescriptor),
 }
+
 #[derive(Serialize, Deserialize)]
 #[hdk_link_types]
 pub enum LinkTypes {
@@ -39,18 +40,21 @@ pub enum LinkTypes {
     PropertyDescriptorUpdates,
     AllPropertyDescriptors,
 }
+
 #[hdk_extern]
 pub fn genesis_self_check(
     _data: GenesisSelfCheckData,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }
+
 pub fn validate_agent_joining(
     _agent_pub_key: AgentPubKey,
     _membrane_proof: &Option<MembraneProof>,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }
+
 #[hdk_extern]
 pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
     match op.flattened::<EntryTypes, LinkTypes>()? {
@@ -324,7 +328,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             )?;
                             if let ValidateCallbackResult::Valid = result {
                                 let original_property_descriptor: Option<
-                                    PropertyDescriptor,
+                                    ValueDescriptor,
                                 > = original_record
                                     .entry()
                                     .to_app_option()

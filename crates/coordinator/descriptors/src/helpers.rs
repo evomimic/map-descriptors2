@@ -1,7 +1,7 @@
 use hdk::prelude::*;
 use shared_types_descriptor::holon_descriptor::{HolonDescriptor, HolonReference};
 use shared_types_descriptor::property_descriptor::{
-    CompositeDescriptor, DescriptorSharing, PropertyDescriptor, PropertyDescriptorDetails,
+    CompositeDescriptor, DescriptorSharing, ValueDescriptor, ValueDescriptorDetails,
     PropertyDescriptorMap,
 };
 
@@ -43,13 +43,13 @@ pub fn get_holon_descriptor_from_record(record: Record) -> Result<HolonDescripto
 }
 */
 
-pub fn get_property_descriptor_from_record(record: Record) -> ExternResult<PropertyDescriptor> {
+pub fn get_property_descriptor_from_record(record: Record) -> ExternResult<ValueDescriptor> {
     match record.entry() {
         RecordEntry::Present(entry) => {
-            PropertyDescriptor::try_from(entry.clone()).or(Err(wasm_error!(
+            ValueDescriptor::try_from(entry.clone()).or(Err(wasm_error!(
                 "Couldn't convert Record entry {:?} into data type {}",
                 entry,
-                std::any::type_name::<PropertyDescriptor>()
+                std::any::type_name::<ValueDescriptor>()
             )))
         }
         _ => Err(wasm_error!("Record {:?} does not have an entry", record)),
@@ -59,19 +59,19 @@ pub fn get_property_descriptor_from_record(record: Record) -> ExternResult<Prope
 // TEST HELPERS
 
 // assumes map exists
-pub fn get_composite_descriptor_map(details: &PropertyDescriptorDetails) -> PropertyDescriptorMap {
+pub fn get_composite_descriptor_map(details: &ValueDescriptorDetails) -> PropertyDescriptorMap {
     match details {
-        PropertyDescriptorDetails::Composite(map) => map.property_map.clone(),
+        ValueDescriptorDetails::Composite(map) => map.property_map.clone(),
         _ => panic!("error matching composite details"), // ?TODO: change this
     }
 }
 
 // assumes details are composite
 pub fn get_composite_descriptor_from_details(
-    details: &PropertyDescriptorDetails,
+    details: &ValueDescriptorDetails,
 ) -> CompositeDescriptor {
     match details {
-        PropertyDescriptorDetails::Composite(map) => map.clone(),
+        ValueDescriptorDetails::Composite(map) => map.clone(),
         _ => panic!("error matching composite details"), // ?TODO: change this
     }
 }

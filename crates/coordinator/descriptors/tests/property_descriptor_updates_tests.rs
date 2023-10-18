@@ -11,7 +11,7 @@ use rstest::*;
 use shared_test::property_descriptor_fixtures::*;
 use shared_test::test_data_types::PropertyDescriptorTestCase;
 use shared_types_descriptor::error::DescriptorsError;
-use shared_types_descriptor::property_descriptor::PropertyDescriptor;
+use shared_types_descriptor::property_descriptor::ValueDescriptor;
 
 /// These tests exercise update actions on PropertyDescriptors
 /// To execute ONLY the tests in this file, use:
@@ -26,8 +26,8 @@ async fn rstest_property_descriptor_updates(
         shared_test::setup_conductor().await;
 
     let input_values = input.unwrap();
-    let original_descriptor: PropertyDescriptor = input_values.original;
-    let expected_descriptors: Vec<PropertyDescriptor> = input_values.updates;
+    let original_descriptor: ValueDescriptor = input_values.original;
+    let expected_descriptors: Vec<ValueDescriptor> = input_values.updates;
     println!(
         "******* STARTING TEST CASES FOR UPDATING PROPERTY DESCRIPTOR *************************** \n"
     );
@@ -62,7 +62,7 @@ async fn rstest_property_descriptor_updates(
             &previous_record,
             &descriptor,
         )
-        .await;
+            .await;
     }
 }
 
@@ -71,7 +71,7 @@ pub async fn rstest_1_property_descriptor_update(
     cell: &SweetCell,
     created_action_hash: ActionHash,
     original_property_descriptor_record: &Record,
-    expected_property_descriptor: &PropertyDescriptor,
+    expected_property_descriptor: &ValueDescriptor,
 ) -> Record {
     let original_action_hash: ActionHash =
         original_property_descriptor_record.action_address().clone();

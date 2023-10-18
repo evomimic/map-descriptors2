@@ -15,7 +15,7 @@ use descriptors::helpers::get_property_descriptor_from_record;
 use rstest::*;
 use shared_test::property_descriptor_fixtures::new_dedicated_property_descriptors_fixture;
 use shared_types_descriptor::error::DescriptorsError;
-use shared_types_descriptor::property_descriptor::PropertyDescriptor;
+use shared_types_descriptor::property_descriptor::ValueDescriptor;
 
 /// This function exercises a broad range of capabilities. The heavy lifting for this test is in the
 /// test data set creation done within fixtures.
@@ -36,7 +36,7 @@ use shared_types_descriptor::property_descriptor::PropertyDescriptor;
 #[case::mixture_of_dedicated_property_types(new_dedicated_property_descriptors_fixture())]
 #[tokio::test(flavor = "multi_thread")]
 async fn rstest_property_descriptor_capabilities(
-    #[case] input: Result<Vec<PropertyDescriptor>, DescriptorsError>,
+    #[case] input: Result<Vec<ValueDescriptor>, DescriptorsError>,
 ) {
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
         shared_test::setup_conductor().await;

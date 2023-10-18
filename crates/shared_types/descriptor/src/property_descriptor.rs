@@ -6,9 +6,9 @@ use std::collections::BTreeMap;
 
 #[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq)]
-pub struct PropertyDescriptor {
+pub struct ValueDescriptor {
     pub header: TypeHeader,
-    pub details: PropertyDescriptorDetails,
+    pub details: ValueDescriptorDetails,
 }
 
 #[hdk_entry_helper]
@@ -23,7 +23,7 @@ pub enum DescriptorSharing {
 #[derive(new, Clone, PartialEq, Eq)]
 pub struct PropertyDescriptorUsage {
     pub description: String,
-    pub descriptor: PropertyDescriptor,
+    pub descriptor: ValueDescriptor,
     pub label: String,
     pub sharing: DescriptorSharing,
 }
@@ -45,7 +45,7 @@ pub struct PropertyDescriptorMap {
 #[hdk_entry_helper]
 #[derive(new, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
-pub enum PropertyDescriptorDetails {
+pub enum ValueDescriptorDetails {
     Boolean(BooleanDescriptor),
     Composite(CompositeDescriptor),
     //Enum(EnumDescriptor),

@@ -29,14 +29,14 @@ use crate::shared_test::property_descriptor_data_creators::{
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonReference;
 use shared_types_descriptor::property_descriptor::{
-    DescriptorSharing, PropertyDescriptor, PropertyDescriptorDetails,
+    DescriptorSharing, ValueDescriptor, ValueDescriptorDetails,
     PropertyDescriptorMap, PropertyDescriptorUsage,
 };
 use shared_types_descriptor::type_header::BaseType;
 
 #[fixture]
-pub fn new_dedicated_property_descriptors_fixture() -> Result<Vec<PropertyDescriptor>, DescriptorsError> {
-    let mut test_data_set: Vec<PropertyDescriptor> = Vec::new();
+pub fn new_dedicated_property_descriptors_fixture() -> Result<Vec<ValueDescriptor>, DescriptorsError> {
+    let mut test_data_set: Vec<ValueDescriptor> = Vec::new();
 
     // ----------------  PROPERTY DESCRIPTOR WITH STRING PROPERTY -------------------------------
     let type_name = derive_type_name("simple", BaseType::String, "example");
@@ -106,7 +106,7 @@ pub fn new_shared_property_descriptors_fixture() -> Result<SharedTypesTestCase, 
     // This fixture creates a vector of scalar types (shared_types)
     // Then creates a vector of composite types that reference those shared types
 
-    let mut shared_types: Vec<PropertyDescriptor> = Vec::new();
+    let mut shared_types: Vec<ValueDescriptor> = Vec::new();
 
     let type_name = derive_type_name("Shared", BaseType::String, "example");
     let string_descriptor = new_string_descriptor(
@@ -140,7 +140,7 @@ pub fn new_shared_property_descriptors_fixture() -> Result<SharedTypesTestCase, 
     )?;
     shared_types.push(boolean_descriptor);
 
-    let mut referencing_types: Vec<PropertyDescriptor> = Vec::new(); // composites
+    let mut referencing_types: Vec<ValueDescriptor> = Vec::new(); // composites
 
     let mut composite1_properties = PropertyDescriptorMap::new(BTreeMap::new());
 
@@ -200,9 +200,9 @@ pub fn update_property_descriptor_composite() -> Result<PropertyDescriptorTestCa
 
     composite_descriptor.property_map = descriptor_map;
 
-    let updated_descriptor = PropertyDescriptor {
+    let updated_descriptor = ValueDescriptor {
         header: original_descriptor.header.clone(),
-        details: PropertyDescriptorDetails::Composite(composite_descriptor),
+        details: ValueDescriptorDetails::Composite(composite_descriptor),
     };
 
     updates.push(updated_descriptor.clone());
@@ -215,7 +215,7 @@ pub fn update_property_descriptor_composite() -> Result<PropertyDescriptorTestCa
     Ok(test_case)
 }
 
-fn build_property_descriptor_with_composite() -> Result<PropertyDescriptor, DescriptorsError> {
+fn build_property_descriptor_with_composite() -> Result<ValueDescriptor, DescriptorsError> {
     let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
     let _unused_result = create_example_property_descriptors(&mut composite_properties)?;
 

@@ -1,10 +1,10 @@
 use hdk::prelude::*;
 use descriptors_integrity::*;
-use shared_types_descriptor::property_descriptor::PropertyDescriptor;
+use shared_types_descriptor::property_descriptor::ValueDescriptor;
 
 #[hdk_extern]
 pub fn create_property_descriptor(
-    property_descriptor: PropertyDescriptor,
+    property_descriptor: ValueDescriptor,
 ) -> ExternResult<Record> {
     let property_descriptor_hash = create_entry(
         &EntryTypes::PropertyDescriptor(property_descriptor.clone()),
@@ -24,6 +24,7 @@ pub fn create_property_descriptor(
     )?;
     Ok(record)
 }
+
 #[hdk_extern]
 pub fn get_property_descriptor(
     original_property_descriptor_hash: ActionHash,
@@ -42,12 +43,14 @@ pub fn get_property_descriptor(
     };
     get(latest_property_descriptor_hash, GetOptions::default())
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpdatePropertyDescriptorInput {
     pub original_property_descriptor_hash: ActionHash,
     pub previous_property_descriptor_hash: ActionHash,
-    pub updated_property_descriptor: PropertyDescriptor,
+    pub updated_property_descriptor: ValueDescriptor,
 }
+
 #[hdk_extern]
 pub fn update_property_descriptor(
     input: UpdatePropertyDescriptorInput,
@@ -70,6 +73,7 @@ pub fn update_property_descriptor(
         )?;
     Ok(record)
 }
+
 #[hdk_extern]
 pub fn delete_property_descriptor(
     original_property_descriptor_hash: ActionHash,

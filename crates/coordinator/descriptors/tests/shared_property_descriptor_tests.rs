@@ -14,7 +14,7 @@ use shared_test::test_data_types::SharedTypesTestCase;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonReference;
 use shared_types_descriptor::property_descriptor::{
-    CompositeDescriptor, DescriptorSharing, PropertyDescriptor, PropertyDescriptorDetails,
+    CompositeDescriptor, DescriptorSharing, ValueDescriptor, ValueDescriptorDetails,
 };
 
 /// To selectively run JUST THE TESTS in this file, use:
@@ -66,7 +66,7 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
     let shared_types = test_case.shared_types;
     let mut referencing_types = test_case.referencing_types;
 
-    let mut created_shared_types: Vec<PropertyDescriptor> = Vec::new();
+    let mut created_shared_types: Vec<ValueDescriptor> = Vec::new();
     let mut type_name_map: BTreeMap<String, ActionHash> = BTreeMap::new();
 
     // Create each shared type as an entry in Holochain, then collect them
@@ -110,7 +110,7 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
         // println!("composite: {:#?}", composite);
         // First get the composite's properties
         let composite_properties_result = match composite.details.clone() {
-            PropertyDescriptorDetails::Composite(composite_details) => {
+            ValueDescriptorDetails::Composite(composite_details) => {
                 Ok(composite_details.property_map)
             }
             _ => Err("Error: Expected Composite Type"), // make this an Error: Expected Composite Type
@@ -144,7 +144,7 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
                 .properties
                 .insert(referenced_property_name, property_usage_with_hash);
 
-            composite.details = PropertyDescriptorDetails::Composite(CompositeDescriptor::new(
+            composite.details = ValueDescriptorDetails::Composite(CompositeDescriptor::new(
                 composite_properties.clone(),
             ));
         }
