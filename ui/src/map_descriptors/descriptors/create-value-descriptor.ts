@@ -9,7 +9,7 @@ import { Snackbar } from '@material/mwc-snackbar';
 import { clientContext } from '../../contexts';
 import { PropertyDescriptor } from './types';
 
-@customElement('create-property-descriptor')
+@customElement('create-value-descriptor')
 export class CreatePropertyDescriptor extends LitElement {
   @consume({ context: clientContext })
   client!: AppAgentClient;
@@ -20,7 +20,7 @@ export class CreatePropertyDescriptor extends LitElement {
   
   firstUpdated() {
     if (this.propertyDescriptorPlaceholder === undefined) {
-      throw new Error(`The propertyDescriptorPlaceholder input is required for the create-property-descriptor element`);
+      throw new Error(`The propertyDescriptorPlaceholder input is required for the create-value-descriptor element`);
     }
   }
 
@@ -42,7 +42,7 @@ export class CreatePropertyDescriptor extends LitElement {
         payload: propertyDescriptor,
       });
 
-      this.dispatchEvent(new CustomEvent('property-descriptor-created', {
+      this.dispatchEvent(new CustomEvent('value-descriptor-created', {
         composed: true,
         bubbles: true,
         detail: {

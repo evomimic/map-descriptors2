@@ -1,11 +1,12 @@
 use hdk::prelude::*;
 use descriptors_integrity::*;
+
 #[hdk_extern]
-pub fn get_all_property_descriptors(_: ()) -> ExternResult<Vec<Record>> {
-    let path = Path::from("all_property_descriptors");
+pub fn get_all_value_descriptors(_: ()) -> ExternResult<Vec<Record>> {
+    let path = Path::from("all_value_descriptors");
     let links = get_links(
         path.path_entry_hash()?,
-        LinkTypes::AllPropertyDescriptors,
+        LinkTypes::AllValueDescriptors,
         None,
     )?;
     let get_input: Vec<GetInput> = links

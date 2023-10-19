@@ -8,7 +8,7 @@ use std::collections::btree_map::BTreeMap;
 use crate::shared_test::property_descriptor_data_creators::create_example_property_descriptors;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::{
+use shared_types_descriptor::value_descriptor::{
     DescriptorSharing, ValueDescriptor, PropertyDescriptorMap, PropertyDescriptorUsage,
 };
 use shared_types_descriptor::type_header::BaseType;
@@ -102,7 +102,7 @@ fn build_holon_descriptor_with_composite() -> Result<HolonDescriptor, Descriptor
     Ok(holon_descriptor)
 }
 
-fn build_property_descriptor_with_composite() -> Result<ValueDescriptor, DescriptorsError> {
+fn build_value_descriptor_with_composite() -> Result<ValueDescriptor, DescriptorsError> {
     let mut composite_properties = PropertyDescriptorMap::new(BTreeMap::new());
     let _unused_result = create_example_property_descriptors(&mut composite_properties)?;
     let type_name = derive_type_name("Simple_", BaseType::Composite, "_with_scalar_properties");

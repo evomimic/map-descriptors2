@@ -1,6 +1,6 @@
 use hdk::prelude::*;
 use shared_types_descriptor::holon_descriptor::{HolonDescriptor, HolonReference};
-use shared_types_descriptor::property_descriptor::{
+use shared_types_descriptor::value_descriptor::{
     CompositeDescriptor, DescriptorSharing, ValueDescriptor, ValueDescriptorDetails,
     PropertyDescriptorMap,
 };
@@ -43,7 +43,7 @@ pub fn get_holon_descriptor_from_record(record: Record) -> Result<HolonDescripto
 }
 */
 
-pub fn get_property_descriptor_from_record(record: Record) -> ExternResult<ValueDescriptor> {
+pub fn get_value_descriptor_from_record(record: Record) -> ExternResult<ValueDescriptor> {
     match record.entry() {
         RecordEntry::Present(entry) => {
             ValueDescriptor::try_from(entry.clone()).or(Err(wasm_error!(

@@ -1,8 +1,8 @@
 pub mod holon_descriptor_validators;
-pub mod property_descriptor_validators;
+pub mod value_descriptor_validators;
 
 use shared_types_descriptor::holon_descriptor::{HolonDescriptor};
-use shared_types_descriptor::property_descriptor::{ValueDescriptor};
+use shared_types_descriptor::value_descriptor::{ValueDescriptor};
 use crate::holon_descriptor_validators::{
     validate_create_link_holon_descriptor_updates,
     validate_update_holon_descriptor,
@@ -14,14 +14,14 @@ use crate::holon_descriptor_validators::{
 };
 
 use hdi::prelude::*;
-use crate::property_descriptor_validators::{
-    validate_create_link_property_descriptor_updates,
-    validate_create_link_all_property_types,
-    validate_delete_link_all_property_types,
-    validate_create_property_descriptor,
-    validate_delete_link_property_descriptor_updates,
-    validate_delete_property_descriptor,
-    validate_update_property_descriptor};
+use crate::value_descriptor_validators::{
+    validate_create_link_value_descriptor_updates,
+    validate_create_link_all_value_types,
+    validate_delete_link_all_value_types,
+    validate_create_value_descriptor,
+    validate_delete_link_value_descriptor_updates,
+    validate_delete_value_descriptor,
+    validate_update_value_descriptor};
 
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "type")]
@@ -29,7 +29,7 @@ use crate::property_descriptor_validators::{
 #[unit_enum(UnitEntryTypes)]
 pub enum EntryTypes {
     HolonDescriptor(HolonDescriptor),
-    PropertyDescriptor(ValueDescriptor),
+    ValueDescriptor(ValueDescriptor),
 }
 
 #[derive(Serialize, Deserialize)]
@@ -37,8 +37,8 @@ pub enum EntryTypes {
 pub enum LinkTypes {
     HolonDescriptorUpdates,
     AllHolonTypes,
-    PropertyDescriptorUpdates,
-    AllPropertyDescriptors,
+    ValueDescriptorUpdates,
+    AllValueDescriptors,
 }
 
 #[hdk_extern]
@@ -68,10 +68,10 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 holon_descriptor,
                             )
                         }
-                        EntryTypes::PropertyDescriptor(property_descriptor) => {
-                            validate_create_property_descriptor(
+                        EntryTypes::ValueDescriptor(value_descriptor) => {
+                            validate_create_value_descriptor(
                                 EntryCreationAction::Create(action),
-                                property_descriptor,
+                                value_descriptor,
                             )
                         }
                     }
@@ -84,10 +84,10 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 holon_descriptor,
                             )
                         }
-                        EntryTypes::PropertyDescriptor(property_descriptor) => {
-                            validate_create_property_descriptor(
+                        EntryTypes::ValueDescriptor(value_descriptor) => {
+                            validate_create_value_descriptor(
                                 EntryCreationAction::Update(action),
-                                property_descriptor,
+                                value_descriptor,
                             )
                         }
                     }
@@ -105,14 +105,14 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 } => {
                     match (app_entry, original_app_entry) {
                         (
-                            EntryTypes::PropertyDescriptor(property_descriptor),
-                            EntryTypes::PropertyDescriptor(original_property_descriptor),
+                            EntryTypes::ValueDescriptor(value_descriptor),
+                            EntryTypes::ValueDescriptor(original_value_descriptor),
                         ) => {
-                            validate_update_property_descriptor(
+                            validate_update_value_descriptor(
                                 action,
-                                property_descriptor,
+                                value_descriptor,
                                 original_action,
-                                original_property_descriptor,
+                                original_value_descriptor,
                             )
                         }
                         (
@@ -150,11 +150,11 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 holon_descriptor,
                             )
                         }
-                        EntryTypes::PropertyDescriptor(property_descriptor) => {
-                            validate_delete_property_descriptor(
+                        EntryTypes::ValueDescriptor(value_descriptor) => {
+                            validate_delete_value_descriptor(
                                 action,
                                 original_action,
-                                property_descriptor,
+                                value_descriptor,
                             )
                         }
                     }
@@ -186,16 +186,16 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::PropertyDescriptorUpdates => {
-                    validate_create_link_property_descriptor_updates(
+                LinkTypes::ValueDescriptorUpdates => {
+                    validate_create_link_value_descriptor_updates(
                         action,
                         base_address,
                         target_address,
                         tag,
                     )
                 }
-                LinkTypes::AllPropertyDescriptors => {
-                    validate_create_link_all_property_types(
+                LinkTypes::AllValueDescriptors => {
+                    validate_create_link_all_value_types(
                         action,
                         base_address,
                         target_address,
@@ -231,8 +231,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::PropertyDescriptorUpdates => {
-                    validate_delete_link_property_descriptor_updates(
+                LinkTypes::ValueDescriptorUpdates => {
+                    validate_delete_link_value_descriptor_updates(
                         action,
                         original_action,
                         base_address,
@@ -240,8 +240,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::AllPropertyDescriptors => {
-                    validate_delete_link_all_property_types(
+                LinkTypes::AllValueDescriptors => {
+                    validate_delete_link_all_value_types(
                         action,
                         original_action,
                         base_address,
@@ -261,10 +261,10 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 holon_descriptor,
                             )
                         }
-                        EntryTypes::PropertyDescriptor(property_descriptor) => {
-                            validate_create_property_descriptor(
+                        EntryTypes::ValueDescriptor(value_descriptor) => {
+                            validate_create_value_descriptor(
                                 EntryCreationAction::Create(action),
-                                property_descriptor,
+                                value_descriptor,
                             )
                         }
                     }
@@ -321,20 +321,20 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 Ok(result)
                             }
                         }
-                        EntryTypes::PropertyDescriptor(property_descriptor) => {
-                            let result = validate_create_property_descriptor(
+                        EntryTypes::ValueDescriptor(value_descriptor) => {
+                            let result = validate_create_value_descriptor(
                                 EntryCreationAction::Update(action.clone()),
-                                property_descriptor.clone(),
+                                value_descriptor.clone(),
                             )?;
                             if let ValidateCallbackResult::Valid = result {
-                                let original_property_descriptor: Option<
+                                let original_value_descriptor: Option<
                                     ValueDescriptor,
                                 > = original_record
                                     .entry()
                                     .to_app_option()
                                     .map_err(|e| wasm_error!(e))?;
-                                let original_property_descriptor = match original_property_descriptor {
-                                    Some(property_descriptor) => property_descriptor,
+                                let original_value_descriptor = match original_value_descriptor {
+                                    Some(value_descriptor) => value_descriptor,
                                     None => {
                                         return Ok(
                                             ValidateCallbackResult::Invalid(
@@ -344,11 +344,11 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                         );
                                     }
                                 };
-                                validate_update_property_descriptor(
+                                validate_update_value_descriptor(
                                     action,
-                                    property_descriptor,
+                                    value_descriptor,
                                     original_action,
-                                    original_property_descriptor,
+                                    original_value_descriptor,
                                 )
                             } else {
                                 Ok(result)
@@ -415,11 +415,11 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 original_holon_descriptor,
                             )
                         }
-                        EntryTypes::PropertyDescriptor(original_property_descriptor) => {
-                            validate_delete_property_descriptor(
+                        EntryTypes::ValueDescriptor(original_value_descriptor) => {
+                            validate_delete_value_descriptor(
                                 action,
                                 original_action,
-                                original_property_descriptor,
+                                original_value_descriptor,
                             )
                         }
                     }
@@ -448,16 +448,16 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 tag,
                             )
                         }
-                        LinkTypes::PropertyDescriptorUpdates => {
-                            validate_create_link_property_descriptor_updates(
+                        LinkTypes::ValueDescriptorUpdates => {
+                            validate_create_link_value_descriptor_updates(
                                 action,
                                 base_address,
                                 target_address,
                                 tag,
                             )
                         }
-                        LinkTypes::AllPropertyDescriptors => {
-                            validate_create_link_all_property_types(
+                        LinkTypes::AllValueDescriptors => {
+                            validate_create_link_all_value_types(
                                 action,
                                 base_address,
                                 target_address,
@@ -507,8 +507,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 create_link.tag,
                             )
                         }
-                        LinkTypes::PropertyDescriptorUpdates => {
-                            validate_delete_link_property_descriptor_updates(
+                        LinkTypes::ValueDescriptorUpdates => {
+                            validate_delete_link_value_descriptor_updates(
                                 action,
                                 create_link.clone(),
                                 base_address,
@@ -516,8 +516,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 create_link.tag,
                             )
                         }
-                        LinkTypes::AllPropertyDescriptors => {
-                            validate_delete_link_all_property_types(
+                        LinkTypes::AllValueDescriptors => {
+                            validate_delete_link_all_value_types(
                                 action,
                                 create_link.clone(),
                                 base_address,

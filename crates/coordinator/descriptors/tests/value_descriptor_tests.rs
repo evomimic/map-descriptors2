@@ -1,4 +1,4 @@
-//! Property Descriptor Test Cases
+//! Value Descriptor Test Cases
 
 // #![allow(unused_imports)]
 // #![allow(unused_doc_comments)]
@@ -10,71 +10,71 @@ mod shared_test;
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
 
-use descriptors::helpers::get_property_descriptor_from_record;
+use descriptors::helpers::get_value_descriptor_from_record;
 
 use rstest::*;
-use shared_test::property_descriptor_fixtures::new_dedicated_property_descriptors_fixture;
+use shared_test::value_descriptor_fixtures::new_dedicated_value_descriptors_fixture;
 use shared_types_descriptor::error::DescriptorsError;
-use shared_types_descriptor::property_descriptor::ValueDescriptor;
+use shared_types_descriptor::value_descriptor::ValueDescriptor;
 
 /// This function exercises a broad range of capabilities. The heavy lifting for this test is in the
 /// test data set creation done within fixtures.
 ///
 /// Test Outline:
-/// 1. After initial setup, perform a `get_all_property_types`, with an expectation of an empty result
+/// 1. After initial setup, perform a `get_all_value_types`, with an expectation of an empty result
 /// 2. For each member of the `descriptors` vector, perform a `create` followed by a `get` and verify
-/// 3. Once all data has been created in DHT, perform `get_all_property_types` and verify the result.
+/// 3. Once all data has been created in DHT, perform `get_all_value_types` and verify the result.
 ///
 /// Note that this will exercise, create, get, and get_all capabilities across a variety of
 /// holon descriptors
 ///
 /// To selectively run JUST THE TESTS in this file, use:
-///      cargo test -p descriptors --test property_descriptor_tests  -- --show-output
+///      cargo test -p descriptors --test value_descriptor_tests  -- --show-output
 ///
 ///
 #[rstest]
-#[case::mixture_of_dedicated_property_types(new_dedicated_property_descriptors_fixture())]
+#[case::mixture_of_dedicated_value_types(new_dedicated_value_descriptors_fixture())]
 #[tokio::test(flavor = "multi_thread")]
-async fn rstest_property_descriptor_capabilities(
+async fn rstest_value_descriptor_capabilities(
     #[case] input: Result<Vec<ValueDescriptor>, DescriptorsError>,
 ) {
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
         shared_test::setup_conductor().await;
 
-    println!("******* STARTING TESTS FOR PROPERTY DESCRIPTORS *************************** \n");
+    println!("******* STARTING TESTS FOR VALUE DESCRIPTORS *************************** \n");
 
     let mut descriptors = input.unwrap();
     descriptors.sort_by(|a, b| a.header.type_name.cmp(&b.header.type_name));
     let d_count = descriptors.len();
     assert_eq!(d_count, 4);
 
-    println!("Performing get_all_property_descriptors to ensure initial DB state is empty");
+    println!("Performing get_all_value_descriptors to ensure initial DB state is empty");
     let result: Vec<Record> = conductor
         .call(
             &cell.zome("descriptors"),
-            "get_all_property_descriptors",
+            "get_all_value_descriptors",
             (),
         )
         .await;
     assert_eq!(0, result.len());
-    println!("Success! Initial DB state has no PropertyDescriptors \n");
+    println!("Success! Initial DB state has no ValueDescriptors \n");
 
     let mut created_action_hashes: Vec<ActionHash> = Vec::new();
 
     for descriptor in descriptors.clone() {
-        println!("Starting create/get test for the following PropertyDescriptor");
+        println!("Starting create/get test for the following ValueDescriptor");
         println!("{:#?}", descriptor);
 
         let created_record: Record = conductor
             .call(
                 &cell.zome("descriptors"),
-                "create_property_descriptor",
+                "create_value_descriptor",
                 descriptor.clone(),
             )
             .await;
 
         let created_descriptor =
-            get_property_descriptor_from_record(created_record.clone()).unwrap();
+            get_value_descriptor_from_record(created_record.clone()).unwrap();
         assert_eq!(descriptor, created_descriptor);
 
         println!(
@@ -87,31 +87,31 @@ async fn rstest_property_descriptor_capabilities(
         let fetched_record: Option<Record> = conductor
             .call(
                 &cell.zome("descriptors"),
-                "get_property_descriptor",
+                "get_value_descriptor",
                 action_hash,
             )
             .await;
 
         let fetched_descriptor =
-            get_property_descriptor_from_record(fetched_record.unwrap()).unwrap();
+            get_value_descriptor_from_record(fetched_record.unwrap()).unwrap();
         assert_eq!(descriptor, fetched_descriptor);
         println!("...Success! Fetched descriptor matches generated descriptor. \n");
     }
 
-    println!("All Property Descriptors Created... do a get_all_property_descriptors and compare result with test data...");
+    println!("All Value Descriptors Created... do a get_all_value_descriptors and compare result with test data...");
     let fetch_all: Vec<Record> = conductor
         .call(
             &cell.zome("descriptors"),
-            "get_all_property_descriptors",
+            "get_all_value_descriptors",
             (),
         )
         .await;
     let fetch_count = fetch_all.len();
-    println!("Call to get_all_property_descriptors returned {fetch_count} Property Descriptors");
+    println!("Call to get_all_value_descriptors returned {fetch_count} Value Descriptors");
     assert_eq!(d_count, fetch_count);
     let mut fetched_entries = Vec::new();
     for fetched_record in fetch_all {
-        let fetched_descriptor = get_property_descriptor_from_record(fetched_record)
+        let fetched_descriptor = get_value_descriptor_from_record(fetched_record)
             .clone()
             .unwrap();
         fetched_entries.push(fetched_descriptor);

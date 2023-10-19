@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 // use async_std::stream::StreamExt;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::{
+use shared_types_descriptor::value_descriptor::{
     BooleanDescriptor, CompositeDescriptor, DescriptorSharing, IntegerDescriptor,
     ValueDescriptor, ValueDescriptorDetails, PropertyDescriptorMap, StringDescriptor,
 };

@@ -9,13 +9,13 @@ import '@material/mwc-icon-button';
 import '@material/mwc-snackbar';
 import { Snackbar } from '@material/mwc-snackbar';
 
-import './edit-property-descriptor';
+import './edit-value-descriptor';
 
 import { clientContext } from '../../contexts';
-import { PropertyDescriptor } from './types';
+import { ValueDescriptor } from './types';
 
-@customElement('property-descriptor-detail')
-export class PropertyDescriptorDetail extends LitElement {
+@customElement('value-descriptor-detail')
+export class ValueDescriptorDetail extends LitElement {
   @consume({ context: clientContext })
   client!: AppAgentClient;
 
@@ -37,11 +37,11 @@ export class PropertyDescriptorDetail extends LitElement {
   
   firstUpdated() {
     if (this.propertyDescriptorHash === undefined) {
-      throw new Error(`The propertyDescriptorHash property is required for the property-descriptor-detail element`);
+      throw new Error(`The propertyDescriptorHash property is required for the value-descriptor-detail element`);
     }
   }
 
-  async deletePropertyDescriptor() {
+  async deleteValueDescriptor() {
     try {
       await this.client.callZome({
         cap_secret: null,
@@ -50,7 +50,7 @@ export class PropertyDescriptorDetail extends LitElement {
         fn_name: 'delete_property_descriptor',
         payload: this.propertyDescriptorHash,
       });
-      this.dispatchEvent(new CustomEvent('property-descriptor-deleted', {
+      this.dispatchEvent(new CustomEvent('value-descriptor-deleted', {
         bubbles: true,
         composed: true,
         detail: {
@@ -66,7 +66,7 @@ export class PropertyDescriptorDetail extends LitElement {
   }
 
   renderDetail(record: Record) {
-    const propertyDescriptor = decode((record.entry as any).Present.entry) as PropertyDescriptor;
+    const propertyDescriptor = decode((record.entry as any).Present.entry) as ValueDescriptor;
 
     return html`
       <mwc-snackbar id="delete-error" leading>
@@ -77,27 +77,27 @@ export class PropertyDescriptorDetail extends LitElement {
       	  <span style="flex: 1"></span>
       	
           <mwc-icon-button style="margin-left: 8px" icon="edit" @click=${() => { this._editing = true; } }></mwc-icon-button>
-          <mwc-icon-button style="margin-left: 8px" icon="delete" @click=${() => this.deletePropertyDescriptor()}></mwc-icon-button>
+          <mwc-icon-button style="margin-left: 8px" icon="delete" @click=${() => this.deleteValueDescriptor()}></mwc-icon-button>
         </div>
 
       </div>
     `;
   }
   
-  renderPropertyDescriptor(maybeRecord: Record | undefined) {
+  renderValueDescriptor(maybeRecord: Record | undefined) {
     if (!maybeRecord) return html`<span>The requested property descriptor was not found.</span>`;
     
     if (this._editing) {
-    	return html`<edit-property-descriptor
-    	  .originalPropertyDescriptorHash=${this.propertyDescriptorHash}
+    	return html`<edit-value-descriptor
+    	  .originalValueDescriptorHash=${this.propertyDescriptorHash}
     	  .currentRecord=${maybeRecord}
-    	  @property-descriptor-updated=${async () => {
+    	  @value-descriptor-updated=${async () => {
     	    this._editing = false;
     	    await this._fetchRecord.run();
     	  } }
     	  @edit-canceled=${() => { this._editing = false; } }
     	  style="display: flex; flex: 1;"
-    	></edit-property-descriptor>`;
+    	></edit-value-descriptor>`;
     }
 
     return this.renderDetail(maybeRecord);
@@ -108,7 +108,7 @@ export class PropertyDescriptorDetail extends LitElement {
       pending: () => html`<div style="display: flex; flex: 1; align-items: center; justify-content: center">
         <mwc-circular-progress indeterminate></mwc-circular-progress>
       </div>`,
-      complete: (maybeRecord) => this.renderPropertyDescriptor(maybeRecord),
+      complete: (maybeRecord) => this.renderValueDescriptor(maybeRecord),
       error: (e: any) => html`<span>Error fetching the property descriptor: ${e.data.data}</span>`
     });
   }

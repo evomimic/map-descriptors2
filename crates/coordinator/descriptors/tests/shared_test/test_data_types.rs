@@ -1,5 +1,5 @@
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::ValueDescriptor;
+use shared_types_descriptor::value_descriptor::ValueDescriptor;
 
 
 #[derive(Clone, Debug)]
@@ -9,7 +9,7 @@ pub struct HolonDescriptorTestCase {
 }
 
 #[derive(Clone, Debug)]
-pub struct PropertyDescriptorTestCase {
+pub struct ValueDescriptorTestCase {
     pub original: ValueDescriptor,
     pub updates: Vec<ValueDescriptor>,
 }

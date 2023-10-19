@@ -5,7 +5,7 @@ use descriptors::mutators::{
 use descriptors::property_map_builder::upsert_property_descriptor;
 // use hdk::prelude::*;
 use shared_types_descriptor::error::DescriptorsError;
-use shared_types_descriptor::property_descriptor::{DescriptorSharing, PropertyDescriptorMap, PropertyDescriptorUsage};
+use shared_types_descriptor::value_descriptor::{DescriptorSharing, PropertyDescriptorMap, PropertyDescriptorUsage};
 use shared_types_descriptor::type_header::BaseType;
 use crate::shared_test::fixture_helpers::{derive_label, derive_type_description, derive_type_name};
 

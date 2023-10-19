@@ -24,7 +24,7 @@ use shared_test::holon_descriptor_fixtures::*;
 use shared_test::setup_conductor;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::{
+use shared_types_descriptor::value_descriptor::{
     CompositeDescriptor, ValueDescriptor, ValueDescriptorDetails,
     PropertyDescriptorMap,
 };

@@ -1,4 +1,4 @@
-use shared_types_descriptor::property_descriptor::{
+use shared_types_descriptor::value_descriptor::{
     PropertyDescriptorMap, PropertyDescriptorUsage,
 };
 

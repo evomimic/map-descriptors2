@@ -8,9 +8,9 @@ import '@material/mwc-circular-progress';
 import { clientContext } from '../../contexts';
 import { DescriptorsSignal } from './types';
 
-import './property-descriptor-detail';
+import './value-descriptor-detail';
 
-@customElement('all-property-descriptors')
+@customElement('all-value-descriptors')
 export class AllPropertyDescriptors extends LitElement {
   @consume({ context: clientContext })
   client!: AppAgentClient;
@@ -42,7 +42,7 @@ export class AllPropertyDescriptors extends LitElement {
     return html`
       <div style="display: flex; flex-direction: column">
         ${hashes.map(hash => 
-          html`<property-descriptor-detail .propertyDescriptorHash=${hash} style="margin-bottom: 16px;" @property-descriptor-deleted=${() => { this._fetchPropertyDescriptors.run(); this.signaledHashes = []; } }></property-descriptor-detail>`
+          html`<value-descriptor-detail .propertyDescriptorHash=${hash} style="margin-bottom: 16px;" @value-descriptor-deleted=${() => { this._fetchPropertyDescriptors.run(); this.signaledHashes = []; } }></value-descriptor-detail>`
         )}
       </div>
     `;

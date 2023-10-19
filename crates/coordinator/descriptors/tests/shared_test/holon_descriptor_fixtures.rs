@@ -31,7 +31,7 @@ use crate::shared_test::property_descriptor_data_creators::{
 };
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::property_descriptor::{
+use shared_types_descriptor::value_descriptor::{
     CompositeDescriptor, DescriptorSharing, ValueDescriptor,
     ValueDescriptorDetails, PropertyDescriptorMap, PropertyDescriptorUsage,
 };
