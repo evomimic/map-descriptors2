@@ -3,7 +3,7 @@
 pub mod fixture_helpers;
 pub mod holon_descriptor_fixtures;
 pub mod property_descriptor_data_creators;
-pub mod property_descriptor_fixtures;
+pub mod value_descriptor_fixtures;
 pub mod test_data_types;
 
 use hdk::prelude::*;

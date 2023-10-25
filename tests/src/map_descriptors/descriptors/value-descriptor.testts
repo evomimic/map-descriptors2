@@ -58,7 +58,7 @@ test('create and read PropertyDescriptor', async () => {
     // Bob gets the created PropertyDescriptor
     const createReadOutput: Record = await bob.cells[0].callZome({
       zome_name: "descriptors",
-      fn_name: "get_property_descriptor",
+      fn_name: "get_value_descriptor",
       payload: record.signed_action.hashed.hash,
     });
     assert.deepEqual(sample, decode((createReadOutput.entry as any).Present.entry) as any);
@@ -91,14 +91,14 @@ test('create and update PropertyDescriptor', async () => {
     // Alice updates the PropertyDescriptor
     let contentUpdate: any = await samplePropertyDescriptor(alice.cells[0]);
     let updateInput = {
-      original_property_descriptor_hash: originalActionHash,
-      previous_property_descriptor_hash: originalActionHash,
-      updated_property_descriptor: contentUpdate,
+      original_value_descriptor_hash: originalActionHash,
+      previous_value_descriptor_hash: originalActionHash,
+      updated_value_descriptor: contentUpdate,
     };
 
     let updatedRecord: Record = await alice.cells[0].callZome({
       zome_name: "descriptors",
-      fn_name: "update_property_descriptor",
+      fn_name: "update_value_descriptor",
       payload: updateInput,
     });
     assert.ok(updatedRecord);
@@ -109,7 +109,7 @@ test('create and update PropertyDescriptor', async () => {
     // Bob gets the updated PropertyDescriptor
     const readUpdatedOutput0: Record = await bob.cells[0].callZome({
       zome_name: "descriptors",
-      fn_name: "get_property_descriptor",
+      fn_name: "get_value_descriptor",
       payload: updatedRecord.signed_action.hashed.hash,
     });
     assert.deepEqual(contentUpdate, decode((readUpdatedOutput0.entry as any).Present.entry) as any);
@@ -117,14 +117,14 @@ test('create and update PropertyDescriptor', async () => {
     // Alice updates the PropertyDescriptor again
     contentUpdate = await samplePropertyDescriptor(alice.cells[0]);
     updateInput = { 
-      original_property_descriptor_hash: originalActionHash,
-      previous_property_descriptor_hash: updatedRecord.signed_action.hashed.hash,
-      updated_property_descriptor: contentUpdate,
+      original_value_descriptor_hash: originalActionHash,
+      previous_value_descriptor_hash: updatedRecord.signed_action.hashed.hash,
+      updated_value_descriptor: contentUpdate,
     };
 
     updatedRecord = await alice.cells[0].callZome({
       zome_name: "descriptors",
-      fn_name: "update_property_descriptor",
+      fn_name: "update_value_descriptor",
       payload: updateInput,
     });
     assert.ok(updatedRecord);
@@ -135,7 +135,7 @@ test('create and update PropertyDescriptor', async () => {
     // Bob gets the updated PropertyDescriptor
     const readUpdatedOutput1: Record = await bob.cells[0].callZome({
       zome_name: "descriptors",
-      fn_name: "get_property_descriptor",
+      fn_name: "get_value_descriptor",
       payload: updatedRecord.signed_action.hashed.hash,
     });
     assert.deepEqual(contentUpdate, decode((readUpdatedOutput1.entry as any).Present.entry) as any);
@@ -166,7 +166,7 @@ test('create and delete PropertyDescriptor', async () => {
     // Alice deletes the PropertyDescriptor
     const deleteActionHash = await alice.cells[0].callZome({
       zome_name: "descriptors",
-      fn_name: "delete_property_descriptor",
+      fn_name: "delete_value_descriptor",
       payload: record.signed_action.hashed.hash,
     });
     assert.ok(deleteActionHash);
@@ -177,7 +177,7 @@ test('create and delete PropertyDescriptor', async () => {
     // Bob tries to get the deleted PropertyDescriptor
     const readDeletedOutput = await bob.cells[0].callZome({
       zome_name: "descriptors",
-      fn_name: "get_property_descriptor",
+      fn_name: "get_value_descriptor",
       payload: record.signed_action.hashed.hash,
     });
     assert.notOk(readDeletedOutput);

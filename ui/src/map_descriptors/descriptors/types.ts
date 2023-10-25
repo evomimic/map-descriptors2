@@ -36,7 +36,7 @@ export type DescriptorsSignal = {
 };
 
 export type EntryTypes =
- | ({ type: 'PropertyDescriptor'; } & PropertyDescriptor)
+ | ({ type: 'ValueDescriptor'; } & ValueDescriptor)
  | ({ type: 'HolonDescriptor'; } & HolonDescriptor)
  | ({  type: 'TypeHeader'; } & TypeHeader);
 

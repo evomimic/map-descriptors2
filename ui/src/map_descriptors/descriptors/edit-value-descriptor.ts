@@ -10,7 +10,7 @@ import { Snackbar } from '@material/mwc-snackbar';
 import { clientContext } from '../../contexts';
 import { PropertyDescriptor } from './types';
 
-@customElement('edit-property-descriptor')
+@customElement('edit-value-descriptor')
 export class EditPropertyDescriptor extends LitElement {
 
   @consume({ context: clientContext })
@@ -37,11 +37,11 @@ export class EditPropertyDescriptor extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     if (this.currentRecord === undefined) {
-      throw new Error(`The currentRecord property is required for the edit-property-descriptor element`);
+      throw new Error(`The currentRecord property is required for the edit-value-descriptor element`);
     }
 
     if (this.originalPropertyDescriptorHash === undefined) {
-      throw new Error(`The originalPropertyDescriptorHash property is required for the edit-property-descriptor element`);
+      throw new Error(`The originalPropertyDescriptorHash property is required for the edit-value-descriptor element`);
     }
     
   }
@@ -64,7 +64,7 @@ export class EditPropertyDescriptor extends LitElement {
         },
       });
   
-      this.dispatchEvent(new CustomEvent('property-descriptor-updated', {
+      this.dispatchEvent(new CustomEvent('value-descriptor-updated', {
         composed: true,
         bubbles: true,
         detail: {

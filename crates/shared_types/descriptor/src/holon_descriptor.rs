@@ -1,4 +1,4 @@
-use crate::property_descriptor::PropertyDescriptorMap;
+use crate::value_descriptor::PropertyDescriptorMap;
 use crate::type_header::TypeHeader;
 use derive_new::new;
 use hdi::prelude::*;

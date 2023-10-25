@@ -26,7 +26,7 @@ test('create a PropertyDescriptor and get all property descriptors', async () =>
     // Bob gets all property descriptors
     let collectionOutput: Record[] = await bob.cells[0].callZome({
       zome_name: "descriptors",
-      fn_name: "get_all_property_descriptors",
+      fn_name: "get_all_value_descriptors",
       payload: null
     });
     assert.equal(collectionOutput.length, 0);
@@ -40,7 +40,7 @@ test('create a PropertyDescriptor and get all property descriptors', async () =>
     // Bob gets all property descriptors again
     collectionOutput = await bob.cells[0].callZome({
       zome_name: "descriptors",
-      fn_name: "get_all_property_descriptors",
+      fn_name: "get_all_value_descriptors",
       payload: null
     });
     assert.equal(collectionOutput.length, 1);

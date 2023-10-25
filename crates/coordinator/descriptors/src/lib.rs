@@ -2,17 +2,19 @@ pub mod helpers;
 pub mod holon_descriptor_queries;
 pub mod holon_descriptor_storage_fns;
 pub mod mutators;
-pub mod property_descriptor_queries;
-pub mod property_descriptor_storage_fns;
+pub mod value_descriptor_queries;
+pub mod value_descriptor_storage_fns;
 pub mod property_map_builder;
 
 
 use descriptors_integrity::*;
 use hdk::prelude::*;
+
 #[hdk_extern]
 pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
     Ok(InitCallbackResult::Pass)
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "type")]
 pub enum Signal {
@@ -38,6 +40,7 @@ pub enum Signal {
         link_type: LinkTypes,
     },
 }
+
 #[hdk_extern(infallible)]
 pub fn post_commit(committed_actions: Vec<SignedActionHashed>) {
     for action in committed_actions {
@@ -46,6 +49,7 @@ pub fn post_commit(committed_actions: Vec<SignedActionHashed>) {
         }
     }
 }
+
 fn signal_action(action: SignedActionHashed) -> ExternResult<()> {
     match action.hashed.content.clone() {
         Action::Create(_create) => {
@@ -110,6 +114,7 @@ fn signal_action(action: SignedActionHashed) -> ExternResult<()> {
         _ => Ok(()),
     }
 }
+
 fn get_entry_for_action(action_hash: &ActionHash) -> ExternResult<Option<EntryTypes>> {
     let record = match get_details(action_hash.clone(), GetOptions::default())? {
         Some(Details::Record(record_details)) => record_details.record,
@@ -125,10 +130,10 @@ fn get_entry_for_action(action_hash: &ActionHash) -> ExternResult<Option<EntryTy
     };
     let (zome_index, entry_index) = match record.action().entry_type() {
         Some(EntryType::App(AppEntryDef {
-            zome_index,
-            entry_index,
-            ..
-        })) => (zome_index, entry_index),
+                                zome_index,
+                                entry_index,
+                                ..
+                            })) => (zome_index, entry_index),
         _ => {
             return Ok(None);
         }
