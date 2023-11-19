@@ -6,11 +6,11 @@ use std::collections::BTreeMap;
 // use async_std::stream::StreamExt;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
+use shared_types_descriptor::type_header::{BaseType, SemanticVersion, TypeHeader};
 use shared_types_descriptor::value_descriptor::{
     BooleanDescriptor, CompositeDescriptor, DescriptorSharing, IntegerDescriptor,
-    ValueDescriptor, ValueDescriptorDetails, PropertyDescriptorMap, StringDescriptor,
+    PropertyDescriptorMap, StringDescriptor, ValueDescriptor, ValueDescriptorDetails,
 };
-use shared_types_descriptor::type_header::{BaseType, SemanticVersion, TypeHeader};
 
 /// new_xxx_descriptor () functions stage new (empty) instances of Descriptors, but do NOT
 /// commit them to persistent storage.
@@ -135,8 +135,7 @@ pub fn new_integer_descriptor(
     min_value: i64,
     max_value: i64,
 ) -> Result<ValueDescriptor, DescriptorsError> {
-    let details =
-        ValueDescriptorDetails::Integer(IntegerDescriptor::new(min_value, max_value));
+    let details = ValueDescriptorDetails::Integer(IntegerDescriptor::new(min_value, max_value));
     let desc = new_property_descriptor(
         type_name,
         description,
@@ -194,10 +193,6 @@ pub fn update_boolean_descriptor(
     }
 
     updated_descriptor.details = ValueDescriptorDetails::Boolean(bool_descriptor);
-    println!(
-        "testing update boolean_descriptor: {:#?}",
-        updated_descriptor
-    );
 
     Ok(updated_descriptor)
 }
@@ -234,10 +229,6 @@ pub fn update_string_descriptor(
     }
 
     updated_descriptor.details = ValueDescriptorDetails::String(string_descriptor);
-    println!(
-        "testing update string_descriptor: {:#?}",
-        updated_descriptor
-    );
 
     Ok(updated_descriptor)
 }
@@ -274,10 +265,6 @@ pub fn update_integer_descriptor(
     }
 
     updated_descriptor.details = ValueDescriptorDetails::Integer(integer_descriptor);
-    // println!(
-    //     "testing update string_descriptor: {:#?}",
-    //     updated_descriptor
-    // );
 
     Ok(updated_descriptor)
 }

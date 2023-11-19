@@ -12,27 +12,30 @@
 // The logic for CUD tests is identical, what varies is the test data.
 // BUT... if the test data set has all different variations in it, we may only need 1 test data set
 
-use crate::shared_test::test_data_types::{ValueDescriptorTestCase, SharedTypesTestCase};
+use crate::shared_test::test_data_types::{SharedTypesTestCase, ValueDescriptorTestCase};
 use descriptors::helpers::{get_composite_descriptor_from_details, get_composite_descriptor_map};
 use descriptors::mutators::{
     new_boolean_descriptor, new_composite_descriptor, new_integer_descriptor, new_string_descriptor,
 };
 use descriptors::property_map_builder::upsert_property_descriptor;
+use log::Level;
 use rstest::*;
 use std::collections::btree_map::BTreeMap;
 
 // use hdk::prelude::*;
-use crate::shared_test::fixture_helpers::{derive_label, derive_type_description, derive_type_name};
+use crate::shared_test::fixture_helpers::{
+    derive_label, derive_type_description, derive_type_name,
+};
 use crate::shared_test::property_descriptor_data_creators::{
     create_example_property_descriptors, create_example_updates_for_property_descriptors,
 };
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonReference;
-use shared_types_descriptor::value_descriptor::{
-    DescriptorSharing, ValueDescriptor, ValueDescriptorDetails,
-    PropertyDescriptorMap, PropertyDescriptorUsage,
-};
 use shared_types_descriptor::type_header::BaseType;
+use shared_types_descriptor::value_descriptor::{
+    DescriptorSharing, PropertyDescriptorMap, PropertyDescriptorUsage, ValueDescriptor,
+    ValueDescriptorDetails,
+};
 
 #[fixture]
 pub fn new_dedicated_value_descriptors_fixture() -> Result<Vec<ValueDescriptor>, DescriptorsError> {
@@ -103,6 +106,7 @@ pub fn new_dedicated_value_descriptors_fixture() -> Result<Vec<ValueDescriptor>,
 
 #[fixture]
 pub fn new_shared_value_descriptors_fixture() -> Result<SharedTypesTestCase, DescriptorsError> {
+    let message_threshold = Level::Info;
     // This fixture creates a vector of scalar types (shared_types)
     // Then creates a vector of composite types that reference those shared types
 
@@ -177,14 +181,15 @@ pub fn new_shared_value_descriptors_fixture() -> Result<SharedTypesTestCase, Des
     let test_case = SharedTypesTestCase {
         shared_types,
         referencing_types,
+        message_level: message_threshold,
     };
 
     Ok(test_case)
 }
 
 #[fixture]
-pub fn update_value_descriptor_composite() -> Result<ValueDescriptorTestCase, DescriptorsError>
-{
+pub fn update_value_descriptor_composite() -> Result<ValueDescriptorTestCase, DescriptorsError> {
+    let message_threshold = Level::Debug;
     let original_descriptor = build_value_descriptor_with_composite()?;
     let mut updates = Vec::new();
 
@@ -210,6 +215,7 @@ pub fn update_value_descriptor_composite() -> Result<ValueDescriptorTestCase, De
     let test_case = ValueDescriptorTestCase {
         original: original_descriptor,
         updates: updates,
+        message_level: message_threshold,
     };
     // println!("Original & expected update: {:#?}", test_case);
     Ok(test_case)
@@ -241,7 +247,6 @@ fn build_value_descriptor_with_composite() -> Result<ValueDescriptor, Descriptor
 
     Ok(composite_descriptor)
 }
-
 
 // #[cfg(test)]
 // mod tests {

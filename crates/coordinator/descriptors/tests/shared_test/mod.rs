@@ -3,8 +3,8 @@
 pub mod fixture_helpers;
 pub mod holon_descriptor_fixtures;
 pub mod property_descriptor_data_creators;
-pub mod value_descriptor_fixtures;
 pub mod test_data_types;
+pub mod value_descriptor_fixtures;
 
 use hdk::prelude::*;
 use holochain::sweettest::{SweetAgents, SweetCell, SweetConductor, SweetDnaFile};

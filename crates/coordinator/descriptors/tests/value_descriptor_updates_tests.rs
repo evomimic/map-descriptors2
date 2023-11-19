@@ -8,8 +8,8 @@ use holochain::sweettest::{SweetCell, SweetConductor};
 use descriptors::helpers::get_value_descriptor_from_record;
 use descriptors::value_descriptor_storage_fns::UpdateValueDescriptorInput;
 use rstest::*;
-use shared_test::value_descriptor_fixtures::*;
 use shared_test::test_data_types::ValueDescriptorTestCase;
+use shared_test::value_descriptor_fixtures::*;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::value_descriptor::ValueDescriptor;
 
@@ -26,9 +26,11 @@ async fn rstest_value_descriptor_updates(
         shared_test::setup_conductor().await;
 
     let input_values = input.unwrap();
+    let level = input_values.message_level;
+    let _ = console_log::init_with_level(level);
     let original_descriptor: ValueDescriptor = input_values.original;
     let expected_descriptors: Vec<ValueDescriptor> = input_values.updates;
-    println!(
+    info!(
         "******* STARTING TEST CASES FOR UPDATING VALUE DESCRIPTOR *************************** \n"
     );
     let created_record: Record = conductor
@@ -62,7 +64,7 @@ async fn rstest_value_descriptor_updates(
             &previous_record,
             &descriptor,
         )
-            .await;
+        .await;
     }
 }
 
@@ -79,8 +81,8 @@ pub async fn rstest_1_property_descriptor_update(
     let original_descriptor =
         get_value_descriptor_from_record(original_value_descriptor_record.clone()).unwrap();
 
-    println!("original: {:#?} \n", original_descriptor);
-    println!("expected: {:#?} \n", expected_value_descriptor);
+    debug!("original: {:#?} \n", original_descriptor);
+    debug!("expected: {:#?} \n", expected_value_descriptor);
 
     let update_input = UpdateValueDescriptorInput {
         original_value_descriptor_hash: created_action_hash.clone(),

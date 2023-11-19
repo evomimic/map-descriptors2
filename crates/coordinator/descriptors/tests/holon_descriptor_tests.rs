@@ -7,6 +7,8 @@ use std::collections::BTreeMap;
 
 mod shared_test;
 
+use log::Level;
+
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
 //use std::arch::x86_64::__cpuid_count;
@@ -25,8 +27,7 @@ use shared_test::setup_conductor;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::value_descriptor::{
-    CompositeDescriptor, ValueDescriptor, ValueDescriptorDetails,
-    PropertyDescriptorMap,
+    CompositeDescriptor, PropertyDescriptorMap, ValueDescriptor, ValueDescriptorDetails,
 };
 
 /// This function exercises a broad range of capabilities. The heavy lifting for this test is in the
@@ -47,8 +48,10 @@ use shared_types_descriptor::value_descriptor::{
 #[case::mixture_of_holon_types(new_holons_fixture())]
 #[tokio::test(flavor = "multi_thread")]
 async fn rstest_holon_descriptor_capabilities(
-    #[case] input: Result<Vec<HolonDescriptor>, DescriptorsError>,
+    #[case] input: Result<Vec<HolonDescriptor>, DescriptorsError>, //HolonTestCase
 ) {
+    let level = Level::Debug;
+    let _ = console_log::init_with_level(level);
     // Setup
 
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
@@ -61,14 +64,14 @@ async fn rstest_holon_descriptor_capabilities(
     descriptors.sort_by(|a, b| a.header.type_name.cmp(&b.header.type_name));
     let h_count = descriptors.len();
 
-    println!("******* STARTING TESTS WITH {h_count} HOLON DESCRIPTORS ***************************");
+    info!("******* STARTING TESTS WITH {h_count} HOLON DESCRIPTORS ***************************");
 
-    println!("Performing get_all_holon_types to ensure initial DB state is empty");
+    info!("Performing get_all_holon_types to ensure initial DB state is empty");
     let result: Vec<Record> = conductor
         .call(&cell.zome("descriptors"), "get_all_holon_types", ())
         .await;
     assert_eq!(0, result.len());
-    println!("Success! Initial DB state has no HolonDescriptors");
+    info!("Success! Initial DB state has no HolonDescriptors");
 
     let mut created_action_hashes: Vec<ActionHash> = Vec::new();
 
@@ -78,9 +81,9 @@ async fn rstest_holon_descriptor_capabilities(
         let name = descriptor.header.type_name.clone();
         let p_count = descriptor.property_map.properties.len();
         println!();
-        println!("****** Starting create/get test for the following HolonDescriptor");
-        println!("{:#?}", descriptor);
-        println!("Creating {name} with {p_count} properties");
+        info!("****** Starting create/get test for the following HolonDescriptor");
+        debug!("{:#?}", descriptor);
+        debug!("Creating {name} with {p_count} properties");
 
         let created_record: Record = conductor
             .call(
@@ -98,9 +101,7 @@ async fn rstest_holon_descriptor_capabilities(
         let created_descriptor = get_holon_descriptor_from_record(created_record.clone()).unwrap();
         assert_eq!(descriptor, created_descriptor);
 
-        println!(
-            "Created descriptor matches generated holon descriptor, fetching created descriptor"
-        );
+        info!("Created descriptor matches generated holon descriptor, fetching created descriptor");
 
         let action_hash: ActionHash = created_record.action_address().clone();
         created_action_hashes.push(action_hash.clone());
@@ -115,15 +116,15 @@ async fn rstest_holon_descriptor_capabilities(
 
         let fetched_descriptor = get_holon_descriptor_from_record(fetched_record.unwrap()).unwrap();
         assert_eq!(descriptor, fetched_descriptor);
-        println!("...Success! Fetched descriptor matches generated descriptor ******");
+        info!("...Success! Fetched descriptor matches generated descriptor ******");
     }
 
-    println!("All Holon Descriptors Created... do a get_all_holon_types and compare result with test data...");
+    info!("All Holon Descriptors Created... do a get_all_holon_types and compare result with test data...");
     let fetch_all: Vec<Record> = conductor
         .call(&cell.zome("descriptors"), "get_all_holon_types", ())
         .await;
     let d_count = fetch_all.len();
-    println!("Call to get_all_holon_types returned {d_count} Holon Descriptors \n");
+    debug!("Call to get_all_holon_types returned {d_count} Holon Descriptors \n");
     assert_eq!(d_count, h_count);
     let mut fetched_entries = Vec::new();
     for fetched_record in fetch_all {
@@ -136,7 +137,7 @@ async fn rstest_holon_descriptor_capabilities(
     assert_eq!(descriptors, fetched_entries);
 
     // TESTING DELETES //
-    println!("\n\n *********** TESTING DELETES *******************\n");
+    info!("\n\n *********** TESTING DELETES *******************\n");
 
     for hash in created_action_hashes {
         let _action_hash_of_delete: ActionHash = conductor
@@ -155,5 +156,5 @@ async fn rstest_holon_descriptor_capabilities(
         .call(&cell.zome("descriptors"), "get_all_holon_types", ())
         .await;
     assert!(fetch_all_check_deleted.is_empty());
-    println!("...get_all_holon_types confirms, all holon descriptors have been deleted.\n");
+    info!("...get_all_holon_types confirms, all holon descriptors have been deleted.\n");
 }

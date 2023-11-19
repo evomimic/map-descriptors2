@@ -9,8 +9,8 @@ use std::collections::BTreeMap;
 use descriptors::helpers::*;
 use rstest::*;
 
-use shared_test::value_descriptor_fixtures::*;
 use shared_test::test_data_types::SharedTypesTestCase;
+use shared_test::value_descriptor_fixtures::*;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonReference;
 use shared_types_descriptor::value_descriptor::{
@@ -58,11 +58,11 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
         shared_test::setup_conductor().await;
 
-    println!(
-        "******* STARTING TESTS FOR SHARED VALUE DESCRIPTORS *************************** \n"
-    );
+    info!("******* STARTING TESTS FOR SHARED VALUE DESCRIPTORS *************************** \n");
 
     let test_case = input.unwrap();
+    let level = test_case.message_level;
+    let _ = console_log::init_with_level(level);
     let shared_types = test_case.shared_types;
     let mut referencing_types = test_case.referencing_types;
 
@@ -71,7 +71,7 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
 
     // Create each shared type as an entry in Holochain, then collect them
     for descriptor in shared_types.clone() {
-        // println!("shared type: {:#?}", descriptor);
+        trace!("shared type: {:#?}", descriptor);
         let created_record: Record = conductor
             .call(
                 &cell.zome("descriptors"),
@@ -91,8 +91,7 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
                 created_record.action_address().clone(),
             )
             .await;
-        let fetched_descriptor =
-            get_value_descriptor_from_record(fetched_record.unwrap()).unwrap();
+        let fetched_descriptor = get_value_descriptor_from_record(fetched_record.unwrap()).unwrap();
         assert_eq!(&descriptor, &fetched_descriptor);
     }
     // All shared types have been created, now create the type(s) that reference them
@@ -107,7 +106,7 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
     // Iterate through the referenced types
 
     for composite in &mut referencing_types {
-        // println!("composite: {:#?}", composite);
+        trace!("composite: {:#?}", composite);
         // First get the composite's properties
         let composite_properties_result = match composite.details.clone() {
             ValueDescriptorDetails::Composite(composite_details) => {
@@ -122,7 +121,7 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
         // Then fetch the referenced descriptor and add its actionHash to the
         // PropertyDescriptorUsage's HolonReference.
         for (referenced_property_name, referenced_property_usage) in
-        composite_properties.clone().properties
+            composite_properties.clone().properties
         {
             let referenced_name = match referenced_property_usage.sharing.clone() {
                 DescriptorSharing::Shared(reference) => reference.name,
@@ -149,7 +148,7 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
             ));
         }
 
-        println!("composite {:#?}", composite);
+        debug!("composite {:#?}", composite);
 
         // All of the HolonReferences have been updated with their id, ready to create the composite type
 
@@ -175,16 +174,15 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
         let fetched_value_descriptor =
             get_value_descriptor_from_record(fetched_composite_record.unwrap()).unwrap();
 
-        // println!(
-        //     "created_composite_descriptor {:#?}",
-        //     &fetched_value_descriptor
-        // );
+        debug!(
+            "created_composite_descriptor {:#?}",
+            &fetched_value_descriptor
+        );
 
-        let fetched_composite_map =
-            get_composite_descriptor_map(&fetched_value_descriptor.details);
+        let fetched_composite_map = get_composite_descriptor_map(&fetched_value_descriptor.details);
 
         for (fetched_property_name, fetched_property_usage) in
-        fetched_composite_map.properties.iter()
+            fetched_composite_map.properties.iter()
         {
             let fetched_holon_reference =
                 get_holon_reference_from_sharing(&fetched_property_usage.sharing);

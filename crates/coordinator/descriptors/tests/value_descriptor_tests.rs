@@ -7,11 +7,14 @@ mod shared_test;
 
 // use core::panic;
 
+// use log::{debug, error, info, trace, warn};
+
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
 
 use descriptors::helpers::get_value_descriptor_from_record;
 
+use log::Level;
 use rstest::*;
 use shared_test::value_descriptor_fixtures::new_dedicated_value_descriptors_fixture;
 use shared_types_descriptor::error::DescriptorsError;
@@ -38,32 +41,30 @@ use shared_types_descriptor::value_descriptor::ValueDescriptor;
 async fn rstest_value_descriptor_capabilities(
     #[case] input: Result<Vec<ValueDescriptor>, DescriptorsError>,
 ) {
+    let level = Level::Debug;
+    let _ = console_log::init_with_level(level);
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
         shared_test::setup_conductor().await;
 
-    println!("******* STARTING TESTS FOR VALUE DESCRIPTORS *************************** \n");
+    info!("******* STARTING TESTS FOR VALUE DESCRIPTORS *************************** \n");
 
     let mut descriptors = input.unwrap();
     descriptors.sort_by(|a, b| a.header.type_name.cmp(&b.header.type_name));
     let d_count = descriptors.len();
     assert_eq!(d_count, 4);
 
-    println!("Performing get_all_value_descriptors to ensure initial DB state is empty");
+    info!("Performing get_all_value_descriptors to ensure initial DB state is empty");
     let result: Vec<Record> = conductor
-        .call(
-            &cell.zome("descriptors"),
-            "get_all_value_descriptors",
-            (),
-        )
+        .call(&cell.zome("descriptors"), "get_all_value_descriptors", ())
         .await;
     assert_eq!(0, result.len());
-    println!("Success! Initial DB state has no ValueDescriptors \n");
+    info!("Success! Initial DB state has no ValueDescriptors \n");
 
     let mut created_action_hashes: Vec<ActionHash> = Vec::new();
 
     for descriptor in descriptors.clone() {
-        println!("Starting create/get test for the following ValueDescriptor");
-        println!("{:#?}", descriptor);
+        info!("Starting create/get test for the following ValueDescriptor");
+        trace!("{:#?}", descriptor);
 
         let created_record: Record = conductor
             .call(
@@ -73,11 +74,10 @@ async fn rstest_value_descriptor_capabilities(
             )
             .await;
 
-        let created_descriptor =
-            get_value_descriptor_from_record(created_record.clone()).unwrap();
+        let created_descriptor = get_value_descriptor_from_record(created_record.clone()).unwrap();
         assert_eq!(descriptor, created_descriptor);
 
-        println!(
+        info!(
             "Created descriptor matches generated property descriptor, fetching created descriptor.."
         );
 
@@ -92,22 +92,17 @@ async fn rstest_value_descriptor_capabilities(
             )
             .await;
 
-        let fetched_descriptor =
-            get_value_descriptor_from_record(fetched_record.unwrap()).unwrap();
+        let fetched_descriptor = get_value_descriptor_from_record(fetched_record.unwrap()).unwrap();
         assert_eq!(descriptor, fetched_descriptor);
-        println!("...Success! Fetched descriptor matches generated descriptor. \n");
+        info!("...Success! Fetched descriptor matches generated descriptor. \n");
     }
 
-    println!("All Value Descriptors Created... do a get_all_value_descriptors and compare result with test data...");
+    info!("All Value Descriptors Created... do a get_all_value_descriptors and compare result with test data...");
     let fetch_all: Vec<Record> = conductor
-        .call(
-            &cell.zome("descriptors"),
-            "get_all_value_descriptors",
-            (),
-        )
+        .call(&cell.zome("descriptors"), "get_all_value_descriptors", ())
         .await;
     let fetch_count = fetch_all.len();
-    println!("Call to get_all_value_descriptors returned {fetch_count} Value Descriptors");
+    info!("Call to get_all_value_descriptors returned {fetch_count} Value Descriptors");
     assert_eq!(d_count, fetch_count);
     let mut fetched_entries = Vec::new();
     for fetched_record in fetch_all {

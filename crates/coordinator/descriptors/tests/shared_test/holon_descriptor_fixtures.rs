@@ -14,7 +14,6 @@
 
 #![allow(dead_code)]
 
-
 use core::panic;
 use descriptors::helpers::*;
 use descriptors::mutators::*;
@@ -22,20 +21,25 @@ use descriptors::property_map_builder::*;
 use rstest::*;
 use std::collections::btree_map::BTreeMap;
 
+use log::Level;
+use log::{debug, trace};
+
 // use hdk::prelude::*;
 
-use crate::shared_test::test_data_types::HolonDescriptorTestCase;
-use crate::shared_test::fixture_helpers::{derive_type_name, derive_type_description, derive_label};
+use crate::shared_test::fixture_helpers::{
+    derive_label, derive_type_description, derive_type_name,
+};
 use crate::shared_test::property_descriptor_data_creators::{
     create_example_property_descriptors, create_example_updates_for_property_descriptors,
 };
+use crate::shared_test::test_data_types::HolonDescriptorTestCase;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
-use shared_types_descriptor::value_descriptor::{
-    CompositeDescriptor, DescriptorSharing, ValueDescriptor,
-    ValueDescriptorDetails, PropertyDescriptorMap, PropertyDescriptorUsage,
-};
 use shared_types_descriptor::type_header::BaseType;
+use shared_types_descriptor::value_descriptor::{
+    CompositeDescriptor, DescriptorSharing, PropertyDescriptorMap, PropertyDescriptorUsage,
+    ValueDescriptor, ValueDescriptorDetails,
+};
 
 /// This function creates a rich test dataset by creating a vector of HolonDescriptors of various
 /// kinds -- from simple to complex
@@ -138,6 +142,7 @@ pub fn new_holons_fixture() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
 // Builds initial HolonDescriptor with no properties
 #[fixture]
 pub fn add_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> {
+    let message_threshold = Level::Info;
     let original_descriptor = build_holon_descriptor_with_no_properties()?;
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
@@ -153,15 +158,17 @@ pub fn add_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> {
     let test_case = HolonDescriptorTestCase {
         original: original_descriptor,
         updates: updates,
+        message_level: message_threshold,
     };
-    // println!("Original update: {:#?}", &test_case.original);
-    // println!("Expected updates: {:?}", &test_case.updates);
+    debug!("Original update: {:#?}", &test_case.original);
+    debug!("Expected updates: {:?}", &test_case.updates);
 
     Ok(test_case)
 }
 
 #[fixture]
 pub fn remove_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> {
+    let message_threshold = Level::Info;
     let original_descriptor = build_holon_descriptor_with_scalar()?;
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
@@ -174,9 +181,10 @@ pub fn remove_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> 
     let test_case = HolonDescriptorTestCase {
         original: original_descriptor,
         updates: updates,
+        message_level: message_threshold,
     };
-    // println!("Original update: {:#?}", &test_case.original);
-    // println!("Expected updates: {:?}", &test_case.updates);
+    debug!("Original update: {:#?}", &test_case.original);
+    debug!("Expected updates: {:?}", &test_case.updates);
 
     Ok(test_case)
 }
@@ -184,6 +192,7 @@ pub fn remove_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> 
 // Builds initial HolonDescritor with each type of scalar property
 #[fixture]
 pub fn update_each_scalar_details() -> Result<HolonDescriptorTestCase, DescriptorsError> {
+    let message_threshold = Level::Error;
     let original_descriptor = build_holon_descriptor_with_scalar()?;
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
@@ -199,15 +208,17 @@ pub fn update_each_scalar_details() -> Result<HolonDescriptorTestCase, Descripto
     let test_case = HolonDescriptorTestCase {
         original: original_descriptor,
         updates: updates,
+        message_level: message_threshold,
     };
 
-    // println!("{:#?}", test_case);
+    debug!("{:#?}", test_case);
     Ok(test_case)
 }
 
 // Builds initial HolonDescriptor with a composite property
 #[fixture]
 pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, DescriptorsError> {
+    let message_threshold = Level::Error;
     let original_descriptor = build_holon_descriptor_with_composite()?;
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
@@ -301,8 +312,9 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
         let test_case = HolonDescriptorTestCase {
             original: original_descriptor,
             updates: updates,
+            message_level: message_threshold,
         };
-        // println!("Original & expected update: {:#?}",test_case);
+        debug!("Original & expected update: {:#?}", test_case);
         return Ok(test_case);
     } else {
         panic!("error getting composite");
@@ -313,6 +325,7 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
 pub fn remove_properties_from_composite(
     add_properties_to_composite: Result<HolonDescriptorTestCase, DescriptorsError>,
 ) -> Result<HolonDescriptorTestCase, DescriptorsError> {
+    let message_threshold = Level::Error;
     let data = add_properties_to_composite?;
     let original_descriptor = data.original;
     let mut updated_descriptor = original_descriptor.clone();
@@ -359,9 +372,10 @@ pub fn remove_properties_from_composite(
 
         let test_case = HolonDescriptorTestCase {
             original: original_descriptor,
-            updates: updates,
+            updates: updates.clone(),
+            message_level: message_threshold,
         };
-        // println!("{:#?}", update_data);
+        trace!("{:#?}", updates);
         return Ok(test_case);
     } else {
         panic!("error getting composite");

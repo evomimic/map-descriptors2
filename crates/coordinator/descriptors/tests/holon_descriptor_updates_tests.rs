@@ -2,6 +2,8 @@
 
 mod shared_test;
 
+use log::{debug, info, trace};
+
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
 
@@ -17,11 +19,13 @@ use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 /// To execute ONLY the tests in this file, use:
 ///      cargo test -p descriptors --test holon_descriptor_updates_tests -- --show-output
 #[rstest]
-//#[case::add_string_property_to_holon_descriptor(add_properties())]
+#[case::add_string_property_to_holon_descriptor(add_properties())]
 #[case::remove_properties_from_holon_descriptor(remove_properties())]
 #[case::update_each_scalar_property_details(update_each_scalar_details())]
-//#[case::add_property_to_composite_descriptor(add_properties_to_composite())]
-//#[case::remove_property_to_composite_descriptor(remove_properties_from_composite(add_properties_to_composite()))]
+#[case::add_property_to_composite_descriptor(add_properties_to_composite())]
+#[case::remove_property_to_composite_descriptor(remove_properties_from_composite(
+    add_properties_to_composite()
+))]
 #[tokio::test(flavor = "multi_thread")]
 async fn rstest_holon_descriptor_updates(
     #[case] input: Result<HolonDescriptorTestCase, DescriptorsError>,
@@ -30,11 +34,14 @@ async fn rstest_holon_descriptor_updates(
         shared_test::setup_conductor().await;
 
     let input_values = input.unwrap();
+    let level = input_values.message_level;
+    let _ = console_log::init_with_level(level);
     let original_descriptor: HolonDescriptor = input_values.original;
     let expected_descriptors: Vec<HolonDescriptor> = input_values.updates;
-    println!(
+    info!(
         "******* STARTING TEST CASES FOR UPDATING HOLON DESCRIPTOR *************************** \n"
     );
+    debug!("debug:  original descriptor: {:#?}", original_descriptor);
     let created_record: Record = conductor
         .call(
             &cell.zome("descriptors"),
@@ -43,6 +50,7 @@ async fn rstest_holon_descriptor_updates(
         )
         .await;
     let created_descriptor = get_holon_descriptor_from_record(created_record.clone()).unwrap();
+    trace!("created descriptor: {:#?}", created_descriptor);
     assert_eq!(original_descriptor, created_descriptor);
 
     let created_action_hash: ActionHash = created_record.action_address().clone();
@@ -58,7 +66,6 @@ async fn rstest_holon_descriptor_updates(
     assert_eq!(original_descriptor, created_descriptor);
     assert_eq!(created_descriptor, fetched_descriptor);
 
-
     for descriptor in expected_descriptors {
         previous_record = rstest_1_holon_descriptor_update(
             &conductor,
@@ -67,7 +74,7 @@ async fn rstest_holon_descriptor_updates(
             &previous_record,
             &descriptor,
         )
-            .await;
+        .await;
     }
 }
 
@@ -84,9 +91,8 @@ pub async fn rstest_1_holon_descriptor_update(
     let _original_descriptor =
         get_holon_descriptor_from_record(original_holon_descriptor_record.clone()).unwrap();
 
-
-    println!("original: {:#?} \n", _original_descriptor);
-    println!("expected: {:#?} \n", expected_holon_descriptor);
+    debug!("original: {:#?} \n", _original_descriptor);
+    debug!("expected: {:#?} \n", expected_holon_descriptor);
 
     let update_input = UpdateHolonDescriptorInput {
         original_holon_descriptor_hash: created_action_hash.clone(),
