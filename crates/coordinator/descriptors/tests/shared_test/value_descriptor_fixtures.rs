@@ -18,9 +18,9 @@ use descriptors::mutators::{
     new_boolean_descriptor, new_composite_descriptor, new_integer_descriptor, new_string_descriptor,
 };
 use descriptors::property_map_builder::upsert_property_descriptor;
-use log::Level;
 use rstest::*;
 use std::collections::btree_map::BTreeMap;
+use tracing::Level;
 
 // use hdk::prelude::*;
 use crate::shared_test::fixture_helpers::{
@@ -106,7 +106,7 @@ pub fn new_dedicated_value_descriptors_fixture() -> Result<Vec<ValueDescriptor>,
 
 #[fixture]
 pub fn new_shared_value_descriptors_fixture() -> Result<SharedTypesTestCase, DescriptorsError> {
-    let message_threshold = Level::Info;
+    let message_threshold = Level::INFO;
     // This fixture creates a vector of scalar types (shared_types)
     // Then creates a vector of composite types that reference those shared types
 
@@ -189,7 +189,7 @@ pub fn new_shared_value_descriptors_fixture() -> Result<SharedTypesTestCase, Des
 
 #[fixture]
 pub fn update_value_descriptor_composite() -> Result<ValueDescriptorTestCase, DescriptorsError> {
-    let message_threshold = Level::Debug;
+    let message_threshold = Level::DEBUG;
     let original_descriptor = build_value_descriptor_with_composite()?;
     let mut updates = Vec::new();
 

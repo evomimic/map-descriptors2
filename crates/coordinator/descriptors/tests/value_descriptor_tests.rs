@@ -7,18 +7,15 @@ mod shared_test;
 
 // use core::panic;
 
-// use log::{debug, error, info, trace, warn};
-
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
 
 use descriptors::helpers::get_value_descriptor_from_record;
-
-use log::Level;
 use rstest::*;
 use shared_test::value_descriptor_fixtures::new_dedicated_value_descriptors_fixture;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::value_descriptor::ValueDescriptor;
+use tracing::{info, trace};
 
 /// This function exercises a broad range of capabilities. The heavy lifting for this test is in the
 /// test data set creation done within fixtures.
@@ -41,8 +38,6 @@ use shared_types_descriptor::value_descriptor::ValueDescriptor;
 async fn rstest_value_descriptor_capabilities(
     #[case] input: Result<Vec<ValueDescriptor>, DescriptorsError>,
 ) {
-    let level = Level::Debug;
-    let _ = console_log::init_with_level(level);
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =
         shared_test::setup_conductor().await;
 

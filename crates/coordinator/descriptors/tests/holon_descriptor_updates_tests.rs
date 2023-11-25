@@ -2,8 +2,6 @@
 
 mod shared_test;
 
-use log::{debug, info, trace};
-
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
 
@@ -14,6 +12,7 @@ use shared_test::holon_descriptor_fixtures::*;
 use shared_test::test_data_types::HolonDescriptorTestCase;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
+use tracing::debug;
 
 /// These tests exercise update actions on HolonDescriptors
 /// To execute ONLY the tests in this file, use:
@@ -34,8 +33,6 @@ async fn rstest_holon_descriptor_updates(
         shared_test::setup_conductor().await;
 
     let input_values = input.unwrap();
-    let level = input_values.message_level;
-    let _ = console_log::init_with_level(level);
     let original_descriptor: HolonDescriptor = input_values.original;
     let expected_descriptors: Vec<HolonDescriptor> = input_values.updates;
     info!(

@@ -12,6 +12,7 @@ use shared_test::test_data_types::ValueDescriptorTestCase;
 use shared_test::value_descriptor_fixtures::*;
 use shared_types_descriptor::error::DescriptorsError;
 use shared_types_descriptor::value_descriptor::ValueDescriptor;
+use tracing::{debug, info};
 
 /// These tests exercise update actions on ValueDescriptors
 /// To execute ONLY the tests in this file, use:
@@ -27,7 +28,6 @@ async fn rstest_value_descriptor_updates(
 
     let input_values = input.unwrap();
     let level = input_values.message_level;
-    let _ = console_log::init_with_level(level);
     let original_descriptor: ValueDescriptor = input_values.original;
     let expected_descriptors: Vec<ValueDescriptor> = input_values.updates;
     info!(

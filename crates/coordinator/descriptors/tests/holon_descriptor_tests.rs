@@ -7,7 +7,7 @@ use std::collections::BTreeMap;
 
 mod shared_test;
 
-use log::Level;
+use tracing::{debug, info, instrument, Level};
 
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
@@ -47,11 +47,10 @@ use shared_types_descriptor::value_descriptor::{
 #[rstest]
 #[case::mixture_of_holon_types(new_holons_fixture())]
 #[tokio::test(flavor = "multi_thread")]
+#[instrument]
 async fn rstest_holon_descriptor_capabilities(
     #[case] input: Result<Vec<HolonDescriptor>, DescriptorsError>, //HolonTestCase
 ) {
-    let level = Level::Debug;
-    let _ = console_log::init_with_level(level);
     // Setup
 
     let (conductor, _agent, cell): (SweetConductor, AgentPubKey, SweetCell) =

@@ -1,7 +1,6 @@
 use shared_types_descriptor::holon_descriptor::HolonDescriptor;
 use shared_types_descriptor::value_descriptor::ValueDescriptor;
-
-use log::Level;
+use tracing::Level;
 
 #[derive(Clone, Debug)]
 pub struct HolonDescriptorTestCase {

@@ -2,12 +2,12 @@
 
 mod shared_test;
 
+use descriptors::helpers::*;
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
-use std::collections::BTreeMap;
-
-use descriptors::helpers::*;
 use rstest::*;
+use std::collections::BTreeMap;
+use tracing::{debug, info, trace};
 
 use shared_test::test_data_types::SharedTypesTestCase;
 use shared_test::value_descriptor_fixtures::*;
@@ -61,8 +61,6 @@ async fn rstest_shared_properties(#[case] input: Result<SharedTypesTestCase, Des
     info!("******* STARTING TESTS FOR SHARED VALUE DESCRIPTORS *************************** \n");
 
     let test_case = input.unwrap();
-    let level = test_case.message_level;
-    let _ = console_log::init_with_level(level);
     let shared_types = test_case.shared_types;
     let mut referencing_types = test_case.referencing_types;
 
