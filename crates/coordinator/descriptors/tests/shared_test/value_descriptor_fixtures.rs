@@ -20,7 +20,7 @@ use descriptors::mutators::{
 use descriptors::property_map_builder::upsert_property_descriptor;
 use rstest::*;
 use std::collections::btree_map::BTreeMap;
-use tracing::Level;
+// use tracing::Level;
 
 // use hdk::prelude::*;
 use crate::shared_test::fixture_helpers::{
@@ -106,7 +106,7 @@ pub fn new_dedicated_value_descriptors_fixture() -> Result<Vec<ValueDescriptor>,
 
 #[fixture]
 pub fn new_shared_value_descriptors_fixture() -> Result<SharedTypesTestCase, DescriptorsError> {
-    let message_threshold = Level::INFO;
+    // let message_threshold = Level::INFO;
     // This fixture creates a vector of scalar types (shared_types)
     // Then creates a vector of composite types that reference those shared types
 
@@ -181,7 +181,7 @@ pub fn new_shared_value_descriptors_fixture() -> Result<SharedTypesTestCase, Des
     let test_case = SharedTypesTestCase {
         shared_types,
         referencing_types,
-        message_level: message_threshold,
+        // message_level: message_threshold,
     };
 
     Ok(test_case)
@@ -189,7 +189,7 @@ pub fn new_shared_value_descriptors_fixture() -> Result<SharedTypesTestCase, Des
 
 #[fixture]
 pub fn update_value_descriptor_composite() -> Result<ValueDescriptorTestCase, DescriptorsError> {
-    let message_threshold = Level::DEBUG;
+    // let message_threshold = Level::DEBUG;
     let original_descriptor = build_value_descriptor_with_composite()?;
     let mut updates = Vec::new();
 
@@ -215,7 +215,7 @@ pub fn update_value_descriptor_composite() -> Result<ValueDescriptorTestCase, De
     let test_case = ValueDescriptorTestCase {
         original: original_descriptor,
         updates: updates,
-        message_level: message_threshold,
+        // message_level: message_threshold,
     };
     // println!("Original & expected update: {:#?}", test_case);
     Ok(test_case)

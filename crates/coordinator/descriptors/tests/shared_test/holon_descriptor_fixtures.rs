@@ -20,7 +20,8 @@ use descriptors::mutators::*;
 use descriptors::property_map_builder::*;
 use rstest::*;
 use std::collections::btree_map::BTreeMap;
-use tracing::{debug, trace, Level}; //error, info, warn};
+// use tracing::{debug, trace, Level}; //error, info, warn};
+use log::{debug, trace};
 
 // use hdk::prelude::*;
 
@@ -140,6 +141,7 @@ pub fn new_holons_fixture() -> Result<Vec<HolonDescriptor>, DescriptorsError> {
 // Builds initial HolonDescriptor with no properties
 #[fixture]
 pub fn add_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> {
+    env_logger::init();
     let original_descriptor = build_holon_descriptor_with_no_properties()?;
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
@@ -155,7 +157,7 @@ pub fn add_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> {
     let test_case = HolonDescriptorTestCase {
         original: original_descriptor,
         updates: updates,
-        message_level: Level::DEBUG,
+        // message_level: Level::DEBUG,
     };
     debug!("Original update: {:#?}", &test_case.original);
     debug!("Expected updates: {:?}", &test_case.updates);
@@ -165,6 +167,7 @@ pub fn add_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> {
 
 #[fixture]
 pub fn remove_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> {
+    env_logger::init();
     let original_descriptor = build_holon_descriptor_with_scalar()?;
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
@@ -177,7 +180,7 @@ pub fn remove_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> 
     let test_case = HolonDescriptorTestCase {
         original: original_descriptor,
         updates: updates,
-        message_level: Level::DEBUG,
+        // message_level: Level::DEBUG,
     };
     debug!("Original update: {:#?}", &test_case.original);
     debug!("Expected updates: {:?}", &test_case.updates);
@@ -188,7 +191,8 @@ pub fn remove_properties() -> Result<HolonDescriptorTestCase, DescriptorsError> 
 // Builds initial HolonDescritor with each type of scalar property
 #[fixture]
 pub fn update_each_scalar_details() -> Result<HolonDescriptorTestCase, DescriptorsError> {
-    let message_threshold = Level::ERROR;
+    env_logger::init();
+    // let message_threshold = Level::ERROR;
     let original_descriptor = build_holon_descriptor_with_scalar()?;
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
@@ -204,7 +208,7 @@ pub fn update_each_scalar_details() -> Result<HolonDescriptorTestCase, Descripto
     let test_case = HolonDescriptorTestCase {
         original: original_descriptor,
         updates: updates,
-        message_level: message_threshold,
+        // message_level: message_threshold,
     };
 
     debug!("{:#?}", test_case);
@@ -214,7 +218,8 @@ pub fn update_each_scalar_details() -> Result<HolonDescriptorTestCase, Descripto
 // Builds initial HolonDescriptor with a composite property
 #[fixture]
 pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, DescriptorsError> {
-    let message_threshold = Level::ERROR;
+    env_logger::init();
+    // let message_threshold = Level::ERROR;
     let original_descriptor = build_holon_descriptor_with_composite()?;
     let mut updated_descriptor = original_descriptor.clone();
     let mut updates = Vec::new();
@@ -308,7 +313,7 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
         let test_case = HolonDescriptorTestCase {
             original: original_descriptor,
             updates: updates,
-            message_level: message_threshold,
+            // message_level: message_threshold,
         };
         debug!("Original & expected update: {:#?}", test_case);
         return Ok(test_case);
@@ -321,6 +326,7 @@ pub fn add_properties_to_composite() -> Result<HolonDescriptorTestCase, Descript
 pub fn remove_properties_from_composite(
     add_properties_to_composite: Result<HolonDescriptorTestCase, DescriptorsError>,
 ) -> Result<HolonDescriptorTestCase, DescriptorsError> {
+    env_logger::init();
     let data = add_properties_to_composite?;
     let original_descriptor = data.original;
     let mut updated_descriptor = original_descriptor.clone();
@@ -368,7 +374,7 @@ pub fn remove_properties_from_composite(
         let test_case = HolonDescriptorTestCase {
             original: original_descriptor,
             updates: updates.clone(),
-            message_level: Level::DEBUG,
+            // message_level: Level::DEBUG,
         };
         trace!("{:#?}", updates);
         return Ok(test_case);

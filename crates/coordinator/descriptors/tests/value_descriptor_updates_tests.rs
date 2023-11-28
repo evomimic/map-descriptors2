@@ -27,7 +27,7 @@ async fn rstest_value_descriptor_updates(
         shared_test::setup_conductor().await;
 
     let input_values = input.unwrap();
-    let level = input_values.message_level;
+    // let level = input_values.message_level;
     let original_descriptor: ValueDescriptor = input_values.original;
     let expected_descriptors: Vec<ValueDescriptor> = input_values.updates;
     info!(

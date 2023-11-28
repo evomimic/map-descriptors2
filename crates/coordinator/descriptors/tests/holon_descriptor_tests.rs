@@ -7,7 +7,9 @@ use std::collections::BTreeMap;
 
 mod shared_test;
 
-use tracing::{debug, info, instrument, Level};
+// use tracing::{debug, info, instrument, Level};
+use log::{debug, info};
+use test_log::test;
 
 use hdk::prelude::*;
 use holochain::sweettest::{SweetCell, SweetConductor};
@@ -46,7 +48,7 @@ use shared_types_descriptor::value_descriptor::{
 ///
 #[rstest]
 #[case::mixture_of_holon_types(new_holons_fixture())]
-#[tokio::test(flavor = "multi_thread")]
+#[self::test(tokio::test(flavor = "multi_thread"))]
 #[instrument]
 async fn rstest_holon_descriptor_capabilities(
     #[case] input: Result<Vec<HolonDescriptor>, DescriptorsError>, //HolonTestCase
